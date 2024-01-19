@@ -1,0 +1,478 @@
+###############################################################################
+#   @author         :   simplemicerey Stone
+#   @date           :   02/19/2019
+#   @package        :   Climate
+#   @description    :   A Collection of Notification Scripts and Configs.
+#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
+# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
+###############################################################################
+
+input_boolean:
+  climate_automation:
+    name: "House Climate Automation"
+    icon: mdi:air-conditioner
+
+climate:
+  - platform: smartir
+    name: Bedroom AirCon
+    unique_id: bedroom_ac
+    device_code: 9991
+    controller_data: remote.bedroom_remote_hub
+    temperature_sensor: sensor.bedroom_temp_temperature
+    humidity_sensor: sensor.bedroom_temp_humidity
+
+remote:
+  - platform: xiaomi_miio
+    name: "Livingroom Remote Hub"
+    host: 192.168.3.22
+    token: !secret living_remote
+  - platform: xiaomi_miio
+    name: "Bedroom Remote Hub"
+    host: 192.168.3.21
+    token: !secret bedroom_remote
+
+automation:
+  - id: bedroom_aircon_button
+    alias: Climate - Bedroom Button Control
+    description: ""
+    use_blueprint:
+      path: xiaomi_button.yaml
+      input:
+        action_sensor: sensor.bedroom_button_action
+        single_action:
+          - service: climate.set_hvac_mode
+            target:
+              entity_id:
+                - climate.bedroom_aircon
+            data:
+              hvac_mode: cool
+          - service: remote.send_command
+            metadata: {}
+            data:
+              command: >-
+                mk0mswlk0mc0mEsms4mEsmM1m0wlk2mICJADkAhABHgRbNJyBDwCHgIQAP4JUTGazMBnwbfAigFXwkPAh8AcwAyAPcCjwEPCp8EHwMPAw8ChgwPDA8PXQAyAQgBnwB0msxGlOaTcaowHyEz8HLwe/GqgGiwrvD48CB4A
+            target:
+              entity_id: remote.bedroom_remote_hub
+        double_action:
+          - service: climate.set_hvac_mode
+            target:
+              entity_id:
+                - climate.bedroom_aircon
+            data:
+              hvac_mode: dry
+          - service: remote.send_command
+            metadata: {}
+            data:
+              command: >-
+                mk0mswlk0mc0mEsms4mEsmM1m0wlk2mICJADkAhABHgRbNJyBDwCHgIQAP4JUTGazMBnwbfAigFXwkPAh8AcwAyAPcCjwEPCp8EHwMPAw8ChgwPDA8PXQAyAQgBnwB0msxGlOaTcaowHyEz8HLwe/GqgGiwrvD48CB4A
+            target:
+              entity_id: remote.bedroom_remote_hub
+        hold_action:
+          - service: climate.set_hvac_mode
+            metadata: {}
+            data:
+              hvac_mode: "off"
+            target:
+              entity_id: climate.bedroom_aircon
+        triple_action:
+          - if:
+              - condition: state
+                entity_id: fan.zhimi_fa1_4020_fan
+                state: "off"
+            then:
+              - service: fan.turn_on
+                data: {}
+                target:
+                  entity_id: fan.zhimi_fa1_4020_fan
+            else:
+              - service: fan.turn_off
+                data: {}
+                target:
+                  entity_id: fan.zhimi_fa1_4020_fan
+            alias: Bedroom Fan
+
+  - id: bedroom_night_automation
+    alias: Climate - Bedroom Night Automation
+    description: ""
+    trigger:
+      - type: temperature
+        platform: device
+        device_id: 63af9f46a83df92ec07c9ab86e59d6ad
+        entity_id: fcbe701b1c58f7a11269eb337bea9f64
+        domain: sensor
+        above: 27
+        id: temp_on
+      - type: humidity
+        platform: device
+        device_id: 63af9f46a83df92ec07c9ab86e59d6ad
+        entity_id: 0ab2cc4cf9f1db531b228e9fb2c4be1d
+        domain: sensor
+        above: 70
+        id: hum_on
+      - type: temperature
+        platform: device
+        device_id: 63af9f46a83df92ec07c9ab86e59d6ad
+        entity_id: fcbe701b1c58f7a11269eb337bea9f64
+        domain: sensor
+        below: 25
+        id: temp_off
+      - type: humidity
+        platform: device
+        device_id: 63af9f46a83df92ec07c9ab86e59d6ad
+        entity_id: 0ab2cc4cf9f1db531b228e9fb2c4be1d
+        domain: sensor
+        below: 40
+        id: hum_off
+      - platform: state
+        entity_id:
+          - binary_sensor.bedroom_door_contact
+        to: "off"
+        id: door_closed
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.bedroom_door_contact
+            state: "off"
+          - condition: time
+            after: "20:00:00"
+            before: "08:00:00"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - temp_on
+                  - door_closed
+            sequence:
+              - service: climate.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: climate.bedroom_aircon
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: climate.set_hvac_mode
+                metadata: {}
+                data:
+                  hvac_mode: cool
+                target:
+                  entity_id: climate.bedroom_aircon
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: remote.send_command
+                metadata: {}
+                data:
+                  command: >-
+                    mk0mswlk0mc0mEsms4mEsmM1m0wlk2mICJADkAhABHgRbNJyBDwCHgIQAP4JUTGazMBnwbfAigFXwkPAh8AcwAyAPcCjwEPCp8EHwMPAw8ChgwPDA8PXQAyAQgBnwB0msxGlOaTcaowHyEz8HLwe/GqgGiwrvD48CB4A
+                target:
+                  entity_id: remote.bedroom_remote_hub
+          - conditions:
+              - condition: trigger
+                id:
+                  - hum_on
+                  - door_closed
+            sequence:
+              - service: climate.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: climate.bedroom_aircon
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: climate.set_hvac_mode
+                metadata: {}
+                data:
+                  hvac_mode: dry
+                target:
+                  entity_id: climate.bedroom_aircon
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: remote.send_command
+                metadata: {}
+                data:
+                  command: >-
+                    mk0mswlk0mc0mEsms4mEsmM1m0wlk2mICJADkAhABHgRbNJyBDwCHgIQAP4JUTGazMBnwbfAigFXwkPAh8AcwAyAPcCjwEPCp8EHwMPAw8ChgwPDA8PXQAyAQgBnwB0msxGlOaTcaowHyEz8HLwe/GqgGiwrvD48CB4A
+                target:
+                  entity_id: remote.bedroom_remote_hub
+          - conditions:
+              - condition: trigger
+                id:
+                  - temp_off
+                  - hum_off
+            sequence:
+              - service: climate.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: climate.bedroom_aircon
+    mode: single
+
+  - id: black_kitchen_fan_automation
+    alias: Climate - Black And Kitchen Fan Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.livingroom_temp_temperature
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: person.simplemice
+            state: home
+          - condition: time
+            after: "08:00:00"
+            before: "21:00:00"
+    action:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: fan.dmaker_p23_42a8_fan
+                    state: "off"
+                  - condition: numeric_state
+                    entity_id: sensor.livingroom_temp_temperature
+                    above: 29
+            sequence:
+              - service: fan.turn_on
+                target:
+                  entity_id:
+                    - fan.dmaker_p23_42a8_fan
+                    - fan.kitchen_power_strip_switch
+                data: {}
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                then:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message: >
+                        {{ [ "Attention: High temperature alert at Mouse House. Fans
+                        are now running to regulate the climate and ensure
+                        comfort.",
+                              "Critical Alert: Mouse House temperature is too high. Fans activated for immediate cooling. Check and adjust as necessary.",
+                              "Hot Conditions: Mouse House temperature is elevated. Fans are running to provide relief. Ensure a comfortable living space.",
+                              "Temperature Alert: Mouse House is too warm. Fans activated. Please monitor the temperature for improved conditions.",
+                              "High Heat Warning: Fans initiated at Mouse House due to high temperatures. Ensure proper cooling for resident comfort.",
+                              "Heat Advisory: Mouse House temperature alert! Fans are now operational. Check and adjust settings for an optimal living environment."
+                            ] | random }}
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: fan.dmaker_p23_42a8_fan
+                    state: "on"
+                  - condition: numeric_state
+                    entity_id: sensor.livingroom_temp_temperature
+                    below: 29
+            sequence:
+              - service: fan.turn_off
+                target:
+                  entity_id:
+                    - fan.dmaker_p23_42a8_fan
+                data: {}
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: >
+                    {{ [ "Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation.",
+                          "Temperature Update: Mouse House is at a comfortable level. Fans turned off for optimal conditions. Relax and enjoy the pleasant atmosphere.",
+                          "Balanced Temp: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the ideal living conditions.",
+                          "Comfortable Environment: Mouse House temperature is normal. Fans turned off to maintain the desired climate. Relax and unwind.",
+                          "Temperature Normal: Fans off at Mouse House. The environment is comfortable. Monitor and adjust settings for your preference.",
+                          "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is normal. Enjoy the balanced atmosphere."
+                        ] | random }}
+    mode: single
+
+  - id: door_fan_automation
+    alias: Climate - Door Fan Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.livingroom_temp_temperature
+    condition:
+      - condition: time
+        after: "07:45:00"
+        before: "22:00:00"
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: person.simplemice
+            state: home
+          - condition: state
+            entity_id: binary_sensor.bed_presense
+            state: "off"
+    action:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: fan.dmaker_p28_19b6_fan
+                    state: "off"
+                  - condition: numeric_state
+                    entity_id: sensor.livingroom_temp_temperature
+                    above: 32
+            sequence:
+              - service: fan.turn_on
+                target:
+                  entity_id:
+                    - fan.dmaker_p28_19b6_fan
+                data: {}
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                then:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message: >
+                        {{ [ "Attention: Temperature at Mouse House is currently
+                        above the desired level. Fans have been activated to cool
+                        the space and maintain a comfortable environment. Adjust
+                        settings if needed for optimal comfort.",
+                              "Attention: High temperature at Mouse House! Fans activated for immediate cooling. Monitor for optimal conditions.",
+                              "Temperature Warning: Mouse House is warmer than desired. Fans are on to combat the heat. Check and adjust for comfort.",
+                              "Temperature Alert: Mouse House is too warm. Fans activated. Please monitor the temperature for improved conditions.",
+                              "High Temp Notification: Fans are now operational at Mouse House due to elevated temperatures. Observe for desired cooling.",
+                              "Hot Conditions: Temperature at Mouse House is above the threshold. Fans are running to provide relief. Ensure a comfortable living space."
+                            ] | random }}
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: fan.dmaker_p28_19b6_fan
+                    state: "on"
+                  - condition: numeric_state
+                    entity_id: sensor.livingroom_temp_temperature
+                    below: 32
+            sequence:
+              - service: fan.turn_off
+                target:
+                  entity_id:
+                    - fan.dmaker_p28_19b6_fan
+                data: {}
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                then:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message: >
+                        {{ [ "Cool Conditions: Temperature at Mouse House is below
+                        the threshold. Fans are off to prevent excessive cooling.
+                        Ensure a cozy living space.",
+                              "Low Temp Notification: Fans are now off at Mouse House as the temperature drops below the threshold. Observe for preferred warmth.",
+                              "Temperature Notification: Mouse House is cooler than desired. Fans are off for energy conservation. Check and adjust for comfort.",
+                              "Mild Conditions: Mouse House temperature is below the specified limit. Fans have been turned off. Adjust settings as needed for comfort.",
+                              "Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation. Enjoy the balanced environment!",
+                              "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the balanced atmosphere."
+                            ] | random }}
+    mode: single
+
+script:
+  bedroom_sterilization:
+    alias: Bedroom - Turn on Sterilization Lamp for 30 min
+    sequence:
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: >
+            {{ [
+                    "Prepare for sterilization! The bedroom will be sanitized in 5 minutes.",
+                    "Bedroom sterilization countdown initiated. Get ready for a clean and safe environment!",
+                    "In 5 minutes, sterilization protocols for the bedroom will commence. Prepare accordingly.",
+                    "Alert: Bedroom sterilization starting soon. Ensure the area is clear in 5 minutes.",
+                    "Get ready for a refreshed space! Bedroom sterilization will begin in just 5 minutes.",
+                    "Sterilization sequence initiated. The bedroom will be sanitized in 5 minutes. Clear the area.",
+                    "Countdown to cleanliness: Bedroom sterilization starts in 5 minutes. Make necessary preparations."
+                ] | random }}
+      - service: notify.simplemice
+        data:
+          title: Notification
+          message: >
+            {{ [
+                    "Prepare for sterilization! The bedroom will be sanitized in 5 minutes.",
+                    "Bedroom sterilization countdown initiated. Get ready for a clean and safe environment!",
+                    "In 5 minutes, sterilization protocols for the bedroom will commence. Prepare accordingly.",
+                    "Alert: Bedroom sterilization starting soon. Ensure the area is clear in 5 minutes.",
+                    "Get ready for a refreshed space! Bedroom sterilization will begin in just 5 minutes.",
+                    "Sterilization sequence initiated. The bedroom will be sanitized in 5 minutes. Clear the area.",
+                    "Countdown to cleanliness: Bedroom sterilization starts in 5 minutes. Make necessary preparations."
+                ] | random }}
+      - delay:
+          hours: 0
+          minutes: 5
+          seconds: 0
+          milliseconds: 0
+      - service: number.set_value
+        data:
+          value: "30"
+        target:
+          entity_id: number.uvfive_slmap2_2e5e_target_time
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id:
+            - switch.uvfive_slmap2_2e5e_radar_on
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.uvfive_slmap2_2e5e_switch_status
+      - wait_for_trigger:
+          - platform: state
+            entity_id:
+              - switch.uvfive_slmap2_2e5e_switch_status
+            to: "off"
+        timeout:
+          hours: 0
+          minutes: 40
+          seconds: 0
+          milliseconds: 0
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: >
+            {{ [
+                "Good news! Bedroom sterilization is complete. You can now re-enter the sanitized space.",
+                "The bedroom sterilization process has concluded successfully. Enjoy a clean and safe environment!",
+                "Sterilization mission accomplished! The bedroom is now ready for use.",
+                "All clear! Bedroom sterilization is finished. You may now resume normal activities.",
+                "Sterilization complete: The bedroom is now free of contaminants. Welcome back!",
+                "The bedroom sterilization process has finished. You can now enjoy a fresh and clean living space.",
+                "Mission success: Bedroom sterilization is complete. Feel free to return to the sanitized room."
+            ] | random }}
+      - service: notify.simplemice
+        data:
+          title: Notification
+          message: >
+            {{ [
+                "Good news! Bedroom sterilization is complete. You can now re-enter the sanitized space.",
+                "The bedroom sterilization process has concluded successfully. Enjoy a clean and safe environment!",
+                "Sterilization mission accomplished! The bedroom is now ready for use.",
+                "All clear! Bedroom sterilization is finished. You may now resume normal activities.",
+                "Sterilization complete: The bedroom is now free of contaminants. Welcome back!",
+                "The bedroom sterilization process has finished. You can now enjoy a fresh and clean living space.",
+                "Mission success: Bedroom sterilization is complete. Feel free to return to the sanitized room."
+            ] | random }}
+    mode: single
+    icon: mdi:bug

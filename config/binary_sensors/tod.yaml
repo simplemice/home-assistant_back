@@ -1,0 +1,4 @@
+- platform: tod
+  name: Morning
+  after: "07:30"
+  before: "08:30"

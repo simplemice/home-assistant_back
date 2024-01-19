@@ -1,0 +1,59 @@
+homeassistant:
+  internal_url: http://192.168.3.2:8123
+  customize: !include customize.yaml
+  packages: !include_dir_named packages
+  whitelist_external_dirs:
+    - /config/www/camera_snaps
+  auth_providers:
+    - type: trusted_networks
+      trusted_networks:
+        - 192.168.3.0/24
+      allow_bypass_login: true
+    - type: homeassistant
+
+default_config:
+history:
+ffmpeg:
+wake_on_lan:
+conversation:
+ssdp:
+zeroconf:
+
+http:
+  #  ssl_certificate: /config/homeassistant.pem
+  #  ssl_key: /config/homeassistant-key.pem
+  use_x_forwarded_for: true
+  ip_ban_enabled: false
+  login_attempts_threshold: 5
+  trusted_proxies:
+    - 172.30.0.0/24
+    - 192.168.3.0/24
+    - 192.168.2.0/24
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+smartir:
+
+#lovelace:
+#  mode: storage
+# Add yaml dashboards
+#  dashboards:
+#    tablet-yaml:
+#      mode: yaml
+#      title: Tablet
+#      icon: mdi:tablet-dashboard
+#      show_in_sidebar: true
+#      filename: monitor-ui-dashboard.yaml
+
+automation: !include_dir_merge_list automations
+binary_sensor: !include_dir_merge_list binary_sensors
+sensor: !include_dir_merge_list sensors
+switch: !include_dir_merge_list switches
+script: !include_dir_merge_named scripts
+scene: !include_dir_merge_named scenes
+group: !include_dir_merge_named groups
+shell_command: !include_dir_merge_named shell_commands
+
+device_tracker: !include device_tracker.yaml
+panel_iframe: !include iframe.yaml

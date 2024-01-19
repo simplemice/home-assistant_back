@@ -1,0 +1,133 @@
+###############################################################################
+#   @author         :   simplemicerey Stone
+#   @date           :   02/19/2019
+#   @package        :   Climate
+#   @description    :   A Collection of Notification Scripts and Configs.
+#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
+# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
+###############################################################################
+
+input_boolean:
+  backyard_camera_notification:
+    name: "Backyard Camera Notification"
+    icon: mdi:cctv
+  garage_camera_notification:
+    name: "Garage Camera Notification"
+    icon: mdi:cctv
+
+automation:
+  - id: "1697364686309"
+    alias: Notification - Garage Camera PopUp Window
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.garage_door_motion_occupancy
+        to: "on"
+      - platform: state
+        entity_id:
+          - sensor.door_bell_action
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: person.simplemice
+            state: home
+          - condition: state
+            entity_id: binary_sensor.micebook_status
+            state: "on"
+    action:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 1
+          milliseconds: 0
+      - service: script.notification_garage_camera_popup_window
+        data: {}
+    mode: single
+
+  - id: camera_night_light
+    alias: Lights - Camera Night Light Automation
+    description: ""
+    trigger:
+      - platform: sun
+        event: sunrise
+        offset: 0
+      - platform: sun
+        event: sunset
+        offset: 0
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: sun
+                before: sunrise
+                after: sunset
+            sequence:
+              - service: light.turn_on
+                data: {}
+                target:
+                  entity_id: light.camera_night_light
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                then:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message: >
+                        {{ [ "Attention: Sunset at Mouse House! The camera night
+                        light has been turned on to ensure visibility throughout the
+                        night.",
+                              "Sunset Notification: Mouse House is transitioning to night. The camera night light is now illuminating the surroundings for enhanced security.",
+                              "Dusk Alert: Sun has set at Mouse House. Enjoy a well-lit environment with the camera night light in operation.",
+                              "Nightfall Update: Mouse House is now in the evening hours. The camera night light is activated for clear visibility.",
+                              "Night Mode On: Sunset detected at Mouse House. The camera night light is now providing illumination for added security."
+                            ] | random }}
+          - conditions:
+              - condition: sun
+                before: sunset
+                after: sunrise
+            sequence:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id: light.camera_night_light
+    mode: single
+
+script:
+  notification_garage_camera_popup_window:
+    alias: "Notification - Garage Camera PopUp Window"
+    sequence:
+      - service: browser_mod.popup
+        data:
+          dismissable: true
+          autoclose: true
+          title: Camera Motion
+          timeout: 14400
+          content:
+            cameras:
+              - camera_entity: camera.garage
+                icon: mdi:cctv
+                live_provider: auto
+                title: Garage
+                triggers:
+                  entities:
+                    - binary_sensor.garage_motion_group
+                  motion: true
+            live:
+              microphone:
+                always_connected: true
+              preload: true
+            menu:
+              alignment: top
+              button_size: 35
+              style: overlay
+            type: custom:frigate-card
+            view:
+              default: live
+        target:
+          entity_id:
+            - media_player.micebook
+    mode: single
+    icon: mdi:cctv

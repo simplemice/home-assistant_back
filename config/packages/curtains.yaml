@@ -1,0 +1,80 @@
+###############################################################################
+#   @author         :   simplemicerey Stone
+#   @date           :   02/19/2019
+#   @package        :   Curtains and Covers
+#   @description    :   A Collection of Notification Scripts and Configs.
+#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
+# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
+###############################################################################
+
+input_boolean:
+  livingroom_curtains:
+    name: "Livingroom Curtains"
+    icon: mdi:curtains
+
+automation:
+  - id: open_curtains_ambient_off
+    alias: Livingroom -  Curtains Open Ambient Off
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - switch.livingroom_curtains
+        from: "off"
+        to: "on"
+    condition: []
+    action:
+      - service: light.turn_off
+        data:
+          transition: 10
+        target:
+          entity_id:
+            - light.sofa_ambient
+            - light.lumi_gateway_v3_light
+            - light.livingroom_wardrobe_ambient
+            - light.livingroom_door_ambient
+    mode: single
+
+script:
+  curtains_automation:
+    alias: Livingroom - Open and Closed Curtains
+    sequence:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: switch.livingroom_curtains
+                state: "on"
+            sequence:
+              - service: cover.open_cover
+                data: {}
+                target:
+                  entity_id: cover.livingroom_curtains
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 18
+                  milliseconds: 0
+              - service: cover.stop_cover
+                data: {}
+                target:
+                  entity_id: cover.livingroom_curtains
+          - conditions:
+              - condition: state
+                entity_id: switch.livingroom_curtains
+                state: "off"
+            sequence:
+              - service: cover.close_cover
+                data: {}
+                target:
+                  entity_id: cover.livingroom_curtains
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 18
+                  milliseconds: 0
+              - service: cover.stop_cover
+                data: {}
+                target:
+                  entity_id: cover.livingroom_curtains
+    mode: single
+    icon: mdi:curtains

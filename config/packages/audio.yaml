@@ -1,0 +1,329 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   04/11/2020
+#   @package        :   Audio
+#   @description    :   Audio related configuration.
+#   @notes          :   This package assumes you are running version .115.0 or greater.
+#
+###############################################################################
+
+################################
+# Media Player section for any media players you want to define. Most of these are setup via the integrations flow in the UI,
+# but if not you may need to modify the following section.
+# For more info on Media Players visit https://www.home-assistant.io/integrations/media_player/
+# MODIFY this section as needed or comment it out completely if not needed.
+# media_player:
+# - platform: yamaha
+#   host: 192.168.7.152
+
+################################
+# Media extractor is used for playing youtube audio. For more info ->https://www.home-assistant.io/integrations/media_extractor/
+#
+# If you have this enabled in another package or in your configuration.yaml comment out the line below
+media_extractor:
+
+############################
+# input_datetime (https://www.home-assistant.io/integrations/input_datetime/)
+#
+# This is simply so we can track last called alexa.
+input_datetime:
+  last_time_alexa_called:
+    name: Last Time Alexa Called
+    has_date: true
+    has_time: true
+
+################################
+# Scripts to handle audio
+script:
+  ################################
+  # local_audio is meant to be used to play audio in your media folder. (https://www.home-assistant.io/integrations/media_source/)
+  #
+  # Before using make sure you update as needed.
+  #
+  # To call this using in the action section of your automation:
+  #
+  # - service: script.local_audio
+  #   data:
+  #     speaker: main
+  #     volume: .3
+  #     media: /media/local_audio.mp3
+  #
+  local_audio:
+    sequence:
+      # Ensure that audible notifications are allowed. Comment out if not needed.
+      - condition: state
+        entity_id: input_boolean.audible_notifications
+        state: "on"
+      # Ensure the family is home. If you are using a group to track the family, or a person just update as needed. Comment out if not needed.
+      - condition: state
+        entity_id: binary_sensor.family_home
+        state: "on"
+      # This sets the voume via a parameter when the script is called, and should be a value between .1 and 1.0
+      - service: media_player.volume_set
+        data:
+          entity_id: >
+            {% set who = speaker %}
+             {% if who == 'kitchen' %}
+               media_player.bedroom_speaker
+             {% elif who == 'main' %}
+               media_player.hbedroom_speaker
+             {% else %}
+               {% if states.input_boolean.audible_notifications.state == 'on' %}
+               media_player.bedroom_speaker
+               {% else %}
+               media_player.bedroom_speaker
+               {% endif %}
+             {% endif %}
+          volume_level: >
+            {{ volume }}
+      - delay: 00:00:05
+      # This tells it to play the media and is set when the script is called.
+      - service: media_player.play_media
+        data:
+          entity_id: >
+            {% set who = speaker %}
+            {% if who == 'kitchen' %}
+              media_player.bedroom_speaker
+            {% elif who == 'theater' %}
+              media_player.bedroom_speaker
+            {% elif who == 'main' %}
+              media_player.bedroom_speaker
+            {% else %}
+              {% if states.input_boolean.audible_notifications.state == 'on' %}
+              media_player.bedroom_speaker
+              {% else %}
+              media_player.bedroom_speaker
+              {% endif %}
+            {% endif %}
+          media_content_type: "music"
+          media_content_id: >
+            {{ media }}
+
+  ################################
+  # youtube_audio is meant to be used to play audio from well youtube.
+  # This scrtip requires the media_extractor integration.
+  #
+  # Before using make sure you update as needed.
+  #
+  # To call this using in the action section of your automation:
+  #
+  # - service: script.youtube_audio
+  #   data:
+  #     speaker: main
+  #     volume: .5
+  #     media: https://www.youtube.com/watch?v=pVeX4C9B1Lk
+  #
+  youtube_audio:
+    sequence:
+      # Ensure that audible notifications are allowed. Comment out if not needed.
+      - condition: state
+        entity_id: input_boolean.audible_notifications
+        state: "on"
+      # Ensure the family is home. If you are using a group to track the family, or a person just update as needed. Comment out if not needed.
+      - condition: state
+        entity_id: binary_sensor.family_home
+        state: "on"
+      # This sets the voume via a parameter when the script is called, and should be a value between .1 and 1.0
+      - service: media_player.volume_set
+        data:
+          entity_id: >
+            {% set who = speaker %}
+            {% if who == 'kitchen' %}
+              media_player.bedroom_speaker
+            {% elif who == 'theater' %}
+              media_player.bedroom_speaker
+            {% elif who == 'main' %}
+              media_player.ha_blue
+            {% else %}
+              {% if states.input_boolean.audible_notifications.state == 'on' %}
+              media_player.ha_blue
+              {% else %}
+              media_player.bedroom_speaker
+              {% endif %}
+            {% endif %}
+          volume_level: >
+            {{ volume }}
+      # This tells it to play the media and is set when the script is called.
+      #  media_content_type: video/Youtube
+      - service: media_extractor.play_media
+        data:
+          entity_id: >
+            {% set who = speaker %}
+            {% if who == 'kitchen' %}
+              media_player.bedroom_speaker
+            {% elif who == 'main' %}
+              media_player.bedroom_speaker
+            {% else %}
+              {% if states.input_boolean.audible_notifications.state == 'on' %}
+              media_player.bedroom_speaker
+              {% else %}
+              media_player.bedroom_speaker
+              {% endif %}
+            {% endif %}
+          media_content_type: music
+          media_content_id: >
+            {{ media }}
+
+  bedtime_music_echo:
+    sequence:
+      - service: media_player.volume_set
+        data:
+          entity_id:
+            - media_player.bedroom_speaker
+          volume_level: >
+            {{ states('input_number.skylar_room_notification_volume') | float}}
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.bedroom_speaker
+        data:
+          media_content_id: bedtime music on
+          media_content_type: routine
+
+  wakeup_music_echo:
+    sequence:
+      - variables:
+          message: >
+            {{[
+            'It seems you are still in bed. Very well.',
+            'Perhaps this will help get you moving.',
+            'Wait. Why are you not moving yet? Very well. Time for some music.',
+            'Initiating your wakeup music.' 
+            ] | random }}
+      - service: script.cleanup_text
+        data:
+          message: >
+            {{ message }}
+        response_variable: "cleaned_briefing"
+      - service: media_player.volume_set
+        data:
+          entity_id:
+            - media_player.bedroom_speaker
+          volume_level: >
+            {{ states('input_number.skylar_room_notification_volume') | float}}
+      - service: script.speech_engine
+        data:
+          who: simplemice
+          type: priority
+          message: >
+            {{ cleaned_briefing.text }}
+      - service: media_player.volume_set
+        data:
+          entity_id:
+            - media_player.bedroom_speaker
+          volume_level: .5
+      - delay:
+          seconds: 10
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.bedroom_speaker
+        data:
+          media_content_id: wake up Skylar
+          media_content_type: routine
+
+  adjust_audio:
+    sequence:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.disney_background
+                state: "on"
+              - condition: state
+                entity_id: media_player.bedroom_speaker
+                state: "playing"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.disney_background
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.disney_background
+                state: "off"
+              - condition: state
+                entity_id: media_player.bedroom_speaker
+                state: "standy"
+              - condition: time
+                after: "07:00:00"
+                before: "19:00:00"
+                weekday:
+                  - sat
+                  - sun
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.disney_background
+        default: []
+
+mqtt:
+  sensor:
+    - name: "Room Presence"
+      state_topic: "house/presence/current_room"
+    - name: "Presence Source"
+      state_topic: "house/presence/source"
+
+template:
+  - sensor:
+      # - name: room_audio
+      #   state: >-
+      #     {% if is_state('input_boolean.audible_notifications', 'on') %}
+      #     {% if expand('group.rooms')
+      #     | selectattr('state', 'eq', 'on') | list | count >= 1 %}
+      #     {% set sensor_ro = expand('group.rooms')
+      #     | selectattr('state', 'eq', 'on')
+      #     | sort(attribute='last_changed') | last %}
+      #     {% endif %}
+      #     {% if sensor_ro is defined and
+      #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
+      #     | round(0) <= states('input_number.presence_threshold') | float %}
+      #     {{ sensor_ro.name.replace('_occupied','') }}
+      #     {% elif expand('group.room_presence')
+      #     | rejectattr('state', 'eq', 'NA')
+      #     | sort(attribute='last_changed') | list | count >=1  %}
+      #       {% set sensor_rp = expand('group.room_presence')
+      #       | rejectattr('state', 'eq', 'NA')
+      #       | sort(attribute='last_changed') | last %}
+      #         {% if sensor_rp is defined %}
+      #         {{ sensor_rp.state }}
+      #         {% endif %}
+      #     {% elif sensor_ro is defined %}
+      #       {{ sensor_ro.name.replace('_occupied','') }}
+      #     {% else -%}
+      #       main
+      #     {%- endif -%}
+      #     {% else %}
+      #     {%- if expand('group.rooms')
+      #     | rejectattr('name', 'search', 'NA|bedroom')
+      #     | selectattr('state', 'eq', 'on') | list | count >= 1 -%}
+      #     {%- set sensor_ro = expand('group.rooms')
+      #     | rejectattr('name', 'search', 'NA|bedroom')
+      #     | selectattr('state', 'eq', 'on')
+      #     | sort(attribute='last_changed') | last -%}
+      #     {%- endif -%}
+      #     {%- if sensor_ro is defined and
+      #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
+      #     | round(0) <= states('input_number.presence_threshold') | float -%}
+      #     {{ sensor_ro.name.replace('_occupied','') }}
+      #     {%- elif expand('group.room_presence')
+      #     | rejectattr('state', 'search', 'NA|bedroom')
+      #     | sort(attribute='last_changed') | list | count >=1  -%}
+      #       {%- set sensor_rp = expand('group.room_presence')
+      #       | rejectattr('state', 'search', 'NA|bedroom')
+      #       | sort(attribute='last_changed') | last %}
+      #         {%- if sensor_rp is defined %}
+      #         {{ sensor_rp.state }}
+      #         {%- endif %}
+      #     {%- elif sensor_ro is defined -%}
+      #       {{ sensor_ro.name.replace('_occupied','') }}
+      #     {%- else -%}
+      #       main
+      #     {%- endif %}
+      #     {%- endif %}
+      #   attributes:
+      #     presence_source: 'NA'
+      - name: alexa_audio
+        state: >-
+          {%- if is_state('sensor.last_alexa', 'media_player.bedroom_speaker') %}
+            living_room
+          {% else %}
+            main
+          {%- endif %}
+      - name: last_alexa
+        state: >
+          {{ expand('group.all_echos') | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}

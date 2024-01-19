@@ -1,0 +1,107 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   02/19/2019
+#   @package        :   Lights
+#   @description    :   Lights automations.
+###############################################################################
+
+input_boolean:
+  adaptive_lights:
+    name: "Adaptive Lights Mode"
+    icon: hue:scene-natural-light
+
+automation:
+  - id: adaptive_lights
+    alias: Lights - Adaptive Lights Automation
+    description: ""
+    trigger:
+      - platform: sun
+        event: sunrise
+        offset: 0
+      - platform: sun
+        event: sunset
+        offset: 0
+    condition:
+      - condition: state
+        entity_id: person.simplemice
+        state: home
+    action:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 30
+          milliseconds: 0
+      - choose:
+          - conditions:
+              - condition: sun
+                before: sunset
+                after: sunrise
+            sequence:
+              - service: input_boolean.turn_off
+                target:
+                  entity_id:
+                    - input_boolean.adaptive_lights
+                data: {}
+              - service: switch.turn_off
+                data: {}
+                target:
+                  entity_id:
+                    - switch.adaptive_lighting_sleep_mode_garage
+                    - switch.adaptive_lighting_sleep_mode_lightstrip
+          - conditions:
+              - condition: sun
+                before: sunrise
+                after: sunset
+            sequence:
+              - service: input_boolean.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.adaptive_lights
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.audible_notifications
+                        state: "on"
+                    sequence:
+                      - service: notify.alexa_media_bedroom_speaker
+                        data:
+                          message: |
+                            {{ [
+                                "Adaptive light mode engaged. Get ready for customized lighting!",
+                                "Lights are adapting! The adaptive light mode is now active.",
+                                "Attention: Adaptive light mode is on. Experience personalized lighting for your space.",
+                                "Lighting transformation: Adaptive light mode has been activated. Enjoy the ambience!",
+                                "Adaptive lighting alert: Lights are now adjusting to your preferences.",
+                                "Smart lighting at your service! Adaptive light mode is now turned on.",
+                                "Adaptive illumination: Lights are adapting to create the perfect ambiance for you."
+                            ] | random }}
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.text_notifications
+                        state: "on"
+                    sequence:
+                      - service: notify.simplemice
+                        data:
+                          message: |
+                            {{ [
+                                "Adaptive light mode engaged. Get ready for customized lighting!",
+                                "Lights are adapting! The adaptive light mode is now active.",
+                                "Attention: Adaptive light mode is on. Experience personalized lighting for your space.",
+                                "Lighting transformation: Adaptive light mode has been activated. Enjoy the ambience!",
+                                "Adaptive lighting alert: Lights are now adjusting to your preferences.",
+                                "Smart lighting at your service! Adaptive light mode is now turned on.",
+                                "Adaptive illumination: Lights are adapting to create the perfect ambiance for you."
+                            ] | random }}
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: switch.turn_on
+                data: {}
+                target:
+                  entity_id:
+                    - switch.adaptive_lighting_sleep_mode_garage
+                    - switch.adaptive_lighting_sleep_mode_lightstrip
+    mode: single

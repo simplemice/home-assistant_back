@@ -1,0 +1,220 @@
+###############################################################################
+#   @author         :   simplemice Stone
+#   @date           :   02/19/2019
+#   @package        :   Notify
+#   @description    :   A Collection of Notification Scripts and Configs.
+#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
+# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
+###############################################################################
+
+input_boolean:
+  audible_notifications:
+    name: "Audible Notification"
+    icon: mdi:message-bulleted
+  telegram_notifications:
+    name: "Telegram Notification"
+    icon: fab:telegram
+  text_notifications:
+    name: "Text Notification"
+    icon: mdi:clipboard-text-play
+  visual_notifications:
+    name: "Visual Led Notification"
+    icon: mdi:television-ambient-light
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret tg_api
+    parse_mode: "html"
+    allowed_chat_ids:
+      - !secret tg_group
+      - !secret tg_me
+
+notify:
+  - name: simplemice
+    platform: group
+    services:
+      - service: mobile_app_micemob
+      - service: mobile_app_micebook
+  - name: telegram_group
+    platform: telegram
+    chat_id: !secret tg_group
+  - name: telegram_mice
+    platform: telegram
+    chat_id: !secret tg_me
+
+script:
+  ###############################################################################
+  # Txt Notify
+  ###############################################################################
+  text_debug:
+    sequence:
+      - condition: state
+        entity_id: input_boolean.debug_texts
+        state: "on"
+      - service: notify.simplemice
+        data_template:
+          message: >
+            {{ message }}
+
+  notify_telegram:
+    sequence:
+      - condition: state
+        entity_id: input_boolean.telegram_notifications
+        state: "on"
+      - service: notify.telegram_group
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+      - service: notify.telegram_mice
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+
+  text_notify:
+    sequence:
+      - condition: state
+        entity_id: input_boolean.text_notifications
+        state: "on"
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: '{{ who == "simplemice"}}'
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                data:
+                  title: "{{ title }}"
+                  message: "{{ message }}"
+        default:
+          - service: notify.telegram
+            data:
+              title: "{{ title }}"
+              message: "{{ message }}"
+
+  text_alert:
+    sequence:
+      - service: >
+          {% if who == 'simplemice' %}
+            notify.simplemice
+          {% else %}
+            script.notify_telegram
+          {% endif %}
+        data:
+          title: "{{ title }}"
+          message: "{{ message }}"
+          #data:
+          #   attachment:
+          #     url: '{{ url }}'
+          #     content-type: '{{ content_type }}'
+          #     hide-thumbnail: false
+          #  push:
+          #     sound: '{{ ios_sound }}'
+          #    badge: 0
+          #     category: '{{ ios_category }}'
+          #   entity_id: '{{ camera_entity }}'
+
+  text_alert_image:
+    sequence:
+      - service: >
+          {% if who == 'simplemice' %}
+            notify.simplemice
+          {% else %}
+            script.notify_telegram
+          {% endif %}
+        data:
+          title: "{{ title }}"
+          message: "{{ message }}"
+          data:
+            attachment:
+              url: "{{ url }}"
+              content-type: "{{ content_type }}"
+              hide-thumbnail: false
+          #  push:
+          #     sound: '{{ ios_sound }}'
+          #    badge: 0
+          #     category: '{{ ios_category }}'
+          #   entity_id: '{{ camera_entity }}'
+
+  ###############################################################################
+  # Voice Notify
+  ###############################################################################
+
+  voice_notify:
+    sequence:
+      - condition: template
+        value_template: "{{ states('input_boolean.audible_notifications') == 'on' }}"
+      - service: media_player.volume_set
+        entity_id: media_player.bedroom_speaker
+        data:
+          volume_level: 0.8
+      - service: tts.amazon_polly_say
+        entity_id: media_player.bedroom_speaker
+        data:
+          cache: true
+          message: >
+            {% set msg = "" %}
+            {% macro getGreeting() %}
+              {% if greeting | default('yes', true ) == "yes" %}
+                {% if now().hour|int < 12 %}
+                  Good morning.
+                {% elif now().hour|int < 18 %}
+                  Good afternoon.
+                {% else %}
+                  Good evening.
+                {% endif %}
+              {% endif %}
+            {% endmacro %}
+            {%- macro getEndGreeting() -%}
+              {%- if greeting |default('yes', true ) == "yes" -%}
+                Thank you!
+              {%- endif -%}
+            {%- endmacro -%}
+            {% set msg = msg + "<speak> " %}
+            {% set msg = msg + getGreeting() %}
+            {% set msg = msg + ". " + message %}
+            {% set msg = msg.replace(".", " <break time='0.5s'/> ") %}
+            {% set msg = msg + " " + getEndGreeting() %}
+            {% set msg = msg + " </speak>" %}
+            {{ msg }}
+
+  ###############################################################################
+  # Greeting
+  ###############################################################################
+  voice_greeting:
+    sequence:
+      - service: tts.amazon_polly_say
+        entity_id: media_player.bedroom_speaker
+        data:
+          cache: true
+          message: >
+            {% set msg = "" %}
+            {% macro getGreeting() %}
+              {% if greeting | default('yes', true ) == "yes" %}
+                {% if now().hour|int < 12 %}
+                  Good morning.
+                {% elif now().hour|int < 18 %}
+                  Good afternoon.
+                {% else %}
+                  Good evening.
+                {% endif %}
+              {% endif %}
+            {% endmacro %}
+            {% set msg = msg + "<speak> " %}
+            {% set msg = msg + " " + getGreeting() %}
+            {% set msg = msg.replace(".", " <break time='0.5s'/> ") %}
+            {% set msg = msg + " </speak>" %}
+            {{ msg }}
+
+sensor:
+# Amazon Polly Sensors to see last message and location of audible notification
+#- platform: mqtt
+#  sensor:
+#    - name: "Jarvis Last Msg"
+#    - state_topic: "house/polly/lastmsg"
+#- platform: mqtt
+#  sensor:
+#    - name: "Jarvis Last Location"
+#    - state_topic: "house/polly/lastloc"
+

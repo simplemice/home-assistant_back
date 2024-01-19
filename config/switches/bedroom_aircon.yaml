@@ -1,0 +1,47 @@
+#- platform: template
+#  switches:
+#    cold_mode_switch:
+#      unique_id: cold_mode_switch
+#      friendly_name: Cold Mode
+#      value_template: "{{ is_state('input_boolean.aircon_cold', 'on') }}"
+#      turn_on:
+#        - service: input_boolean.turn_on
+#          target:
+#            entity_id: input_boolean.aircon_cold
+#        - service: script.turn_on
+#          entity_id: script.aircon_on
+#        - service: input_boolean.turn_off
+#          entity_id: input_boolean.aircon_dry, input_boolean.aircon_off
+#      turn_off:
+#        service: input_boolean.turn_off
+#        entity_id: input_boolean.aircon_cold
+#    dry_mode_switch:
+#      unique_id: dry_mode_switch
+#      friendly_name: Dry Mode
+#      value_template: "{{ is_state('input_boolean.aircon_dry', 'on') }}"
+#      turn_on:
+#        - service: input_boolean.turn_on
+#          target:
+#            entity_id: input_boolean.aircon_dry
+#        - service: script.turn_on
+#          entity_id: script.aircon_dry_on
+#        - service: input_boolean.turn_off
+#          entity_id: input_boolean.aircon_cold, input_boolean.aircon_off
+#      turn_off:
+#        service: input_boolean.turn_off
+#        entity_id: input_boolean.aircon_dry
+#    turn_off_switch:
+#      unique_id: aircon_off_switch
+#      friendly_name: Turn Off
+#      value_template: "{{ is_state('input_boolean.aircon_off', 'on') }}"
+#      turn_on:
+#        - service: input_boolean.turn_on
+#          target:
+#            entity_id: input_boolean.aircon_off
+#        - service: script.turn_on
+#          entity_id: script.aircon_off
+#        - service: input_boolean.turn_off
+#          entity_id: input_boolean.aircon_cold, input_boolean.aircon_dry
+#      turn_off:
+#        service: input_boolean.turn_off
+#        entity_id: input_boolean.aircon_off

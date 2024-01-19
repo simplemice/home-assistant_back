@@ -1,0 +1,65 @@
+#################################################################################
+### Groups ###
+
+Family:
+  - person.simplemice
+
+test:
+  - group.mice
+
+mice:
+  - device_tracker.micemob
+
+arriving:
+  name: Arriving
+  entities: []
+
+kitchen_occupancy:
+  name: "Kitchen occupancy"
+  entities: []
+
+living_room_occupancy:
+  name: "Livingroom occupancy"
+  entities: []
+
+bedroom_occupancy:
+  name: "Bedroom occupancy"
+  entities: []
+
+bathroom_occupancy:
+  name: "Bathroom occupancy"
+  entities: []
+
+garage_occupancy:
+  name: "Garage occupancy"
+  entities: []
+
+backyard_occupancy:
+  name: "Backyard occupancy"
+  entities: []
+
+occupancy:
+  - binary_sensor.backyard_motion
+  - binary_sensor.backyard_nightlight_motion
+
+rooms:
+  - binary_sensor.bed_presense
+
+room_presence:
+  - sensor.micemob_room
+
+micemob_room:
+  - sensor.micemob_room
+
+audio_devices:
+  - media_player.bedroom_speaker
+
+all_echos:
+  - media_player.bedroom_speaker
+
+External Doors:
+  - binary_sensor.livingroom_door_contact
+  - binary_sensor.backyard_door_contact
+
+Internal Doors:
+  - binary_sensor.bedroom_door_contact

@@ -1,0 +1,62 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   06/10/2020
+#   @package        :   Database
+#   @description    :   Recorder and Logger Configurations
+###############################################################################
+
+recorder:
+  db_url: !secret db_link
+  purge_keep_days: 35
+  auto_purge: true
+  auto_repack: true
+  exclude:
+    domains:
+      - automation
+      - weblink
+      - updater
+      - script
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sensor.date
+      - sensor.time
+      - sensor.time_utc
+      - sensor.time_date
+      - sensor.time_online
+      - sensor.moon
+
+logbook:
+  include:
+    domains:
+      - media_player
+      - automation
+      - script
+      - scene
+      - light
+      - switch
+      - device_tracker
+      - input_boolean
+      - person
+      - event
+      - timer
+      - service
+      - binary_sensor
+      - sensor
+
+# Lets try to make the logs less chatty and more fine tuned.
+logger:
+  default: error
+  logs:
+    homeassistant.components.amazon_polly: debug
+
+history:
+  include:
+    domains:
+      - binary_sensor
+      - sensor
+      - switch
+      - media_player
+      - light
+      - scene
+      - automation

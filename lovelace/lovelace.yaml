@@ -1,0 +1,60 @@
+config:
+  views:
+  - cards:
+    - entity: switch.micebook
+      icon: mdi:laptop
+      show_icon: true
+      show_name: false
+      show_state: true
+      tap_action:
+        action: call-service
+        data:
+          broadcast_port: 9
+          mac: 48:2a:e3:10:f6:04
+        service: wake_on_lan.send_magic_packet
+        target: {}
+      type: button
+    - attribute: all_tasks
+      entity: calendar.inbox
+      name: Home ToDo
+      state_color: true
+      type: entity
+    - allDayBottom: true
+      calShowDescription: true
+      compactMode: true
+      disableEventLink: false
+      disableLocationLink: false
+      entities:
+      - color: red
+        entity: calendar.inbox
+        maxDaysToShow: 500
+        name: My Calendar
+        showMultiDay: true
+      hideFinishedEvents: false
+      offsetHeaderDate: true
+      showCurrentEventLine: true
+      showDate: true
+      showDeclined: true
+      showDescription: true
+      showEventIcon: true
+      showFullDayProgress: true
+      showLastCalendarWeek: true
+      showLocation: true
+      showMultiDay: true
+      showMultiDayEventParts: true
+      showNoEventsForToday: true
+      showWeekNumber: false
+      type: custom:atomic-calendar-revive
+    - defaultMode: Event
+      enableModeChange: true
+      entities:
+      - entity: calendar.inbox
+        name: Inbox
+      name: Calendar
+      type: custom:atomic-calendar-revive
+    title: Home
+  - badges: []
+    cards: []
+    path: grid
+    title: Grid
+    type: custom:grid-layout

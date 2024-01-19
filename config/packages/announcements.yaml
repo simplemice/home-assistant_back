@@ -1,0 +1,367 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   02/19/2019
+#   @package        :   Announcements
+#   @description    :   Daily Announcements.
+###############################################################################
+
+automation:
+  - id: kitchen_water_low
+    alias: Notification - Kitchen Water Tank Low
+    description: ""
+    trigger:
+      - type: value
+        platform: device
+        device_id: 9be7b2d13e72b6683f75158901d19ea5
+        entity_id: e46e9bc06cadd14b8a18f9eebe612743
+        domain: sensor
+        below: 15
+    condition:
+      - condition: time
+        after: "08:00:00"
+        before: "22:00:00"
+    action:
+      - repeat:
+          sequence:
+            - service: notify.simplemice
+              data:
+                message: |
+                  {{ [
+                      "Warning: Water tank level is low. Consider refilling it to ensure a continuous water supply.",
+                      "Alert: The water tank is running low. Please check and refill to avoid interruptions.",
+                      "Low water level detected! Ensure the water tank is replenished to avoid disruptions.",
+                      "Attention: Water tank is nearly empty. Refill to maintain a sufficient water supply.",
+                      "Urgent: Low water level in the tank. Take action to prevent any water shortages.",
+                      "Water supply alert: The tank is low. Check and refill to avoid inconvenience.",
+                      "Critical: Water tank level is low. Refill promptly to ensure a continuous water supply."
+                  ] | random }}
+            - service: notify.alexa_media_bedroom_speaker
+              data:
+                message: |
+                  {{ [
+                      "Warning: Water tank level is low. Consider refilling it to ensure a continuous water supply.",
+                      "Alert: The water tank is running low. Please check and refill to avoid interruptions.",
+                      "Low water level detected! Ensure the water tank is replenished to avoid disruptions.",
+                      "Attention: Water tank is nearly empty. Refill to maintain a sufficient water supply.",
+                      "Urgent: Low water level in the tank. Take action to prevent any water shortages.",
+                      "Water supply alert: The tank is low. Check and refill to avoid inconvenience.",
+                      "Critical: Water tank level is low. Refill promptly to ensure a continuous water supply."
+                  ] | random }}
+            - service: text.set_value
+              data:
+                value: Please Add Tank Water!
+              target:
+                entity_id: text.xiaomi_x08e_2029_execute_text_directive
+            - delay:
+                hours: 0
+                minutes: 15
+                seconds: 0
+                milliseconds: 0
+          while:
+            - type: is_value
+              condition: device
+              device_id: 9be7b2d13e72b6683f75158901d19ea5
+              entity_id: e46e9bc06cadd14b8a18f9eebe612743
+              domain: sensor
+              below: 15
+    mode: single
+
+  - id: rain_outside
+    alias: Notification - Rain Outside
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.rain_sensor
+        to: "on"
+    condition:
+      - condition: time
+        after: "08:00:00"
+        before: "20:00:00"
+    action:
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: <audio src="soundbank://soundlibrary/weather/thunder/thunder_10"/>
+          data:
+            type: tts
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: |
+                    {{ [
+                        "Rain alert: It's currently raining outside. Take necessary precautions when heading outdoors.",
+                        "Attention: Rain detected outside. Don't forget your umbrella if you plan to go out.",
+                        "Rainy weather: It's currently raining. Consider adjusting your plans accordingly.",
+                        "Weather update: Rain is falling outside. Stay dry and be cautious on the roads.",
+                        "Umbrella time: Rain detected outside. Grab an umbrella before heading out.",
+                        "Rainfall alert: It's raining. Make sure to check the weather conditions before going outside.",
+                        "Rainy day reminder: The weather outside is rainy. Take appropriate measures for your activities."
+                    ] | random }}
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                data:
+                  message: TTS
+                  data:
+                    media_stream: alarm_stream_max
+                    tts_text: |
+                      {{ [
+                          "Rain alert: It's currently raining outside. Take necessary precautions when heading outdoors.",
+                          "Attention: Rain detected outside. Don't forget your umbrella if you plan to go out.",
+                          "Rainy weather: It's currently raining. Consider adjusting your plans accordingly.",
+                          "Weather update: Rain is falling outside. Stay dry and be cautious on the roads.",
+                          "Umbrella time: Rain detected outside. Grab an umbrella before heading out.",
+                          "Rainfall alert: It's raining. Make sure to check the weather conditions before going outside.",
+                          "Rainy day reminder: The weather outside is rainy. Take appropriate measures for your activities."
+                      ] | random }}
+      - service: select.select_option
+        target:
+          entity_id: select.wled_matrix_preset
+        data:
+          option: Lightning
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: <audio src="soundbank://soundlibrary/weather/thunder/thunder_10"/>
+          data:
+            type: tts
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 15
+          milliseconds: 0
+      - service: select.select_option
+        data:
+          option: Black Hole
+        target:
+          entity_id: select.wled_matrix_preset
+    mode: single
+
+  - id: cooking_complete
+    alias: Notification - Cooking Complete
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.careli_maf01_68e5_air_fryer
+        from: cooking
+        to: shutdown
+      - platform: state
+        entity_id:
+          - sensor.careli_maf01_68e5_air_fryer
+        from: cooking
+        to: standby
+      - platform: state
+        entity_id:
+          - sensor.careli_maf01_68e5_air_fryer
+        to: cooked
+        from: cooking
+      - platform: state
+        entity_id:
+          - sensor.chunmi_n23l01_bcf8_oven
+        from: cooking
+        to: cook finish
+      - platform: state
+        entity_id:
+          - sensor.chunmi_eh3_e09c_cooker
+        from: running
+        to: keepwarm
+      - platform: state
+        entity_id:
+          - sensor.chunmi_eh3_e09c_cooker
+        from: running
+        to: idle
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.cooking_timer
+    condition:
+      - condition: time
+        after: "08:00:00"
+        before: "20:00:00"
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: |
+                    {{ [
+                        "Dinner is served! Cooking is complete. Enjoy your meal!",
+                        "Good news: Cooking is done! Your delicious meal is ready to be savored.",
+                        "Chef's masterpiece: Cooking is complete. Your meal is now ready for enjoyment.",
+                        "Cooking success: Your culinary creation is complete. Time to feast!",
+                        "Ding! Cooking is finished. Your meal is hot and ready.",
+                        "Culinary triumph: The cooking process is complete. Bon appétit!",
+                        "Cooking achievement unlocked! Your meal is ready to be enjoyed."
+                    ] | random }}
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                data:
+                  message: |
+                    {{ [
+                        "Dinner is served! Cooking is complete. Enjoy your meal!",
+                        "Good news: Cooking is done! Your delicious meal is ready to be savored.",
+                        "Chef's masterpiece: Cooking is complete. Your meal is now ready for enjoyment.",
+                        "Cooking success: Your culinary creation is complete. Time to feast!",
+                        "Ding! Cooking is finished. Your meal is hot and ready.",
+                        "Culinary triumph: The cooking process is complete. Bon appétit!",
+                        "Cooking achievement unlocked! Your meal is ready to be enjoyed."
+                    ] | random }}
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.cooking_timer_finish
+    mode: single
+
+  - id: not_forget_for_laundry
+    alias: Notification - Do Not Forget For Laundry
+    description: ""
+    trigger:
+      - platform: calendar
+        event: start
+        offset: "-0:30:0"
+        entity_id: calendar.laundry
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: calendar.laundry
+            attribute: message
+            state: Laundry Day
+          - condition: time
+            after: "10:00:00"
+            before: "13:00:00"
+            enabled: true
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: |
+                    {{ [
+                        "Today is laundry day! Don't forget to attend to your washing chores.",
+                        "Laundry reminder: It is laundry day today. Time to tackle that pile!",
+                        "Don't procrastinate! Today is designated as laundry day.",
+                        "Laundry alert: The day has come! It is laundry day today.",
+                        "Attention: Today is the day for laundry. Set aside some time for washing.",
+                        "Laundry time: Today is when you conquer the laundry pile. Get washing!",
+                        "Reminder: Today is laundry day. Make sure to prioritize your laundry tasks."
+                    ] | random }}
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                data:
+                  message: |
+                    {{ [
+                        "Today is laundry day! Don't forget to attend to your washing chores.",
+                        "Laundry reminder: It is laundry day today. Time to tackle that pile!",
+                        "Don't procrastinate! Today is designated as laundry day.",
+                        "Laundry alert: The day has come! It is laundry day today.",
+                        "Attention: Today is the day for laundry. Set aside some time for washing.",
+                        "Laundry time: Today is when you conquer the laundry pile. Get washing!",
+                        "Reminder: Today is laundry day. Make sure to prioritize your laundry tasks."
+                    ] | random }}
+    mode: single
+
+  - id: door_knock
+    alias: Notification - Garage Door Knock
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.livingroom_door_knock_vibration
+        to: "on"
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: person.simplemice
+            state: home
+          - condition: state
+            entity_id: switch.livingroom_curtains
+            state: "off"
+          - condition: time
+            after: "08:00:00"
+            before: "22:00:00"
+    action:
+      - service: xiaomi_aqara.play_ringtone
+        data:
+          gw_mac: 04:CF:8C:A9:DA:39
+          ringtone_id: "10"
+          ringtone_vol: 15
+      - service: script.notification_door_bell
+        metadata: {}
+        data: {}
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: |
+                    {{ [
+                        "Doorbell alert: Someone is at the door! Time to see who's visiting.",
+                        "Ding-dong! The doorbell has been pressed. Check to see who's at the door.",
+                        "Attention: Doorbell has been pressed. Someone is waiting at the entrance.",
+                        "Doorbell chime: A visitor is at the door. Go and greet them!",
+                        "Ring, ring! The doorbell has been pressed. Investigate the visitor at the door.",
+                        "Visitor alert: The doorbell has been pressed. Time to welcome someone new.",
+                        "Doorbell announcement: Someone is at the door. Check and welcome your guest."
+                    ] | random }}
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                data:
+                  message: |
+                    {{ [
+                        "Doorbell alert: Someone is at the door! Time to see who's visiting.",
+                        "Ding-dong! The doorbell has been pressed. Check to see who's at the door.",
+                        "Attention: Doorbell has been pressed. Someone is waiting at the entrance.",
+                        "Doorbell chime: A visitor is at the door. Go and greet them!",
+                        "Ring, ring! The doorbell has been pressed. Investigate the visitor at the door.",
+                        "Visitor alert: The doorbell has been pressed. Time to welcome someone new.",
+                        "Doorbell announcement: Someone is at the door. Check and welcome your guest."
+                    ] | random }}
+      - service: select.select_option
+        target:
+          entity_id: select.wled_matrix_preset
+        data:
+          option: Black Hole
+    mode: single
