@@ -46,14 +46,13 @@ smartir:
 #      show_in_sidebar: true
 #      filename: monitor-ui-dashboard.yaml
 
-automation: !include_dir_merge_list automations
-binary_sensor: !include_dir_merge_list binary_sensors
-sensor: !include_dir_merge_list sensors
-switch: !include_dir_merge_list switches
-script: !include_dir_merge_list scripts
-scene: !include_dir_merge_list scenes
-group: !include_dir_merge_list groups
-shell_command: !include_dir_merge_list shell_commands
-
-device_tracker: !include device_tracker.yaml
-panel_iframe: !include iframe.yaml
+automation: !include_dir_merge_named automations
+binary_sensor: !include_dir_merge_named binary_sensors
+sensor: !include_dir_merge_named sensors
+switch: !include_dir_merge_named switches
+script: !include_dir_merge_named scripts
+scene: !include_dir_merge_named scenes
+group: !include_dir_merge_named groups
+shell_command: !include_dir_merge_named shell_commands
+device_tracker: !include_dir_merge_named device_tracker
+panel_iframe: !include_dir_merge_named iframe
