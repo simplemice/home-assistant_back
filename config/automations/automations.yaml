@@ -2693,7 +2693,7 @@
           below: 20
         - condition: time
           after: 08:00:00
-          before: '19:00:00'
+          before: '18:30:00'
       sequence:
       - service: scene.turn_on
         target:
@@ -2712,7 +2712,7 @@
           domain: sensor
           below: 20
         - condition: time
-          after: '19:00:00'
+          after: '18:30:00'
           before: 08:00:00
       sequence:
       - service: scene.turn_on

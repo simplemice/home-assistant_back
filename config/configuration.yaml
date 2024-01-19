@@ -20,8 +20,8 @@ ssdp:
 zeroconf:
 
 http:
-  #  ssl_certificate: /config/homeassistant.pem
-  #  ssl_key: /config/homeassistant-key.pem
+  #  ssl_certificate: /config/ssh_keys/homeassistant.pem
+  #  ssl_key: /config/ssh_keys/homeassistant-key.pem
   use_x_forwarded_for: true
   ip_ban_enabled: false
   login_attempts_threshold: 5
@@ -50,10 +50,10 @@ automation: !include_dir_merge_list automations
 binary_sensor: !include_dir_merge_list binary_sensors
 sensor: !include_dir_merge_list sensors
 switch: !include_dir_merge_list switches
-script: !include_dir_merge_named scripts
-scene: !include_dir_merge_named scenes
-group: !include_dir_merge_named groups
-shell_command: !include_dir_merge_named shell_commands
+script: !include_dir_merge_list scripts
+scene: !include_dir_merge_list scenes
+group: !include_dir_merge_list groups
+shell_command: !include_dir_merge_list shell_commands
 
 device_tracker: !include device_tracker.yaml
 panel_iframe: !include iframe.yaml
