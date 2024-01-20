@@ -56,7 +56,7 @@ script:
         state: "on"
       # Ensure the family is home. If you are using a group to track the family, or a person just update as needed. Comment out if not needed.
       - condition: state
-        entity_id: binary_sensor.family_home
+        entity_id: sensor.family_home
         state: "on"
       # This sets the voume via a parameter when the script is called, and should be a value between .1 and 1.0
       - service: media_player.volume_set
@@ -121,7 +121,7 @@ script:
         state: "on"
       # Ensure the family is home. If you are using a group to track the family, or a person just update as needed. Comment out if not needed.
       - condition: state
-        entity_id: binary_sensor.family_home
+        entity_id: sensor.family_home
         state: "on"
       # This sets the voume via a parameter when the script is called, and should be a value between .1 and 1.0
       - service: media_player.volume_set

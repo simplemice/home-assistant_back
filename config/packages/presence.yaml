@@ -5,12 +5,6 @@
 #   @description    :   A Collection of Presence Related Trackers and Sensors
 ###############################################################################
 
-input_datetime:
-  last_time_home_mice:
-    name: Simplemcie Last Seen
-    has_date: true
-    has_time: true
-
 proximity:
   home_mice:
     devices:
@@ -31,9 +25,31 @@ template:
       - name: "Living Room Occupied"
         unique_id: living_room_occupied
         state: >-
-          {% if states('sensor.mice_room') == 'living_room' %}
+          {% if states('sensor.micemob_room') == 'livingroom' %}
             yes
           {% elif states('binary_sensor.living_room_occupancy') == 'on' %}
+            yes
+          {% else %}
+            no
+          {% endif %}
+  - sensor:
+      - name: "Bedroom Room Occupied"
+        unique_id: bedroom_room_occupied
+        state: >-
+          {% if states('sensor.micemob_room') == 'bedroom' %}
+            yes
+          {% elif states('binary_sensor.bedroom_room_occupancy') == 'on' %}
+            yes
+          {% else %}
+            no
+          {% endif %}
+  - sensor:
+      - name: "Kitchen Room Occupied"
+        unique_id: kitchen_room_occupied
+        state: >-
+          {% if states('sensor.micemob_room') == 'kitchen' %}
+            yes
+          {% elif states('binary_sensor.kitchen_room_occupancy') == 'on' %}
             yes
           {% else %}
             no
@@ -81,14 +97,14 @@ script:
   family_is_home:
     sequence:
       - condition: state
-        entity_id: binary_sensor.family_home
+        entity_id: sensor.family_home
         state: "on"
       - service: script.standby
 
     family_is_away:
       sequence:
         - condition: state
-          entity_id: binary_sensor.family_home
+          entity_id: sensor.family_home
           state: "off"
         - condition: state
           entity_id: input_boolean.guest_mode

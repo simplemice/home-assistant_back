@@ -19,7 +19,7 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - switch.livingroom_curtains
+          - input_boolean.livingroom_curtains
         from: "off"
         to: "on"
     condition: []
@@ -35,6 +35,60 @@ automation:
             - light.livingroom_door_ambient
     mode: single
 
+  - id: livingroom_curtains_automation
+    alias: Livingroom Curtains Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.livingroom_curtains
+        id: helper_mode
+      - platform: tag
+        tag_id: c711da4d-74d1-42f2-ba00-ecdb7daf008b
+        id: tag_scanned
+      - platform: state
+        entity_id:
+          - binary_sensor.all_doors
+        to: "off"
+        id: door_closed
+    condition:
+      - condition: time
+        after: "16:00:00"
+        before: "07:00:00"
+    action:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.livingroom_curtains
+                    state: "off"
+                  - condition: trigger
+                    id:
+                      - helper_mode
+                      - tag_scanned
+                      - door_closed
+            sequence:
+              - service: script.curtains_automation
+                metadata: {}
+                data: {}
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.livingroom_curtains
+                    state: "on"
+                  - condition: trigger
+                    id:
+                      - helper_mode
+                      - tag_scanned
+                      - door_closed
+            sequence:
+              - service: script.curtains_automation
+                metadata: {}
+                data: {}
+    mode: single
+
 script:
   curtains_automation:
     alias: Livingroom - Open and Closed Curtains
@@ -42,7 +96,7 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: switch.livingroom_curtains
+                entity_id: input_boolean.livingroom_curtains
                 state: "on"
             sequence:
               - service: cover.open_cover
@@ -60,7 +114,7 @@ script:
                   entity_id: cover.livingroom_curtains
           - conditions:
               - condition: state
-                entity_id: switch.livingroom_curtains
+                entity_id: input_boolean.livingroom_curtains
                 state: "off"
             sequence:
               - service: cover.close_cover

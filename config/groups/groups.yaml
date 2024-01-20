@@ -1,14 +1,8 @@
 #################################################################################
 ### Groups ###
 
-Family:
+family:
   - person.simplemice
-
-test:
-  - group.mice
-
-mice:
-  - device_tracker.micemob
 
 arriving:
   name: Arriving
@@ -37,19 +31,6 @@ garage_occupancy:
 backyard_occupancy:
   name: "Backyard occupancy"
   entities: []
-
-occupancy:
-  - binary_sensor.backyard_motion
-  - binary_sensor.backyard_nightlight_motion
-
-rooms:
-  - binary_sensor.bed_presense
-
-room_presence:
-  - sensor.micemob_room
-
-micemob_room:
-  - sensor.micemob_room
 
 audio_devices:
   - media_player.bedroom_speaker

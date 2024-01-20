@@ -178,7 +178,7 @@ script:
         entity_id: input_boolean.audible_notifications
         state: "on"
       - condition: state
-        entity_id: binary_sensor.family_home
+        entity_id: sensor.family_home
         state: "on"
       - condition: state
         entity_id: input_boolean.vacation_mode

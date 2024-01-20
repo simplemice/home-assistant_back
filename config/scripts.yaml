@@ -1,0 +1,253 @@
+laundry_start:
+  alias: Notification - Laundry Timer Start
+  sequence:
+    - service: timer.start
+      data:
+        duration: "{{ states('input_datetime.time') }}"
+      target:
+        entity_id: timer.laundry_timer
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: input_boolean.awtrix_laundry_timer
+  mode: single
+  icon: mdi:washing-machine-alert
+livingroom_tv_on_off:
+  alias: Livingroom - Livingroom TV Turn On or Off
+  sequence:
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: remote.send_command
+      data:
+        command: nMwmUwlk0mkxmEsmwBBzgAcpqAP4A/gDsBeUxm0zAY8CDZqCwYC/gD1MZtMAGPAY8BDwKfAH8CjwEPAQoAjwCKmEAA==
+      target:
+        entity_id: remote.livingroom_remote_hub
+  mode: single
+  icon: fas:tv
+cooking_timer:
+  alias: Notification - Cooking Timer Start
+  sequence:
+    - service: timer.start
+      data:
+        duration: "{{ states('input_datetime.time') }}"
+      target:
+        entity_id: timer.cooking_timer
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: input_boolean.cooking_timer_finish
+  mode: single
+  icon: mdi:chef-hat
+take_snapshot_of_states_before_away:
+  alias: Alarm - Take snapshot of states before away
+  sequence:
+    - service: scene.create
+      data:
+        scene_id: go_away_states
+        snapshot_entities:
+          - fan.dmaker_p23_42a8_fan
+          - fan.dmaker_p28_19b6_fan
+          - fan.kitchen_power_strip_switch
+          - light.lightstrip
+          - light.kitchen_wall_switch_left
+          - light.kitchen_wall_switch_right
+          - light.kitchen_wall_switch_center
+          - light.lumi_gateway_v3_light
+          - light.tv_table_ambient
+          - light.kitchen_ambient
+          - light.livingroom_night_ambient
+          - switch.raspberry_outlet
+          - switch.kitchen_kettle
+          - input_boolean.livingroom_curtains
+          - light.wled_matrix
+          - light.awtrix_44dff8_matrix
+          - climate.bedroom_aircon
+          - climate.dmaker_p23_42a8_heater
+          - media_player.spotify_simplemice
+          - switch.livingroom_tv
+          - fan.zhimi_fa1_4020_fan
+  mode: single
+  icon: mdi:state-machine
+rice:
+  alias: Kitchen - Cube Action Rice Fine Cooking Mode
+  sequence:
+    - device_id: 48eeecb7f1853d34081e9f8c51ef9051
+      domain: select
+      entity_id: fbcb5c15b70edeb36a6b97fda23b04b2
+      type: select_option
+      option: Fine Cook
+    - type: turn_on
+      device_id: 48eeecb7f1853d34081e9f8c51ef9051
+      entity_id: 811599611bc817fda6020b2e353478ac
+      domain: switch
+    - service: timer.start
+      data:
+        duration: 01:00
+      target:
+        entity_id: timer.cooking_timer
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: input_boolean.cooking_timer_finish
+  mode: single
+  icon: mdi:rice
+spotify_start_playback:
+  alias: Spotify Start Playback
+  sequence:
+    - service: spotcast.start
+      data:
+        device_name: "{{ states('input_select.speakers') }}"
+        force_playback: true
+        start_volume: 30
+        shuffle: true
+  mode: single
+  icon: mdi:spotify
+activate_alexa_actionable_notification:
+  alias: activate_alexa_actionable_notification
+  description: Activates an actionable notification on a specific echo device
+  fields:
+    text:
+      description: The text you would like alexa to speak.
+      example: What would you like the thermostat set to?
+    event_id:
+      description: Correlation ID for event responses
+      example: ask_for_temperature
+    alexa_device:
+      description: Alexa device you want to trigger
+      example: media_player.bedroom_speaker
+    suppress_confirmation:
+      description: Set true if you want to suppress 'okay' confirmation
+      example: "true"
+  sequence:
+    - service: input_text.set_value
+      data_template:
+        entity_id: input_text.alexa_actionable_notification
+        value:
+          '{"text": "{{ text }}", "event": "{{ event_id }}", "suppress_confirmation":
+          "{{ suppress_confirmation }}"}'
+    - service: media_player.play_media
+      data_template:
+        entity_id: "{{ alexa_device }}"
+        media_content_type: skill
+        media_content_id: amzn1.ask.skill.3302d350-d683-4e80-bbc6-1446201c1d24
+  mode: single
+radio_1_fm_deep_house:
+  alias: "Media - Radio: 1.FM - Deep House"
+  sequence:
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.micebook
+      data:
+        media_content_id: media-source://radio-browser/962a748b-0601-11e8-ae97-52543be04c81
+        media_content_type: music
+  mode: single
+  icon: mdi:playlist-music
+radio_1_fm_deep_house_ch:
+  alias: "Media - Radio: 1.FM - Deep House ch"
+  sequence:
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.micebook
+      data:
+        media_content_id: media-source://radio-browser/0ac7f5db-6f86-428f-8bb2-66ecce89ad1a
+        media_content_type: music
+  mode: single
+  icon: mdi:playlist-music
+radio_1_fm_trance:
+  alias: "Media - Radio: 1.FM - Trance"
+  sequence:
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.micebook
+      data:
+        media_content_id: media-source://radio-browser/962a61bf-0601-11e8-ae97-52543be04c81
+        media_content_type: music
+  mode: single
+  icon: mdi:playlist-music
+radio_1_fm_chillout:
+  alias: "Media - Radio: 1.FM - Chillout"
+  sequence:
+    - service: media_player.play_media
+      target:
+        entity_id:
+          - media_player.micebook
+      data:
+        media_content_id: media-source://radio-browser/961fb4b2-0601-11e8-ae97-52543be04c81
+        media_content_type: music
+  mode: single
+  icon: mdi:playlist-music
+notification_door_bell:
+  alias: Notification - Police Effect on Wled Panel
+  sequence:
+    - service: scene.create
+      metadata: {}
+      data:
+        snapshot_entities:
+          - light.wled_matrix
+        scene_id: before_alarm
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: select.select_option
+      metadata: {}
+      data:
+        option: Police
+      target:
+        entity_id: select.wled_matrix_preset
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: select.select_option
+      metadata: {}
+      data:
+        option: Black Hole
+      target:
+        entity_id: select.wled_matrix_preset
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - service: scene.turn_on
+      metadata: {}
+      target:
+        entity_id: scene.before_alarm
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: scene.reload
+      metadata: {}
+      data: {}
+  mode: single
+  icon: mdi:police-badge-outline
+send_notification_to_mobile:
+  alias: send_notification_to_mobile
+  sequence:
+    - service: notify.mobile_app_micemob
+      data:
+        message: "{{message}}"
+        title: "{{title}}"
+  mode: single
+  icon: mdi:bell-alert
+  fields:
+    title:
+      selector:
+        text:
+      name: title
+      description: Enter a title for notify
+      required: true
+    message:
+      selector:
+        text:
+      name: message
+      description: Enter a message for notify
+      required: true

@@ -739,13 +739,13 @@ config:
           \  {% else %}\n    white\n  {% endif %}"
         badge_icon: "  {% if is_state('light.sofa_ambient', 'on') %}\n    mdi:television-ambient-light\n\
           \  {% else %}\n    mdi:television-ambient-light\n  {% endif %}"
-        entity: switch.livingroom_tv
+        entity: input_boolean.livingroom_tv
         fill_container: true
         icon: mdi:television
-        icon_color: "{% if is_state('switch.livingroom_tv', 'off') %}\n  blue\n{%\
-          \ else %}\n  green\n{% endif %}"
+        icon_color: "{% if is_state('input_boolean.livingroom_tv', 'off') %}\n  blue\n\
+          {% else %}\n  green\n{% endif %}"
         primary: Livingroom TV
-        secondary: "{% if is_state('switch.livingroom_tv', 'off') %}\n  Offline\n\
+        secondary: "{% if is_state('input_boolean.livingroom_tv', 'off') %}\n  Offline\n\
           {% else %}\n  Online\n{% endif %}"
         style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
           }\n"
