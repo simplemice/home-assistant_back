@@ -186,17 +186,30 @@ script:
             {% else %}
               No fans are active.
             {% endif %}
+            {% set ambient_lights = expand(state_attr('light.all_ambient', 'entity_id')) |
+              selectattr('state', 'eq', 'on') |
+              map(attribute='entity_id') |
+              list %}
+            {% set ambient_lights_count = ambient_lights | count %}
+            {% if ambient_lights_count > 0 %}
+              Active ambient lights:
+              {% for light in ambient_lights %}
+                - {{ light }}
+              {% endfor %}
+            {% else %}
+              No ambient lights are active.
+            {% endif %}
             {{ [
-              'Good morning! Currently, {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} lights, and {{ active_fans_count }} fans are active in your home.',
-              'Rise and shine! Your home is waking up with {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans ready for the day.',
-              'Hello there! Start your day with {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans creating a cozy atmosphere in your home.',
-              'Good morning! Today is briefing includes {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans contributing to your home is ambiance.',
-              'Rise and shine! Your home is currently adorned with {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans.',
-              'Greetings! Begin your day with the knowledge that {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans are ready to enhance your home experience.',
-              'Good morning! As the sun rises, enjoy the glow of {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and the gentle breeze of {{ active_fans_count }} fans in your home.',
-              'Hello! Embrace the morning with the warmth of {{ ambient_lights_count }} ambient lights, the brightness of {{ active_lights_count }} active lights, and the cool breeze from {{ active_fans_count }} fans in your home.',
-              'Good morning! Wake up to the charm of {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and the soothing hum of {{ active_fans_count }} fans in your home.',
-              'Rise and shine! Your home is morning features {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans setting the mood for the day.'
+              'Good morning! Currently, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' lights, and ' ~ active_fans_count ~  ' fans are active in your home.',
+              'Rise and shine! Your home is waking up with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans ready for the day.',
+              'Hello there! Start your day with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans creating a cozy atmosphere in your home.',
+              'Good morning! Today is briefing includes ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans contributing to your home is ambiance.',
+              'Rise and shine! Your home is currently adorned with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans.',
+              'Greetings! Begin your day with the knowledge that ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans are ready to enhance your home experience.',
+              'Good morning! As the sun rises, enjoy the glow of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and the gentle breeze of ' ~ active_fans_count ~  ' fans in your home.',
+              'Hello! Embrace the morning with the warmth of ' ~ ambient_lights_count ~  ' ambient lights, the brightness of ' ~ active_lights_count ~  ' active lights, and the cool breeze from ' ~ active_fans_count ~  ' fans in your home.',
+              'Good morning! Wake up to the charm of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and the soothing hum of ' ~ active_fans_count ~  ' fans in your home.',
+              'Rise and shine! Your home is morning features ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans setting the mood for the day.'
             ] | random }}
             {{ [
               'Your home status report is in, and it is all positive news!',
@@ -391,17 +404,30 @@ script:
             {% else %}
               No fans are active.
             {% endif %}
+            {% set ambient_lights = expand(state_attr('light.all_ambient', 'entity_id')) |
+              selectattr('state', 'eq', 'on') |
+              map(attribute='entity_id') |
+              list %}
+            {% set ambient_lights_count = ambient_lights | count %}
+            {% if ambient_lights_count > 0 %}
+              Active ambient lights:
+              {% for light in ambient_lights %}
+                - {{ light }}
+              {% endfor %}
+            {% else %}
+              No ambient lights are active.
+            {% endif %}
             {{ [
-              'Good evening! Currently, {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} lights, and {{ active_fans_count }} fans are active in your home.',
-              'As night falls, your home is illuminated with {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans providing a tranquil atmosphere.',
-              'Hello there! Wind down your day with the ambiance of {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans in your home.',
-              'Good evening! Your home is evening includes {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans setting the tone for a relaxing night.',
-              'As the day concludes, {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans create a soothing environment in your home.',
-              'Greetings! Relax and unwind in the presence of {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans as night approaches.',
-              'Good evening! Your home is aglow with the radiance of {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and the comforting breeze from {{ active_fans_count }} fans.',
-              'As evening sets in, enjoy the charm of {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and the gentle hum of {{ active_fans_count }} fans in your home.',
-              'Hello! Wind down your day surrounded by the warmth of {{ ambient_lights_count }} ambient lights, the subtle glow of {{ active_lights_count }} active lights, and the soothing presence of {{ active_fans_count }} fans.',
-              'Good evening! As the night begins, {{ ambient_lights_count }} ambient lights, {{ active_lights_count }} active lights, and {{ active_fans_count }} fans create a cozy and calming atmosphere in your home.'
+              'Good evening! Currently, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' lights, and ' ~ active_fans_count ~  ' fans are active in your home.',
+              'As night falls, your home is illuminated with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans providing a tranquil atmosphere.',
+              'Hello there! Wind down your day with the ambiance of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans in your home.',
+              'Good evening! Your home is evening includes ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans setting the tone for a relaxing night.',
+              'As the day concludes, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans create a soothing environment in your home.',
+              'Greetings! Relax and unwind in the presence of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans as night approaches.',
+              'Good evening! Your home is aglow with the radiance of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and the comforting breeze from ' ~ active_fans_count ~  ' fans.',
+              'As evening sets in, enjoy the charm of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and the gentle hum of ' ~ active_fans_count ~  ' fans in your home.',
+              'Hello! Wind down your day surrounded by the warmth of ' ~ ambient_lights_count ~  ' ambient lights, the subtle glow of ' ~ active_lights_count ~  ' active lights, and the soothing presence of ' ~ active_fans_count ~  ' fans.',
+              'Good evening! As the night begins, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans create a cozy and calming atmosphere in your home.'
             ] | random }}
             {{ [
               'Your home status report is in, and it is all positive news!',
