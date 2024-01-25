@@ -1,0 +1,208 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   02/19/2019
+#   @package        :   Micebook
+#   @description    :   A Collection of Presence Related Trackers and Sensors
+###############################################################################
+input_datetime:
+  micebook_sheldue:
+    name: Micebook Sheldue
+    has_date: true
+    has_time: true
+
+input_select:
+  micebook_wol:
+    name: Micebook Control
+    options:
+      - None
+      - Lock Screen
+      - Suspend
+      - Reboot
+      - Shutdown
+    initial: None
+    icon: mdi:laptop
+
+automation:
+  - id: micebook_off_automation
+    alias: Micebook - Turn Off Automation
+    description: Night Mode
+    trigger:
+      - alias: Micebook Turn Off
+        platform: state
+        entity_id:
+          - binary_sensor.micebook_is_online
+        to: "off"
+      - alias: Micebook Turn Off
+        platform: state
+        entity_id:
+          - binary_sensor.micebook_screen_lock_status
+        to: "on"
+    condition:
+      - condition: and
+        conditions:
+          - condition: time
+            after: "20:00:00"
+            before: "06:00:00"
+            alias: Confirm Time After 20:00 Before 6:00
+          - condition: state
+            entity_id: device_tracker.micemob
+            state: home
+            alias: Confirm Micemob is Home
+    action:
+      - service: script.micebook_off_go_sleep
+        metadata: {}
+        data: {}
+    mode: single
+
+  - id: micebook_control
+    alias: Micebook Control
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.micebook_wol
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_select.micebook_wol
+                state: Lock Screen
+            sequence:
+              - service: shell_command.screen_lock_micebook
+                metadata: {}
+                data: {}
+          - conditions:
+              - condition: state
+                entity_id: input_select.micebook_wol
+                state: Suspend
+            sequence:
+              - service: shell_command.suspend_micebook
+                metadata: {}
+                data: {}
+          - conditions:
+              - condition: state
+                entity_id: input_select.micebook_wol
+                state: Reboot
+            sequence:
+              - service: shell_command.reboot_micebook
+                metadata: {}
+                data: {}
+          - conditions:
+              - condition: state
+                entity_id: input_select.micebook_wol
+                state: Shutdown
+            sequence:
+              - service: shell_command.turn_off_micebook
+                metadata: {}
+                data: {}
+    mode: single
+
+script:
+  micebook_off_go_sleep:
+    alias: Micebook Off and go sleep
+    sequence:
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.6
+        target:
+          device_id: 5a2dfa8cf487aa2b61d22b6ff54b945a
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.micebook_is_online
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.micebook_screen_lock_status
+            state: "on"
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: Okay, i see laptop is turned off....
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - parallel:
+          - service: switch.turn_off
+            target:
+              entity_id:
+                - switch.kitchen_kettle
+            data: {}
+          - service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.sleep_door_checker
+          - service: fan.turn_off
+            data: {}
+            target:
+              entity_id:
+                - fan.kitchen_power_strip_switch
+                - fan.dmaker_p28_19b6_fan
+                - fan.dmaker_p23_42a8_fan
+            alias: All Fans Off
+          - alias: Ambient & Lightstrip Off
+            service: light.turn_off
+            data:
+              transition: 120
+            target:
+              entity_id:
+                - light.livingroom_night_ambient
+                - light.lightstrip
+                - light.awtrix_44dff8_matrix
+                - light.tv_table_ambient
+                - light.sofa_ambient
+                - light.wled_matrix
+              device_id:
+                - 1cc8e86ebd79f2b9c2fc59cb67aab20a
+                - 18ec10c0ec1ddb0c7629081ddce2ec8c
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: light.turn_on
+        data:
+          rgb_color:
+            - 255
+            - 0
+            - 255
+          transition: 120
+          brightness_pct: 40
+        target:
+          entity_id:
+            - light.lumi_gateway_v3_light
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: script.nightly_briefing
+        metadata: {}
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - repeat:
+          sequence:
+            - service: notify.alexa_media_bedroom_speaker
+              data:
+                message: Please, Check All Doors For Closed State
+            - delay:
+                hours: 0
+                minutes: 1
+                seconds: 0
+                milliseconds: 0
+          until:
+            - condition: state
+              entity_id: input_boolean.sleep_door_checker
+              state: "off"
+    mode: single
+    icon: mdi:power-sleep

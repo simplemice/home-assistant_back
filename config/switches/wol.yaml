@@ -1,5 +1,0 @@
-- platform: wake_on_lan
-  name: MiceBook_Wol
-  mac: 48:2a:e3:10:f6:04
-  turn_off:
-    - service: shell_command.suspend_micebook

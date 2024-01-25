@@ -83,3 +83,6 @@ items:
 - id: 6dd4c00e576e4fce967e9e9bd874a045
   type: module
   url: /hacsfiles/logbook-card/logbook-card.js?hacstag=216008446230
+- id: cb16d0d757c04cb8861cc88eacf8c8eb
+  type: module
+  url: /hacsfiles/circle-sensor-card/circle-sensor-card.js?hacstag=141952963122

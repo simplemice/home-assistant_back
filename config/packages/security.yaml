@@ -1,0 +1,252 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   03/13/2019
+#   @package        :   Security
+#   @description    :   Everything related to security functions.
+###############################################################################
+
+input_boolean:
+  security_alarm:
+    name: Security Alarm
+    icon: mdi:speaker-wireless
+  fire_alarm:
+    name: Fire Alarm
+    icon: mdi:speaker-wireless
+  leakage_alarm:
+    name: Leakage Alarm
+    icon: mdi:speaker-wireless
+  safe_alarm:
+    name: Safe Alarm
+    icon: mdi:speaker-wireless
+
+automation:
+  - id: ha_restarted
+    alias: Alarm - HA Started Notification
+    description: ""
+    trigger:
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: time
+        after: "08:00:00"
+        before: "22:00:00"
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: |
+                    {{ [
+                        "System initialization complete. Mouse House is now under control.",
+                        "The automation system is up and running. Mouse House is at your service.",
+                        "House management initiated. The system is online, and everything is under control.",
+                        "Welcome to the automated era! The system has started, and Mouse House is under control.",
+                        "Automation protocols engaged. Mouse House is now seamlessly under control.",
+                        "Systems are operational. Mouse House is now managed by the automation system.",
+                        "The automation matrix is active. Mouse House is under control for your convenience."
+                    ] | random }}
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                metadata: {}
+                data:
+                  title: "Alarm Notification:"
+                  message: |
+                    {{ [
+                        "System initialization complete. Mouse House is now under control.",
+                        "The automation system is up and running. Mouse House is at your service.",
+                        "House management initiated. The system is online, and everything is under control.",
+                        "Welcome to the automated era! The system has started, and Mouse House is under control.",
+                        "Automation protocols engaged. Mouse House is now seamlessly under control.",
+                        "Systems are operational. Mouse House is now managed by the automation system.",
+                        "The automation matrix is active. Mouse House is under control for your convenience."
+                    ] | random }}
+    mode: single
+
+  ############ Away and Return Automations
+  - id: away_mode
+    alias: Alarm - Away with Snapshot
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: not_home
+        from: home
+        for:
+          hours: 0
+          minutes: 1
+          seconds: 0
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.all_doors
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.bed_presense
+            state: "off"
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: person.simplemice
+                state: not_home
+              - condition: state
+                entity_id: person.simplemice
+                state: Monkey Office
+    action:
+      - service: alarm_control_panel.alarm_arm_away
+        data:
+          code: "5412"
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - service: script.take_snapshot_of_states_before_away
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - parallel:
+          - service: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - light.all_ambient
+                - light.all_lights
+                - light.awtrix_44dff8_matrix
+                - light.wled_matrix
+          - service: fan.turn_off
+            data: {}
+            target:
+              entity_id:
+                - fan.all_fans
+          - service: switch.turn_off
+            data: {}
+            target:
+              entity_id:
+                - switch.kitchen_kettle
+                - switch.livingroom_curtains
+          - service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.garage_camera_notification
+                - input_boolean.backyard_camera_notification
+                - input_boolean.audible_notifications
+          - service: input_boolean.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.text_notifications
+          - if:
+              - condition: state
+                entity_id: media_player.spotify_simplemice
+                state: playing
+            then:
+              - service: media_player.media_pause
+                target:
+                  entity_id: media_player.spotify_simplemice
+                data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - service: notify.mobile_app_micemob
+        data:
+          title: Notification
+          message: |
+            {{ [
+                "Alarm activated! Irregular states detected during away mode. Please investigate immediately.",
+                "Alert: The alarm has been triggered due to unexpected states while away. Check the situation urgently.",
+                "Security breach! The alarm is on because of unusual states during away mode. Investigate the issue now.",
+                "Emergency alert: The alarm has been triggered. Check for unexpected states during away mode.",
+                "Attention: Alarm activated! Irregular states detected while in away mode. Investigate for security reasons.",
+                "Security breach detected! The alarm is sounding due to unexpected states in away mode. Check the situation immediately.",
+                "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
+            ] | random }}
+    mode: single
+
+  - id: return_mode
+    alias: Alarm - Return to Home
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: home
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: light.lumi_gateway_v3_light
+            state: "off"
+    action:
+      - service: alarm_control_panel.alarm_arm_home
+        data:
+          code: "5412"
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - parallel:
+          - service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.garage_camera_notification
+                - input_boolean.backyard_camera_notification
+                - input_boolean.audible_notifications
+          - service: input_boolean.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.text_notifications
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id: scene.go_away_states
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 20
+          milliseconds: 0
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: |
+            {{ [
+                "Great timing! The alarm is off as states returned to normal before leaving the house.",
+                "Lucky break: The alarm is now disarmed because regular states resumed before you left the house.",
+                "Smart move! The alarm is off since states have resumed to normal before your departure.",
+                "Perfect timing: The alarm is deactivated as states have resumed before leaving the house.",
+                "Well done! The alarm is disarmed as states returned to normal before you left the house.",
+                "Safe departure: The alarm is off. Regular states have resumed before leaving the house.",
+                "Timely disarm: The alarm is deactivated because states are back to normal before leaving the house."
+            ] | random }}
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      - service: scene.reload
+        data: {}
+    mode: single
+
+############### House and Safe Alarm Automations
+script:

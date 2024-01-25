@@ -218,7 +218,7 @@ automation:
                 data: {}
                 target:
                   entity_id: climate.bedroom_aircon
-    mode: single
+    mode: restart
 
   - id: black_kitchen_fan_automation
     alias: Climate - Black And Kitchen Fan Automation
@@ -234,8 +234,8 @@ automation:
             entity_id: person.simplemice
             state: home
           - condition: time
-            after: "08:00:00"
-            before: "21:00:00"
+            after: "07:45:00"
+            before: "22:00:00"
     action:
       - choose:
           - conditions:
@@ -296,7 +296,7 @@ automation:
                           "Temperature Normal: Fans off at Mouse House. The environment is comfortable. Monitor and adjust settings for your preference.",
                           "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is normal. Enjoy the balanced atmosphere."
                         ] | random }}
-    mode: single
+    mode: restart
 
   - id: door_fan_automation
     alias: Climate - Door Fan Automation
@@ -384,7 +384,7 @@ automation:
                               "Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation. Enjoy the balanced environment!",
                               "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the balanced atmosphere."
                             ] | random }}
-    mode: single
+    mode: restart
 
 script:
   bedroom_sterilization:

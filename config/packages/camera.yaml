@@ -34,7 +34,7 @@ automation:
             entity_id: person.simplemice
             state: home
           - condition: state
-            entity_id: binary_sensor.micebook_status
+            entity_id: binary_sensor.micebook_is_online
             state: "on"
     action:
       - delay:

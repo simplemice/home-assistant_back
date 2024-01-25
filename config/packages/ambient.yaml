@@ -1,0 +1,170 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   02/19/2019
+#   @package        :   Ambient
+#   @description    :   Ambient automations.
+###############################################################################
+
+automation:
+  - id: kitchen_ambient_automation
+    alias: Lights - Kitchen Ambient Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.kitchen_presense
+        to: "on"
+        id: kitchen_ambient_on
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 0
+      - platform: state
+        entity_id:
+          - binary_sensor.kitchen_presense
+        to: "off"
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 30
+        id: kitchen_ambient_off
+    condition:
+      - condition: state
+        entity_id: person.simplemice
+        state: home
+    action:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: trigger
+                    id:
+                      - kitchen_ambient_on
+                  - type: is_illuminance
+                    condition: device
+                    device_id: 1cdc5457e7129ea85c88f9264af3f5d5
+                    entity_id: 372dfbd336537d84eec28a46a749a3d2
+                    domain: sensor
+                    below: 40
+                  - condition: sun
+                    before: sunset
+                    after: sunrise
+            sequence:
+              - service: scene.turn_on
+                target:
+                  entity_id: scene.kitchen_ambient_day_mode
+                data: {}
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: trigger
+                    id:
+                      - kitchen_ambient_on
+                  - type: is_illuminance
+                    condition: device
+                    device_id: 1cdc5457e7129ea85c88f9264af3f5d5
+                    entity_id: 372dfbd336537d84eec28a46a749a3d2
+                    domain: sensor
+                    below: 30
+                  - condition: sun
+                    before: sunrise
+                    after: sunset
+            sequence:
+              - service: scene.turn_on
+                data: {}
+                target:
+                  entity_id: scene.kitchen_ambient_after_sunset
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: trigger
+                    id:
+                      - kitchen_ambient_off
+                  - condition: state
+                    entity_id: light.kitchen_ambient
+                    state: "on"
+            sequence:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id:
+                    - light.kitchen_bottom_ambient
+                    - light.kitchen_upper_ambient
+    mode: single
+
+  - id: livingroom_night_ambient
+    alias: Lights - Livingroom Ambient After Door Closed
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.all_doors
+        to: "off"
+      - platform: time
+        at: "20:30:00"
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.livingroom_door_contact
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.backyard_door_contact
+            state: "off"
+          - condition: state
+            entity_id: person.simplemice
+            state: home
+          - condition: time
+            after: "16:00:00"
+            before: "23:00:00"
+          - condition: state
+            entity_id: light.lightstrip
+            state: "on"
+          - condition: state
+            entity_id: light.livingroom_night_ambient
+            state: "off"
+    action:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 30
+          milliseconds: 0
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: |
+            {{ [
+                "Night ambient mode activated. Enjoy a cozy and tranquil atmosphere.",
+                "Goodnight setting engaged: Night ambient mode is now active. Relax and unwind.",
+                "Attention: Night ambient mode is on. Experience a soothing atmosphere for a restful night.",
+                "Nighttime vibes: Activate night ambient mode for a calm and peaceful environment.",
+                "Lights adjusted: Night ambient mode is now active. Enjoy a serene atmosphere.",
+                "Nighttime serenity: Engage night ambient mode for a relaxing and ambient setting.",
+                "Ambient mode activated: Set the mood for the night with the night ambient mode."
+            ] | random }}
+      - service: light.turn_off
+        data:
+          transition: 90
+        target:
+          entity_id:
+            - light.lightstrip
+      - repeat:
+          sequence:
+            - service: scene.turn_on
+              target:
+                entity_id: scene.after_sunset_ambient
+              metadata: {}
+            - delay:
+                hours: 0
+                minutes: 0
+                seconds: 10
+                milliseconds: 0
+          while:
+            - condition: and
+              conditions:
+                - condition: state
+                  entity_id: light.livingroom_wardrobe_ambient
+                  state: "off"
+                - condition: state
+                  entity_id: light.livingroom_door_ambient
+                  state: "off"
+    mode: single

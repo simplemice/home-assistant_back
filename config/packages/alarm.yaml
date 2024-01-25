@@ -1,0 +1,24 @@
+###############################################################################
+#   @author         :   Jeffrey Stone
+#   @date           :   02/19/2019
+#   @package        :   Alarm
+#   @description    :   Alarm automations.
+###############################################################################
+
+template:
+  - binary_sensor:
+      # Сборный сенсор тревоги - будет активен при любой из видов тревог
+      - name: threat
+        state: >
+          {{ is_state('binary_sensor.bathroom_water_leak', 'on')  
+              or is_state('binary_sensor.kitchen_water_leak', 'on')
+              or is_state('binary_sensor.gas_detector_gas', 'on')
+              or is_state('binary_sensor.smoke_detector', 'on')
+          }}
+        device_class: safety
+        icon: >
+          {% if is_state("binary_sensor.threat", "on") %}
+          mdi:skull
+          {% else %}
+          mdi:shield-check
+          {% endif %}

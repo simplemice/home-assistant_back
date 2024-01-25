@@ -2,6 +2,7 @@ homeassistant:
   internal_url: http://192.168.3.2:8123
   customize: !include customize.yaml
   packages: !include_dir_named packages
+  #!include_dir_merge_named packages/
   whitelist_external_dirs:
     - /config/www/camera_snaps
   auth_providers:
@@ -51,8 +52,8 @@ binary_sensor: !include_dir_merge_list binary_sensors
 sensor: !include_dir_merge_list sensors
 switch: !include_dir_merge_list switches
 script: !include scripts.yaml
-scene: !include_dir_merge_list scenes
-group: !include_dir_merge_list groups
+scene: !include scenes.yaml
+group: !include groups.yaml
 shell_command: !include_dir_merge_named shell_commands
 device_tracker: !include_dir_merge_list device_tracker
 panel_iframe: !include_dir_merge_list iframe

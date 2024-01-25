@@ -21,10 +21,6 @@ automation:
       - platform: sun
         event: sunset
         offset: 0
-    condition:
-      - condition: state
-        entity_id: person.simplemice
-        state: home
     action:
       - delay:
           hours: 0
@@ -105,3 +101,386 @@ automation:
                     - switch.adaptive_lighting_sleep_mode_garage
                     - switch.adaptive_lighting_sleep_mode_lightstrip
     mode: single
+
+  - id: wardrobe_lights_automation
+    alias: Lights - Bedroom Wardrobe Lights Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bedroom_wardrobe_door_contact
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.bedroom_wardrobe_door_contact
+                state: "on"
+            sequence:
+              - service: light.turn_on
+                data: {}
+                target:
+                  entity_id:
+                    - light.bedroom_wardrobe_light
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.bedroom_wardrobe_door_contact
+                state: "off"
+            sequence:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id:
+                    - light.bedroom_wardrobe_light
+    mode: single
+
+  - id: bathroom_light_automation
+    alias: Lights - Bathroom Light Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bathroom_presense
+        to: "on"
+        id: presense_on
+      - platform: state
+        entity_id:
+          - binary_sensor.bathroom_presense
+        to: "off"
+        for:
+          hours: 0
+          minutes: 1
+          seconds: 0
+        id: presense_off
+    condition:
+      - condition: state
+        entity_id: person.simplemice
+        state: home
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - presense_on
+            sequence:
+              - service: switch.turn_on
+                data: {}
+                target:
+                  entity_id: switch.bathroom_light
+          - conditions:
+              - condition: trigger
+                id:
+                  - presense_off
+            sequence:
+              - service: switch.turn_off
+                data: {}
+                target:
+                  entity_id: switch.bathroom_light
+    mode: single
+
+  - id: bedside_lamp_automation
+    alias: Lights - Bedside Lamp Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bedroom_motion_group
+        to: "on"
+        id: bedroom_motion_on
+      - platform: state
+        entity_id:
+          - binary_sensor.bedroom_motion_group
+        to: "off"
+        for:
+          hours: 0
+          minutes: 1
+          seconds: 0
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: trigger
+                    id:
+                      - bedroom_motion_on
+                  - condition: time
+                    after: "17:00:00"
+                    before: "20:00:00"
+            sequence:
+              - service: light.turn_on
+                data:
+                  brightness_pct: 100
+                  rgb_color:
+                    - 157
+                    - 10
+                    - 255
+                target:
+                  entity_id: light.bedside_lamp
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: trigger
+                    id:
+                      - bedroom_motion_on
+                  - condition: time
+                    after: "20:00:00"
+                    before: "08:00:00"
+            sequence:
+              - service: light.turn_on
+                data:
+                  brightness_pct: 10
+                  rgb_color:
+                    - 157
+                    - 10
+                    - 255
+                target:
+                  entity_id: light.bedside_lamp
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.bedroom_motion_group
+                state: "off"
+                for:
+                  hours: 0
+                  minutes: 1
+                  seconds: 0
+            sequence:
+              - service: light.turn_off
+                data:
+                  transition: 90
+                target:
+                  entity_id: light.bedside_lamp
+    mode: single
+
+  - id: livingroom_sofa_ambient
+    alias: Lights - Livingroom Sofa Ambient Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.sofa_presense
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            state: home
+            entity_id: person.simplemice
+          - condition: state
+            entity_id: input_boolean.livingroom_curtains
+            state: "off"
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.sofa_presense
+                state: "off"
+            sequence:
+              - service: light.turn_on
+                data:
+                  rgb_color:
+                    - 200
+                    - 10
+                    - 255
+                  brightness_pct: 30
+                  transition: 10
+                target:
+                  entity_id:
+                    - light.sofa_ambient
+              - service: light.turn_on
+                data:
+                  rgb_color:
+                    - 255
+                    - 0
+                    - 89
+                  brightness_pct: 10
+                  transition: 10
+                target:
+                  entity_id:
+                    - light.lumi_gateway_v3_light
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.sofa_presense
+                state: "on"
+            sequence:
+              - service: light.turn_on
+                data:
+                  rgb_color:
+                    - 200
+                    - 10
+                    - 255
+                  brightness_pct: 100
+                  transition: 10
+                target:
+                  entity_id:
+                    - light.sofa_ambient
+              - service: light.turn_on
+                data:
+                  rgb_color:
+                    - 255
+                    - 0
+                    - 123
+                  brightness_pct: 40
+                  transition: 10
+                target:
+                  entity_id:
+                    - light.lumi_gateway_v3_light
+    mode: single
+
+  - id: garage_light_automation
+    alias: Lights - Garage Light Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.garage_door_motion_occupancy
+        to: "on"
+        id: motion_on
+      - platform: state
+        entity_id:
+          - binary_sensor.garage_door_motion_occupancy
+        to: "off"
+        id: motion_off
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 30
+    condition:
+      - condition: sun
+        before: sunrise
+        after: sunset
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - motion_on
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.garage_bulb
+                data: {}
+          - conditions:
+              - condition: trigger
+                id:
+                  - motion_off
+            sequence:
+              - service: light.turn_off
+                target:
+                  entity_id: light.garage_bulb
+                data: {}
+    mode: single
+
+  - id: lightstrip_automation
+    alias: Lights - Livingroom Lightstrip Automation
+    description: ""
+    trigger:
+      - platform: sun
+        event: sunset
+        offset: "-0:25:00"
+        id: sunset
+      - platform: numeric_state
+        entity_id:
+          - sensor.livingroom_light_sensor_illuminance_lux
+        below: 30
+        id: dark_inside
+      - platform: numeric_state
+        entity_id:
+          - sensor.livingroom_light_sensor_illuminance_lux
+        id: turn_off
+        above: 100
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: home
+        from: not_home
+        id: return
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: person.simplemice
+            state: home
+          - condition: time
+            after: "08:00:00"
+            before: "23:00:00"
+          - condition: state
+            entity_id: light.lightstrip
+            state: "off"
+          - condition: state
+            entity_id: light.livingroom_night_ambient
+            state: "off"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - sunset
+                  - dark_inside
+                  - return
+              - type: is_illuminance
+                condition: device
+                device_id: eeb2922badef2325eb62a6000199fa17
+                entity_id: 46658705a5108d2559636aa170af924b
+                domain: sensor
+                below: 30
+              - condition: state
+                entity_id: light.lightstrip
+                state: "off"
+            sequence:
+              - service: light.turn_on
+                data:
+                  transition: 1500
+                  brightness_pct: 100
+                target:
+                  entity_id:
+                    - light.lightstrip
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: light.lightstrip
+                    state: "on"
+                  - condition: trigger
+                    id:
+                      - turn_off
+            sequence:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id:
+                    - light.lightstrip
+    mode: single
+
+  ################################
+  ##  POWER BACKUP
+  ################################
+#  - id: power_outage_light_backup
+#    alias: Auto turning off the lights after power outage
+#    trigger:
+#      - platform: event
+#        event_type: state_changed
+#    condition:
+#      - condition: template
+#        value_template: "{{ trigger.event.data.entity_id.split('.')[0] == 'light' }}"
+#      - condition: template
+#        value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
+#      - condition: template
+#        value_template: "{{ trigger.event.data.new_state.context.parent_id is none }}"
+#      - condition: template
+#        value_template: "{{ trigger.event.data.new_state.context.user_id is none }}"
+#    action:
+#      - service: light.turn_off
+#        data_template:
+#          entity_id: "{{ trigger.event.data.entity_id }}"
+#      - service: notify.simplemice
+#        data:
+#          message: |
+#            {{ [
+#                "Power outage detected. System is working to restore previous states.",
+#                "Alert: Power disruption! Efforts are underway to restore system states.",
+#                "Attention: Power outage. Attempting to restore previous states for seamless operation.",
+#                "Emergency: Power failure. The system is actively working to restore states.",
+#                "Power outage alert: System is in the process of restoring previous states.",
+#                "Critical: Power disruption detected. Efforts ongoing to restore system states.",
+#                "System recovery in progress. Power outage acknowledged, and states are being restored."
+#            ] | random }}

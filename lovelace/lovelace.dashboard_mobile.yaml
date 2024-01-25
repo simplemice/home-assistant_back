@@ -1501,6 +1501,11 @@ config:
         icon: mdi:window-closed
         icon_color: purple
         type: template
+      - content_info: state
+        entity: binary_sensor.threat
+        icon_color: light-green
+        type: entity
+        use_entity_picture: true
       type: custom:mushroom-chips-card
     - cards:
       - entity: alarm_control_panel.house
@@ -2750,11 +2755,11 @@ config:
         style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
           }\n"
         type: custom:mushroom-entity-card
-      - badge_color: "{% if is_state('switch.mikrotik_fan', 'off') %}\n  red\n{% else\
-          \ %}\n  green\n{% endif %}"
-        badge_icon: "{% if is_state('switch.mikrotik_fan', 'off') %}\n  mdi:fan-off\n\
+      - badge_color: "{% if is_state('input_boolean.mikrotik_fan', 'off') %}\n  red\n\
+          {% else %}\n  green\n{% endif %}"
+        badge_icon: "{% if is_state('input_boolean.mikrotik_fan', 'off') %}\n  mdi:fan-off\n\
           {% else %}\n  mdi:fan\n{% endif %}"
-        entity: switch.mikrotik_fan
+        entity: input_boolean.mikrotik_fan
         fill_container: true
         hold_action:
           action: more-info
@@ -3333,7 +3338,7 @@ config:
         type: custom:home-feed-card
       type: horizontal-stack
     - cards:
-      - entity: switch.home_cleaning
+      - entity: input_boolean.home_cleaning
         style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
           }\n"
         type: custom:mushroom-entity-card
