@@ -1,11 +1,55 @@
 ###############################################################################
-#   @author         :   simplemice Stone
-#   @date           :   02/19/2019
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
 #   @package        :   Notify
 #   @description    :   A Collection of Notification Scripts and Configs.
-#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
-# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
 ###############################################################################
+
+input_datetime:
+  morning_report:
+    name: Morning Report
+    has_date: false
+    has_time: true
+  nightly_report:
+    name: Nightly Report
+    has_date: false
+    has_time: true
+  daily_report:
+    name: Daily Report
+    has_date: false
+    has_time: true
+  audible_notification_on:
+    name: Audible Notifications On
+    has_date: false
+    has_time: true
+  audible_notification_off:
+    name: Audible Notifications Off
+    has_date: false
+    has_time: true
+  text_notification_on:
+    name: Text Notifications On
+    has_date: false
+    has_time: true
+  text_notification_off:
+    name: Text Notifications Off
+    has_date: false
+    has_time: true
+  telegram_notification_on:
+    name: Telegram Notifications On
+    has_date: false
+    has_time: true
+  telegram_notification_off:
+    name: Telegram Notifications Off
+    has_date: false
+    has_time: true
+  visual_notification_on:
+    name: Visual Notifications On
+    has_date: false
+    has_time: true
+  visual_notification_off:
+    name: Visual Notifications Off
+    has_date: false
+    has_time: true
 
 input_boolean:
   audible_notifications:
@@ -20,6 +64,33 @@ input_boolean:
   visual_notifications:
     name: "Visual Led Notification"
     icon: mdi:television-ambient-light
+
+mqtt:
+  sensor:
+    - name: "Jarvis Last Msg"
+      state_topic: "house/polly/lastmsg"
+    - name: "Jarvis Last Location"
+      state_topic: "house/polly/lastloc"
+
+template:
+  - binary_sensor:
+      - name: Notify Mode
+        state: >
+          {% if is_state('input_boolean.audible_notifications', 'on') %}
+            Audio Notify On
+          {% elif is_state ('input_boolean.text_notifications', 'on') %}
+            Text Notify On
+          {% elif is_state ('input_boolean.telegram_notifications', 'on') %}
+            Telegram Notify On
+          {% else %}
+            Mix Notify Mode On
+          {% endif %}
+        icon: >
+          {% if is_state("binary_sensor.notify_modet", "on") %}
+          mdi:bullhorn
+          {% else %}
+          mdi:bullhorn-outline
+          {% endif %}
 
 telegram_bot:
   - platform: polling
@@ -206,15 +277,3 @@ script:
             {% set msg = msg.replace(".", " <break time='0.5s'/> ") %}
             {% set msg = msg + " </speak>" %}
             {{ msg }}
-
-sensor:
-# Amazon Polly Sensors to see last message and location of audible notification
-#- platform: mqtt
-#  sensor:
-#    - name: "Jarvis Last Msg"
-#    - state_topic: "house/polly/lastmsg"
-#- platform: mqtt
-#  sensor:
-#    - name: "Jarvis Last Location"
-#    - state_topic: "house/polly/lastloc"
-

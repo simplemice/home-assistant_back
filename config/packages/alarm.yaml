@@ -5,10 +5,32 @@
 #   @description    :   Alarm automations.
 ###############################################################################
 
+input_datetime:
+  disarm_time:
+    name: Disarm House Time
+    has_date: false
+    has_time: true
+  alarm_time:
+    name: Alarm House Time
+    has_date: false
+    has_time: true
+
+input_boolean:
+  house_away:
+    name: "House Away Mode"
+    icon: mdi:shield-lock
+
+timer:
+  alarm_timer:
+    name: Alarm Timer
+    duration: "00:15:00"
+    icon: mdi:timer
+    restore: true
+
 template:
   - binary_sensor:
       # Сборный сенсор тревоги - будет активен при любой из видов тревог
-      - name: threat
+      - name: Alarm Warnings
         state: >
           {{ is_state('binary_sensor.bathroom_water_leak', 'on')  
               or is_state('binary_sensor.kitchen_water_leak', 'on')
@@ -17,8 +39,12 @@ template:
           }}
         device_class: safety
         icon: >
-          {% if is_state("binary_sensor.threat", "on") %}
+          {% if is_state("binary_sensor.alarm_warnings", "on") %}
           mdi:skull
           {% else %}
           mdi:shield-check
           {% endif %}
+
+automation:
+
+script:

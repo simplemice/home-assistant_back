@@ -1,0 +1,226 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Daily
+#   @description    :   Daily automation
+###############################################################################
+
+automation:
+  - id: br_wakeup
+    alias: Simplemice WakeUp Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bed_presense
+        to: "off"
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 20
+        from: "on"
+    condition:
+      - condition: and
+        conditions:
+          - condition: time
+            after: "07:30:00"
+            before: "09:00:00"
+          - condition: state
+            entity_id: binary_sensor.bedroom_door_contact
+            state: "on"
+    action:
+      - service: script.simplemice_wakeup_routime
+        metadata: {}
+        data: {}
+    mode: single
+
+  - id: br_sleep
+    alias: Simplemice Sleep Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bed_presense
+        to: "on"
+        for:
+          hours: 0
+          minutes: 1
+          seconds: 0
+        from: "off"
+    condition:
+      - condition: and
+        conditions:
+          - condition: time
+            after: "21:00:00"
+            before: "05:00:00"
+          - condition: state
+            entity_id: sensor.micemob_room
+            state: bedroom
+            for:
+              hours: 0
+              minutes: 0
+              seconds: 0
+            enabled: true
+          - condition: state
+            entity_id: light.bedside_lamp
+            state: "on"
+    action:
+      - service: script.bedroom_simplemice_sleep
+        metadata: {}
+        data: {}
+    mode: single
+
+script:
+  wakeup_routime:
+    alias: Simplemice WakeUp Routime
+    sequence:
+      - if:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "off"
+        then:
+          - service: input_boolean.turn_on
+            target:
+              entity_id:
+                - input_boolean.audible_notifications
+            data: {}
+        alias: Enable notification
+      - service: media_player.volume_set
+        target:
+          entity_id: media_player.bedroom_speaker
+        data:
+          volume_level: 0.8
+      - service: alarm_control_panel.alarm_arm_home
+        data:
+          code: !secret alarm_code
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - service: script.morning_briefing
+        metadata: {}
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: fan.turn_off
+        target:
+          entity_id: fan.zhimi_fa1_4020_fan
+        data: {}
+      - service: climate.turn_off
+        data: {}
+        target:
+          entity_id: climate.bedroom_aircon
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: select.select_option
+        target:
+          entity_id: select.wled_matrix_preset
+        data:
+          option: Black Hole
+      - service: light.turn_on
+        metadata: {}
+        data:
+          brightness_pct: 100
+        target:
+          entity_id:
+            - light.awtrix_44dff8_matrix
+            - light.wled_matrix
+            - light.tv_table_ambient
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - if:
+          - condition: numeric_state
+            entity_id: sensor.livingroom_temp_temperature
+            above: 29
+        then:
+          - service: fan.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - fan.kitchen_power_strip_switch
+                - fan.dmaker_p23_42a8_fan
+        else:
+          - service: fan.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: fan.kitchen_power_strip_switch
+        alias: Turn on Fans
+      - service: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+            - switch.kitchen_kettle
+            - switch.micebook
+      - service: wake_on_lan.send_magic_packet
+        metadata: {}
+        data:
+          broadcast_port: 9
+          mac: 48:2a:e3:10:f6:04
+    mode: single
+    icon: mdi:sun-clock
+
+  sleep_routime:
+    alias: Simplemice Sleep Routime
+    sequence:
+      - if:
+          - condition: state
+            entity_id: input_boolean.audible_notifications
+            state: "on"
+        then:
+          - service: input_boolean.turn_off
+            target:
+              entity_id:
+                - input_boolean.audible_notifications
+                - input_boolean.text_notifications
+                - input_boolean.telegram_notifications
+                - input_boolean.visual_notifications
+            data: {}
+        alias: Turn off notifications
+      - service: alarm_control_panel.alarm_arm_night
+        data:
+          code: !secret alarm_code
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - service: light.turn_off
+        data:
+          transition: 30
+        target:
+          entity_id:
+            - light.all_ambient
+            - light.all_lights
+      - service: fan.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: fan.all_fans
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: fan.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: fan.zhimi_fa1_4020_fan
+    mode: single
+    icon: mdi:sleep

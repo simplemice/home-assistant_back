@@ -1,12 +1,36 @@
 ###############################################################################
-#   @author         :   Jeffrey Stone
-#   @date           :   02/19/2019
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
 #   @package        :   Ambient
 #   @description    :   Ambient automations.
 ###############################################################################
+input_datetime:
+  ambient_on_time:
+    name: House Ambient On Time
+    has_date: false
+    has_time: true
+  ambient_off_time:
+    name: House Ambient Off Time
+    has_date: false
+    has_time: true
+
+input_boolean:
+  ambient_automation:
+    name: "Ambient Auto Mode"
+    icon: hue:bulb-group-sultan-lightstrip
+  ambient_adaptive_lights:
+    name: "Ambient Adaptive Mode"
+    icon: hue:scene-natural-light
+
+timer:
+  ambient_timer:
+    name: Ambient Timer
+    duration: "00:15:00"
+    icon: mdi:timer
+    restore: true
 
 automation:
-  - id: kitchen_ambient_automation
+  - id: 1716453e-5d15-496d-a69f-1816edba2a0c
     alias: Lights - Kitchen Ambient Automation
     description: ""
     trigger:
@@ -92,7 +116,7 @@ automation:
                     - light.kitchen_upper_ambient
     mode: single
 
-  - id: livingroom_night_ambient
+  - id: a3327e8a-558f-498f-aaf9-860bc8319103
     alias: Lights - Livingroom Ambient After Door Closed
     description: ""
     trigger:

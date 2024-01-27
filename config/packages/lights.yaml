@@ -1,18 +1,97 @@
 ###############################################################################
-#   @author         :   Jeffrey Stone
-#   @date           :   02/19/2019
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
 #   @package        :   Lights
 #   @description    :   Lights automations.
 ###############################################################################
 
+input_datetime:
+  adaptive_on_time:
+    name: Adaptive Lights On Time
+    has_date: false
+    has_time: true
+  adaptive_off_time:
+    name: Adaptive Lights Off Time
+    has_date: false
+    has_time: true
+  adaptive_night_on_time:
+    name: Adaptive Lights Night On Time
+    has_date: false
+    has_time: true
+  adaptive_night_off_time:
+    name: Adaptive Lights Night Off Time
+    has_date: false
+    has_time: true
+
 input_boolean:
+  lights_automation:
+    name: "Lights Auto Mode"
+    icon: mdi:ceiling-light-multiple
   adaptive_lights:
     name: "Adaptive Lights Mode"
     icon: hue:scene-natural-light
+  adaptive_lights_night:
+    name: "Adaptive Lights Night Mode"
+    icon: hue:scene-natural-light
+
+timer:
+  lights_timer:
+    name: Lights Timer
+    duration: "00:15:00"
+    icon: mdi:timer
+    restore: true
 
 automation:
-  - id: adaptive_lights
-    alias: Lights - Adaptive Lights Automation
+  - id: 90d5f1c7-a54d-4848-8ef7-0443372ed982
+    alias: Adaptive Lights Time Mode On
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.livingroom_curtains_time
+
+  - id: d646e301-0388-4704-8cce-9b831f167e32
+    alias: Adaptive Lights Time Mode Off
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.adaptive_lights
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.adaptive_lights
+
+  - id: 68bf8f1c-19db-46ae-8d7e-84657779b35a
+    alias: Adaptive Night Lights Time Mode On
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_night_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.livingroom_curtains_time
+
+  - id: e0e37c49-7c91-4db5-a692-4c2716ae3b68
+    alias: Adaptive Night Lights Time Mode Off
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_night_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.adaptive_lights
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.adaptive_lights
+
+  - id: 6246c757-7310-4fc8-ad0c-736a34da2069
+    alias: Adaptive Night Lights Automation
     description: ""
     trigger:
       - platform: sun
@@ -100,9 +179,8 @@ automation:
                   entity_id:
                     - switch.adaptive_lighting_sleep_mode_garage
                     - switch.adaptive_lighting_sleep_mode_lightstrip
-    mode: single
 
-  - id: wardrobe_lights_automation
+  - id: d8158d2c-7f76-45ae-a493-885fc91da8ad
     alias: Lights - Bedroom Wardrobe Lights Automation
     description: ""
     trigger:
@@ -132,9 +210,8 @@ automation:
                 target:
                   entity_id:
                     - light.bedroom_wardrobe_light
-    mode: single
 
-  - id: bathroom_light_automation
+  - id: e862df13-d2f6-4f40-8d89-1baecc4f42d0
     alias: Lights - Bathroom Light Automation
     description: ""
     trigger:
@@ -176,9 +253,8 @@ automation:
                 data: {}
                 target:
                   entity_id: switch.bathroom_light
-    mode: single
 
-  - id: bedside_lamp_automation
+  - id: fd86b035-6906-4328-8e2b-3fc5e727b6f9
     alias: Lights - Bedside Lamp Automation
     description: ""
     trigger:
@@ -250,9 +326,8 @@ automation:
                   transition: 90
                 target:
                   entity_id: light.bedside_lamp
-    mode: single
 
-  - id: livingroom_sofa_ambient
+  - id: e25083d0-69e0-4708-b949-0bbd5b508542
     alias: Lights - Livingroom Sofa Ambient Automation
     description: ""
     trigger:
@@ -324,9 +399,8 @@ automation:
                 target:
                   entity_id:
                     - light.lumi_gateway_v3_light
-    mode: single
 
-  - id: garage_light_automation
+  - id: 051fcd8b-e749-4f7d-aff8-19e730039903
     alias: Lights - Garage Light Automation
     description: ""
     trigger:
@@ -368,9 +442,8 @@ automation:
                 target:
                   entity_id: light.garage_bulb
                 data: {}
-    mode: single
 
-  - id: lightstrip_automation
+  - id: edad5183-d951-4654-8d55-cfa6a834a1ba
     alias: Lights - Livingroom Lightstrip Automation
     description: ""
     trigger:
@@ -429,7 +502,7 @@ automation:
             sequence:
               - service: light.turn_on
                 data:
-                  transition: 1500
+                  transition: 150
                   brightness_pct: 100
                 target:
                   entity_id:
@@ -449,38 +522,3 @@ automation:
                 target:
                   entity_id:
                     - light.lightstrip
-    mode: single
-
-  ################################
-  ##  POWER BACKUP
-  ################################
-#  - id: power_outage_light_backup
-#    alias: Auto turning off the lights after power outage
-#    trigger:
-#      - platform: event
-#        event_type: state_changed
-#    condition:
-#      - condition: template
-#        value_template: "{{ trigger.event.data.entity_id.split('.')[0] == 'light' }}"
-#      - condition: template
-#        value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
-#      - condition: template
-#        value_template: "{{ trigger.event.data.new_state.context.parent_id is none }}"
-#      - condition: template
-#        value_template: "{{ trigger.event.data.new_state.context.user_id is none }}"
-#    action:
-#      - service: light.turn_off
-#        data_template:
-#          entity_id: "{{ trigger.event.data.entity_id }}"
-#      - service: notify.simplemice
-#        data:
-#          message: |
-#            {{ [
-#                "Power outage detected. System is working to restore previous states.",
-#                "Alert: Power disruption! Efforts are underway to restore system states.",
-#                "Attention: Power outage. Attempting to restore previous states for seamless operation.",
-#                "Emergency: Power failure. The system is actively working to restore states.",
-#                "Power outage alert: System is in the process of restoring previous states.",
-#                "Critical: Power disruption detected. Efforts ongoing to restore system states.",
-#                "System recovery in progress. Power outage acknowledged, and states are being restored."
-#            ] | random }}

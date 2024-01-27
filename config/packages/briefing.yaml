@@ -159,76 +159,24 @@ script:
             {% else %}
               No tasks for today.
             {% endif %}
-          home_status: >
-            {% set open_doors = expand(state_attr('binary_sensor.all_doors', 'entity_id')) |
-              selectattr('state','eq','on') |
-              map(attribute='entity_id') |
-              list %}
-            {% set open_doors_count = open_doors | count %}
-            {% if open_doors_count > 0 %}
-              Open doors:
-              {% for door in open_doors %}
-                - {{ door }}
-              {% endfor %}
-            {% else %}
-              No doors are open.
-            {% endif %}
-            {% set active_fans = expand(state_attr('fan.all_fans', 'entity_id')) |
-              selectattr('state', 'eq', 'on') |
-              map(attribute='entity_id') |
-              list %}
-            {% set active_fans_count = active_fans | count %}
-            {% if active_fans_count > 0 %}
-              Active fans:
-              {% for fan in active_fans %}
-                - {{ fan }}
-              {% endfor %}
-            {% else %}
-              No fans are active.
-            {% endif %}
-            {% set ambient_lights = expand(state_attr('light.all_ambient', 'entity_id')) |
-              selectattr('state', 'eq', 'on') |
-              map(attribute='entity_id') |
-              list %}
-            {% set ambient_lights_count = ambient_lights | count %}
-            {% if ambient_lights_count > 0 %}
-              Active ambient lights:
-              {% for light in ambient_lights %}
-                - {{ light }}
-              {% endfor %}
-            {% else %}
-              No ambient lights are active.
-            {% endif %}
             {{ [
-              'Good morning! Currently, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' lights, and ' ~ active_fans_count ~  ' fans are active in your home.',
-              'Rise and shine! Your home is waking up with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans ready for the day.',
-              'Hello there! Start your day with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans creating a cozy atmosphere in your home.',
-              'Good morning! Today is briefing includes ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans contributing to your home is ambiance.',
-              'Rise and shine! Your home is currently adorned with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans.',
-              'Greetings! Begin your day with the knowledge that ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans are ready to enhance your home experience.',
-              'Good morning! As the sun rises, enjoy the glow of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and the gentle breeze of ' ~ active_fans_count ~  ' fans in your home.',
-              'Hello! Embrace the morning with the warmth of ' ~ ambient_lights_count ~  ' ambient lights, the brightness of ' ~ active_lights_count ~  ' active lights, and the cool breeze from ' ~ active_fans_count ~  ' fans in your home.',
-              'Good morning! Wake up to the charm of ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and the soothing hum of ' ~ active_fans_count ~  ' fans in your home.',
-              'Rise and shine! Your home is morning features ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans setting the mood for the day.'
-            ] | random }}
-            {{ [
-              'Your home status report is in, and it is all positive news!',
-              'The current home status report is glowing with good news.',
-              'Your home just sent a report – and it is all smooth sailing!',
-              'All systems are in check according to the latest home status report.',
-              'Your home status report just came in, and it is a clean bill of health!',
-              'Good news! The current home status report is looking great.',
-              'Thumbs up for your home – the latest report shows optimal conditions.',
-              'Your home has spoken, and the report is nothing but good vibes!',
-              'The current home status report is a testament to top-notch functionality.',
-              'A round of applause for your home – the report is outstanding!'
+              'And that is your morning briefing, folks! Remember, if coffee is not helping, it is probably because you need more coffee!',
+              'That wraps up your morning briefing! Now go out there and conquer the day, or at least survive until lunchtime!',
+              'There you have it, your morning briefing served with a side of wit and wisdom! Now go forth and adult like a semi-responsible human!',
+              'And with that, your morning briefing comes to a close! Remember, the early bird gets the worm, but the second mouse gets the cheese!',
+              'Time to bid adieu to your morning briefing! Remember, life is short, smile while you still have teeth!',
+              'And that is a wrap on your morning briefing! Now go out there and be the reason someone smiles... or just be the reason coffee disappears!',
+              'With that, we conclude your morning briefing! Remember, today is a gift, that is why they call it the present. Enjoy unwrapping!',
+              'And there you have it, your morning briefing in all its glory! Now go out there and be so awesome that people think Mondays aren it so bad after all!',
+              'That is all for your morning briefing! Remember, the secret to getting ahead is getting started. Or hitting the snooze button one more time!',
+              'And with that, your morning briefing bids you farewell! Remember, you can not control the length of your life, but you can control its depth. And its coffee intake!'
             ] | random }}
       - variables:
           briefing: >
-            {"morning_snark":"{{morning_snark}}","home_status":"{{home_status}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks | join('\n') }}"}
+            {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}"}
       - service: notify.alexa_media_bedroom_speaker
         data:
-          message: " {{morning_snark}} {{weather_status}} {{home_status}} {{device_status}} {{ tasks | join('\n') }}"
+          message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }}"
 
   nightly_briefing:
     sequence:
@@ -249,18 +197,6 @@ script:
               'I see you made it you made it to another day.'
             ] | random }}
           device_status: >
-            {{ [
-              'Your latest device report is in, and it is all positive news!',
-              'The current device status report is glowing with good news.',
-              'Your device just sent a report – and it is all smooth sailing!',
-              'All systems are in check according to the latest device report.',
-              'Your device report just came in, and it is a clean bill of health!',
-              'Good news! The current device status report is looking great.',
-              'Thumbs up for your device – the latest report shows optimal performance.',
-              'Your device has spoken, and the report is nothing but good vibes!',
-              'The current device status report is a testament to top-notch functionality.',
-              'A round of applause for your device – the report is outstanding!'
-            ] | random }}
             {% set level = states('sensor.micemob_battery_level') %}
             {% set charging = states('sensor.micemob_battery_state') %}
             {% set level2 = states('sensor.micebook_power') %}
@@ -356,18 +292,6 @@ script:
                 'As night falls, the weather transitions to ' ~ state ~ ' with a temperature of ' ~ temperature ~ ' degrees. Humidity stands at ' ~ humidity ~ '%, wind speed is ' ~ windspeed ~ ' meters per second, and there is a ' ~ rain ~ '% chance of rain. Have a peaceful evening'
               ] | random }}
           tasks: >
-            {{ [
-              'Tomorrow brings an exciting calendar event your way!',
-              'Brace yourself for tomorrow is noteworthy calendar event!',
-              'Gear up for tomorrow, as you have got a special calendar event ahead!',
-              'Get ready for tomorrow is calendar event – it is worth the anticipation!',
-              'Tomorrow unfolds with a notable calendar event in store for you!',
-              'Anticipate a significant calendar event on your agenda tomorrow!',
-              'Prepare for tomorrow is calendar event, it is set to make an impact!',
-              'Tomorrow holds a promising calendar event waiting for your attention!',
-              'Your schedule lights up tomorrow with an important calendar event!',
-              'Tomorrow comes with a notable calendar event to mark on your agenda!'
-            ] | random }}
             {% set tasks = state_attr('calendar.inbox', 'all_tasks') | default([]) %}
             {% if tasks %}
               Tasks for today:
@@ -430,20 +354,20 @@ script:
               'Good evening! As the night begins, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans create a cozy and calming atmosphere in your home.'
             ] | random }}
             {{ [
-              'Your home status report is in, and it is all positive news!',
-              'The current home status report is glowing with good news.',
-              'Your home just sent a report – and it is all smooth sailing!',
-              'All systems are in check according to the latest home status report.',
-              'Your home status report just came in, and it is a clean bill of health!',
-              'Good news! The current home status report is looking great.',
-              'Thumbs up for your home – the latest report shows optimal conditions.',
-              'Your home has spoken, and the report is nothing but good vibes!',
-              'The current home status report is a testament to top-notch functionality.',
-              'A round of applause for your home – the report is outstanding!'
+              'And that is your evening briefing wrapped up! Remember, bedtime stories are just dreams with deadlines!',
+              'With that, we bid adieu to your evening briefing! Remember, the early bird catches the worm, but the night owl gets the pizza delivery!',
+              'Time to close the curtains on your evening briefing! Remember, the best dreams happen when you are awake... or asleep on the couch!',
+              'And there you have it, your evening briefing served with a side of moonlight and mischief! Now go out there and make memories you will laugh about tomorrow!',
+              'That concludes your evening briefing! Remember, every evening is a chance to wipe the slate clean and start afresh... or just binge-watch Netflix!',
+              'And with that, your evening briefing bids you farewell! Remember, the only time success comes before work is in the dictionary... or when ordering takeout!',
+              'With your evening briefing concluded, it is time to unwind and let the good times roll! Remember, life is short, so eat dessert first... or second!',
+              'That is a wrap on your evening briefing! Remember, sleep is like a time machine to breakfast... or to hit the snooze button for the umpteenth time!',
+              'And there you have it, your evening briefing in all its glory! Remember, the only thing better than a glass of wine is two glasses... or three!',
+              'And with that, your evening briefing bids you goodnight! Remember, tomorrow is a new day to do amazing things... or to hit the reset button on today is to-do list!'
             ] | random }}
       - variables:
           briefing: >
-            {"morning_snark":"{{morning_snark}}","home_status":"{{home_status}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks | join('\n') }}"}
+            {"nightly_snark":"{{nightly_snark}}","home_status":"{{home_status}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}"}
       - service: notify.alexa_media_bedroom_speaker
         data:
-          message: "{{ nightly_snark }} {{ weather_status }} {{ device_status }} {{ tasks | join('\n') }}"
+          message: "{{ nightly_snark }} {{ weather_status }} {{ home_status }} {{ device_status }} {{ tasks }}"
