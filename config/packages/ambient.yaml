@@ -28,6 +28,30 @@ timer:
     restore: true
 
 automation:
+  - id: 9bfcfdfe-558f-4a3e-9f1d-bd0118a26210
+    alias: Turn On Ambient Auto Node
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.ambient_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.ambient_automation
+
+  - id: 57a6f524-fe27-47ad-885e-f0bfab5dbd9a
+    alias: Turn Off Ambient Auto Mode
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.ambient_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.ambient_automation
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.ambient_automation
+
   - id: 1716453e-5d15-496d-a69f-1816edba2a0c
     alias: Lights - Kitchen Ambient Automation
     description: ""

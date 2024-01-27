@@ -1,16 +1,31 @@
 ###############################################################################
-#   @author         :   simplemicerey Stone
-#   @date           :   02/19/2019
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
 #   @package        :   Climate
 #   @description    :   A Collection of Notification Scripts and Configs.
-#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
-# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
 ###############################################################################
 
 input_boolean:
   climate_automation:
     name: "House Climate Automation"
     icon: mdi:air-conditioner
+
+input_datetime:
+  climate_on_time:
+    name: Climate Time On
+    has_date: false
+    has_time: true
+  climate_off_time:
+    name: Climate Off Time
+    has_date: false
+    has_time: true
+
+timer:
+  climate_timer:
+    name: Climate Timer
+    duration: "00:15:00"
+    icon: mdi:timer
+    restore: true
 
 climate:
   - platform: smartir
@@ -31,9 +46,64 @@ remote:
     host: 192.168.3.21
     token: !secret bedroom_remote
 
+sensor:
+  - platform: template
+    sensors:
+      ac_runtime_today:
+        unique_id: ac_runtime
+        friendly_name: "AC Runtime Today"
+        unit_of_measurement: "h"
+        value_template: "{{ (states('sensor.ac_runtime_today_cool') | float + states('sensor.ac_runtime_today_dry') | float) }}"
+        attribute_templates:
+          value: "{{ (60 * (states('sensor.ac_runtime_today_cool') | float + states('sensor.ac_runtime_today_dry') | float)) | int }}m"
+
+  - platform: history_stats
+    name: ac_runtime_today_cool
+    unique_id: ac_runtime_today_cool
+    entity_id: climate.bedroom_aircon
+    state: "cool"
+    type: time
+    end: "{{ now().replace(hour=9, minute=0, second=0) }}"
+    duration:
+      hours: 15
+
+  - platform: history_stats
+    name: ac_runtime_today_dry
+    unique_id: ac_runtime_today_dry
+    entity_id: climate.bedroom_aircon
+    state: "dry"
+    type: time
+    end: "{{ now().replace(hour=9, minute=0, second=0) }}"
+    duration:
+      hours: 15
+
 automation:
-  - id: bedroom_aircon_button
-    alias: Climate - Bedroom Button Control
+  - id: 34c71e59-cd69-4481-b758-958807cf3537
+    alias: Turn On Auto Climate Mode
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.climate_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.climate_automation
+
+  - id: 04018017-1cb8-45e0-b81c-b4085a48908d
+    alias: Turn Off Auto Climate Mode
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.climate_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.climate_automation
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.climate_automation
+
+  - id: a156ab33-10c3-478c-97d6-5b69fcc1aa14
+    alias: Bedroom Button Climate Control
     description: ""
     use_blueprint:
       path: xiaomi_button.yaml
@@ -91,8 +161,8 @@ automation:
                   entity_id: fan.zhimi_fa1_4020_fan
             alias: Bedroom Fan
 
-  - id: bedroom_night_automation
-    alias: Climate - Bedroom Night Automation
+  - id: 4f4dbbe4-3698-416e-bbf6-17dfcb619395
+    alias: Bedroom Night Climate Automation
     description: ""
     trigger:
       - type: temperature
@@ -218,10 +288,9 @@ automation:
                 data: {}
                 target:
                   entity_id: climate.bedroom_aircon
-    mode: restart
 
-  - id: black_kitchen_fan_automation
-    alias: Climate - Black And Kitchen Fan Automation
+  - id: 9e97df4e-9f56-4aed-b7b1-a4ff64dcb70b
+    alias: Black And Kitchen Fan Automation
     description: ""
     trigger:
       - platform: state
@@ -296,10 +365,9 @@ automation:
                           "Temperature Normal: Fans off at Mouse House. The environment is comfortable. Monitor and adjust settings for your preference.",
                           "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is normal. Enjoy the balanced atmosphere."
                         ] | random }}
-    mode: restart
 
-  - id: door_fan_automation
-    alias: Climate - Door Fan Automation
+  - id: 90fa4136-bca7-4135-8985-1d7f748a2302
+    alias: Door Circulation Fan Automation
     description: ""
     trigger:
       - platform: state
@@ -318,77 +386,13 @@ automation:
             entity_id: binary_sensor.bed_presense
             state: "off"
     action:
-      - choose:
-          - conditions:
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: fan.dmaker_p28_19b6_fan
-                    state: "off"
-                  - condition: numeric_state
-                    entity_id: sensor.livingroom_temp_temperature
-                    above: 32
-            sequence:
-              - service: fan.turn_on
-                target:
-                  entity_id:
-                    - fan.dmaker_p28_19b6_fan
-                data: {}
-              - if:
-                  - condition: state
-                    entity_id: input_boolean.audible_notifications
-                    state: "on"
-                then:
-                  - service: notify.alexa_media_bedroom_speaker
-                    data:
-                      message: >
-                        {{ [ "Attention: Temperature at Mouse House is currently
-                        above the desired level. Fans have been activated to cool
-                        the space and maintain a comfortable environment. Adjust
-                        settings if needed for optimal comfort.",
-                              "Attention: High temperature at Mouse House! Fans activated for immediate cooling. Monitor for optimal conditions.",
-                              "Temperature Warning: Mouse House is warmer than desired. Fans are on to combat the heat. Check and adjust for comfort.",
-                              "Temperature Alert: Mouse House is too warm. Fans activated. Please monitor the temperature for improved conditions.",
-                              "High Temp Notification: Fans are now operational at Mouse House due to elevated temperatures. Observe for desired cooling.",
-                              "Hot Conditions: Temperature at Mouse House is above the threshold. Fans are running to provide relief. Ensure a comfortable living space."
-                            ] | random }}
-          - conditions:
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: fan.dmaker_p28_19b6_fan
-                    state: "on"
-                  - condition: numeric_state
-                    entity_id: sensor.livingroom_temp_temperature
-                    below: 32
-            sequence:
-              - service: fan.turn_off
-                target:
-                  entity_id:
-                    - fan.dmaker_p28_19b6_fan
-                data: {}
-              - if:
-                  - condition: state
-                    entity_id: input_boolean.audible_notifications
-                    state: "on"
-                then:
-                  - service: notify.alexa_media_bedroom_speaker
-                    data:
-                      message: >
-                        {{ [ "Cool Conditions: Temperature at Mouse House is below
-                        the threshold. Fans are off to prevent excessive cooling.
-                        Ensure a cozy living space.",
-                              "Low Temp Notification: Fans are now off at Mouse House as the temperature drops below the threshold. Observe for preferred warmth.",
-                              "Temperature Notification: Mouse House is cooler than desired. Fans are off for energy conservation. Check and adjust for comfort.",
-                              "Mild Conditions: Mouse House temperature is below the specified limit. Fans have been turned off. Adjust settings as needed for comfort.",
-                              "Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation. Enjoy the balanced environment!",
-                              "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the balanced atmosphere."
-                            ] | random }}
-    mode: restart
+      - service: script.door_circulation_fan_automation
+        metadata: {}
+        data: {}
 
 script:
   bedroom_sterilization:
-    alias: Bedroom - Turn on Sterilization Lamp for 30 min
+    alias: Turn on Sterilization Lamp for 30 min
     sequence:
       - service: notify.alexa_media_bedroom_speaker
         data:
@@ -476,3 +480,75 @@ script:
             ] | random }}
     mode: single
     icon: mdi:bug
+
+  circulation_door_fan_automation:
+    alias: Door Circulation Fan Automation
+    sequence:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: fan.dmaker_p28_19b6_fan
+                    state: "off"
+                  - condition: numeric_state
+                    entity_id: sensor.livingroom_temp_temperature
+                    above: 32
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                then:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message: >
+                        {{ [  'Attention: Temperature at Mouse House is currently
+                        above the desired level. Fans have been activated to cool
+                        the space and maintain a comfortable environment. Adjust
+                        settings if needed for optimal comfort',
+                              'Attention: High temperature at Mouse House! Fans activated for immediate cooling. Monitor for optimal conditions',
+                              'Temperature Warning: Mouse House is warmer than desired. Fans are on to combat the heat. Check and adjust for comfort',
+                              'Temperature Alert: Mouse House is too warm. Fans activated. Please monitor the temperature for improved conditions',
+                              'High Temp Notification: Fans are now operational at Mouse House due to elevated temperatures. Observe for desired cooling',
+                              'Hot Conditions: Temperature at Mouse House is above the threshold. Fans are running to provide relief. Ensure a comfortable living space'
+                            ] | random }}
+              - service: fan.turn_on
+                target:
+                  entity_id:
+                    - fan.dmaker_p28_19b6_fan
+                data: {}
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: fan.dmaker_p28_19b6_fan
+                    state: "on"
+                  - condition: numeric_state
+                    entity_id: sensor.livingroom_temp_temperature
+                    below: 32
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                then:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message: >
+                        {{ [ "Cool Conditions: Temperature at Mouse House is below
+                        the threshold. Fans are off to prevent excessive cooling.
+                        Ensure a cozy living space.",
+                              "Low Temp Notification: Fans are now off at Mouse House as the temperature drops below the threshold. Observe for preferred warmth.",
+                              "Temperature Notification: Mouse House is cooler than desired. Fans are off for energy conservation. Check and adjust for comfort.",
+                              "Mild Conditions: Mouse House temperature is below the specified limit. Fans have been turned off. Adjust settings as needed for comfort.",
+                              "Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation. Enjoy the balanced environment!",
+                              "Optimal Conditions: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the balanced atmosphere."
+                            ] | random }}
+              - service: fan.turn_off
+                target:
+                  entity_id:
+                    - fan.dmaker_p28_19b6_fan
+                data: {}
+    mode: single
+    icon: mdi:fan

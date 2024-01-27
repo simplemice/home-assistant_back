@@ -44,6 +44,24 @@ template:
           mdi:shield-check
           {% endif %}
 
+sensor:
+  - platform: template
+    sensors:
+      bedroom_safe:
+        friendly_name: "Bedroom Safe"
+        value_template: >-
+          {%- if is_state("alarm_control_panel.safe", "armed_home" ) %}
+              Safe Armed
+          {%- else -%}
+              Safe Open
+          {%- endif %}
+        icon_template: >
+          {% if is_state("alarm_control_panel.safe", "armed_home") %}
+            mdi:safe
+          {% else %}
+            mdi:safe-square
+          {% endif %}
+
 automation:
   - id: ba39f2d2-8692-4cf4-a52c-529a1318bb14
     alias: Alarm - Safe Alarm Automation

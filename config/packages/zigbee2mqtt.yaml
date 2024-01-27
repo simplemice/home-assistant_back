@@ -1,3 +1,10 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Zigbee2MQTT
+#   @description    :   A collection of Home Assistant and Pi Sensors
+###############################################################################
+
 input_boolean:
   zigbee_permit_join:
     name: Allow devices to join
@@ -7,7 +14,7 @@ input_boolean:
 timer:
   zigbee_permit_join:
     name: Time remaining
-    duration: 600 # Updated this to the number of seconds you wish
+    duration: 600
 
 mqtt:
   sensor:
@@ -21,7 +28,7 @@ mqtt:
       json_attributes_template: "{{ value_json.data.value | tojson }}"
 
 automation:
-  - id: enable_zigbee_join
+  - id: a8b149c5-d6fe-4619-9abb-0ffefefe7026
     alias: Services - Enable Zigbee joining
     trigger:
       platform: state

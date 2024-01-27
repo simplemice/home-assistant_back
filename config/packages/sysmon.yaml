@@ -30,42 +30,12 @@ sensor:
 
   - platform: template
     sensors:
-      ac_runtime_today:
-        unique_id: ac_runtime
-        friendly_name: "AC Runtime Today"
-        unit_of_measurement: "h"
-        value_template: "{{ (states('sensor.ac_runtime_today_cool') | float + states('sensor.ac_runtime_today_dry') | float) }}"
-        attribute_templates:
-          value: "{{ (60 * (states('sensor.ac_runtime_today_cool') | float + states('sensor.ac_runtime_today_dry') | float)) | int }}m"
-
-  - platform: template
-    sensors:
       all_plugs_power:
         unique_id: all_plugs_power
         friendly_name: All Plugs Power
         unit_of_measurement: Watt
         value_template: >
           {{ states('sensor.raspberry_outlet_power')| float(0) + states('sensor.garage_camera_light_power')| float(0) + states('sensor.bedroom_wardrobe_light_power')| float(0)}}
-
-  - platform: history_stats
-    name: ac_runtime_today_cool
-    unique_id: ac_runtime_today_cool
-    entity_id: climate.bedroom_aircon
-    state: "cool"
-    type: time
-    end: "{{ now().replace(hour=9, minute=0, second=0) }}"
-    duration:
-      hours: 15
-
-  - platform: history_stats
-    name: ac_runtime_today_dry
-    unique_id: ac_runtime_today_dry
-    entity_id: climate.bedroom_aircon
-    state: "dry"
-    type: time
-    end: "{{ now().replace(hour=9, minute=0, second=0) }}"
-    duration:
-      hours: 15
 
   - platform: history_stats
     name: Sleep TIme Duration
@@ -319,23 +289,6 @@ sensor:
 
   - platform: template
     sensors:
-      bedroom_safe:
-        friendly_name: "Bedroom Safe"
-        value_template: >-
-          {%- if is_state("alarm_control_panel.safe", "armed_home" ) %}
-              Safe Armed
-          {%- else -%}
-              Safe Open
-          {%- endif %}
-        icon_template: >
-          {% if is_state("alarm_control_panel.safe", "armed_home") %}
-            mdi:safe
-          {% else %}
-            mdi:safe-square
-          {% endif %}
-
-  - platform: template
-    sensors:
       rain_sensor:
         friendly_name: "Rain Sensor"
         value_template: >-
@@ -366,40 +319,6 @@ sensor:
             mdi:clock
           {% else %}
             mdi:clock
-          {% endif %}
-
-  - platform: template
-    sensors:
-      backcam_sensor:
-        friendly_name: "Backyard Camera"
-        value_template: >-
-          {%- if is_state("device_tracker.backyard_cam", "home" ) %}
-              Online
-          {%- else -%}
-              Offline
-          {%- endif %}
-        icon_template: >
-          {% if is_state("device_tracker.backyard_cam", "home") %}
-            mdi:cctv
-          {% else %}
-            mdi:cctv-off
-          {% endif %}
-
-  - platform: template
-    sensors:
-      garagecam_sensor:
-        friendly_name: "Garage Camera"
-        value_template: >-
-          {%- if is_state("device_tracker.garage_cam", "home" ) %}
-              Online
-          {%- else -%}
-              Offline
-          {%- endif %}
-        icon_template: >
-          {% if is_state("device_tracker.garage_cam", "home") %}
-            mdi:cctv
-          {% else %}
-            mdi:cctv-off
           {% endif %}
 
   - platform: template

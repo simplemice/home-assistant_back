@@ -1,11 +1,31 @@
 ###############################################################################
-#   @author         :   simplemicerey Stone
-#   @date           :   02/19/2019
-#   @package        :   Climate
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Camera
 #   @description    :   A Collection of Notification Scripts and Configs.
-#                       Package modified from https://github.com/skalavala/smarthome/blob/master/packages/notify.yaml with inspiration
-# 		                  from https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/script/speech_engine.yaml
 ###############################################################################
+
+image_processing:
+  - platform: platerecognizer
+    api_token: !secret platerecognizer
+    regions:
+      - th
+    save_file_folder: /config/www/plates/
+    save_timestamped_file: True
+    always_save_latest_file: True
+    source:
+      - entity_id: camera.garage
+  - platform: doods
+    url: http://192.168.3.2:8080
+    detector: default
+    scan_interval: 2
+    source:
+      - entity_id: camera.garage
+    file_out: /config/www/doods/doods.jpg
+    confidence: 60
+    labels:
+      - name: person
+      - name: car
 
 input_boolean:
   backyard_camera_notification:
@@ -15,9 +35,44 @@ input_boolean:
     name: "Garage Camera Notification"
     icon: mdi:cctv
 
+sensor:
+  - platform: template
+    sensors:
+      backcam_sensor:
+        friendly_name: "Backyard Camera"
+        value_template: >-
+          {%- if is_state("device_tracker.backyard_cam", "home" ) %}
+              Online
+          {%- else -%}
+              Offline
+          {%- endif %}
+        icon_template: >
+          {% if is_state("device_tracker.backyard_cam", "home") %}
+            mdi:cctv
+          {% else %}
+            mdi:cctv-off
+          {% endif %}
+
+  - platform: template
+    sensors:
+      garagecam_sensor:
+        friendly_name: "Garage Camera"
+        value_template: >-
+          {%- if is_state("device_tracker.garage_cam", "home" ) %}
+              Online
+          {%- else -%}
+              Offline
+          {%- endif %}
+        icon_template: >
+          {% if is_state("device_tracker.garage_cam", "home") %}
+            mdi:cctv
+          {% else %}
+            mdi:cctv-off
+          {% endif %}
+
 automation:
-  - id: "1697364686309"
-    alias: Notification - Garage Camera PopUp Window
+  - id: a5ffbf89-9238-4113-a469-557577412ea1
+    alias: Garage Camera Notification PopUp Window
     description: ""
     trigger:
       - platform: state
@@ -44,10 +99,9 @@ automation:
           milliseconds: 0
       - service: script.notification_garage_camera_popup_window
         data: {}
-    mode: single
 
-  - id: camera_night_light
-    alias: Lights - Camera Night Light Automation
+  - id: 03b64c7a-ece4-443f-b70f-1f196fc8787e
+    alias: Camera Night Light Automation
     description: ""
     trigger:
       - platform: sun
@@ -76,13 +130,11 @@ automation:
                   - service: notify.alexa_media_bedroom_speaker
                     data:
                       message: >
-                        {{ [ "Attention: Sunset at Mouse House! The camera night
-                        light has been turned on to ensure visibility throughout the
-                        night.",
-                              "Sunset Notification: Mouse House is transitioning to night. The camera night light is now illuminating the surroundings for enhanced security.",
-                              "Dusk Alert: Sun has set at Mouse House. Enjoy a well-lit environment with the camera night light in operation.",
-                              "Nightfall Update: Mouse House is now in the evening hours. The camera night light is activated for clear visibility.",
-                              "Night Mode On: Sunset detected at Mouse House. The camera night light is now providing illumination for added security."
+                        {{ [  'Attention: Sunset at Mouse House! The camera night light has been turned on to ensure visibility throughout the night',
+                              'Sunset Notification: Mouse House is transitioning to night. The camera night light is now illuminating the surroundings for enhanced security',
+                              'Dusk Alert: Sun has set at Mouse House. Enjoy a well-lit environment with the camera night light in operation',
+                              'Nightfall Update: Mouse House is now in the evening hours. The camera night light is activated for clear visibility',
+                              'Night Mode On: Sunset detected at Mouse House. The camera night light is now providing illumination for added security'
                             ] | random }}
           - conditions:
               - condition: sun
@@ -97,7 +149,7 @@ automation:
 
 script:
   notification_garage_camera_popup_window:
-    alias: "Notification - Garage Camera PopUp Window"
+    alias: "Garage Camera Notification PopUp Window"
     sequence:
       - service: browser_mod.popup
         data:
@@ -129,5 +181,4 @@ script:
         target:
           entity_id:
             - media_player.micebook
-    mode: single
     icon: mdi:cctv
