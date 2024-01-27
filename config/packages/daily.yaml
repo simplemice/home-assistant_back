@@ -6,7 +6,7 @@
 ###############################################################################
 
 automation:
-  - id: br_wakeup
+  - id: 13ebe389-eddd-439b-9576-cd568109e42d
     alias: Simplemice WakeUp Automation
     description: ""
     trigger:
@@ -34,7 +34,7 @@ automation:
         data: {}
     mode: single
 
-  - id: br_sleep
+  - id: be838b9d-da2f-498f-bb04-b7c18ff0588b
     alias: Simplemice Sleep Automation
     description: ""
     trigger:

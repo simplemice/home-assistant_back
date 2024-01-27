@@ -4,6 +4,7 @@
 #   @package        :   Ambient
 #   @description    :   Ambient automations.
 ###############################################################################
+
 input_datetime:
   ambient_on_time:
     name: House Ambient On Time
@@ -18,9 +19,6 @@ input_boolean:
   ambient_automation:
     name: "Ambient Auto Mode"
     icon: hue:bulb-group-sultan-lightstrip
-  ambient_adaptive_lights:
-    name: "Ambient Adaptive Mode"
-    icon: hue:scene-natural-light
 
 timer:
   ambient_timer:

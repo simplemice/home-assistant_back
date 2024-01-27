@@ -1,6 +1,6 @@
 ###############################################################################
-#   @author         :   Jeffrey Stone
-#   @date           :   02/19/2019
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
 #   @package        :   Alarm
 #   @description    :   Alarm automations.
 ###############################################################################
@@ -29,7 +29,6 @@ timer:
 
 template:
   - binary_sensor:
-      # Сборный сенсор тревоги - будет активен при любой из видов тревог
       - name: Alarm Warnings
         state: >
           {{ is_state('binary_sensor.bathroom_water_leak', 'on')  
@@ -46,5 +45,20 @@ template:
           {% endif %}
 
 automation:
+  - id: ba39f2d2-8692-4cf4-a52c-529a1318bb14
+    alias: Alarm - Safe Alarm Automation
+    description: ""
+    trigger:
+      - platform: tag
+        tag_id: cae6ff81-94ec-48c3-bc7b-fd54e3997e5d
+    condition:
+      - condition: state
+        entity_id: person.simplemice
+        state: home
+    action:
+      - service: script.safe_security_automation
+        metadata: {}
+        data: {}
+    mode: single
 
 script:

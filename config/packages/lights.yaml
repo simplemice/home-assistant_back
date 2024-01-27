@@ -50,7 +50,7 @@ automation:
       value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.livingroom_curtains_time
+        entity_id: input_boolean.adaptive_lights
 
   - id: d646e301-0388-4704-8cce-9b831f167e32
     alias: Adaptive Lights Time Mode Off
@@ -74,7 +74,7 @@ automation:
       value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_night_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.livingroom_curtains_time
+        entity_id: input_boolean.adaptive_lights_night
 
   - id: e0e37c49-7c91-4db5-a692-4c2716ae3b68
     alias: Adaptive Night Lights Time Mode Off
@@ -84,7 +84,7 @@ automation:
         value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_night_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
     condition:
       - condition: state
-        entity_id: input_boolean.adaptive_lights
+        entity_id: input_boolean.adaptive_lights_night
         state: "on"
     action:
       - service: input_boolean.turn_off

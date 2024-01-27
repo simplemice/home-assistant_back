@@ -255,46 +255,6 @@
         data: {}
         target:
           entity_id: media_player.spotify_simplemice
-- id: '1694078655796'
-  alias: Alarm - Safe Alarm Automation
-  description: ''
-  trigger:
-  - platform: tag
-    tag_id: cae6ff81-94ec-48c3-bc7b-fd54e3997e5d
-  condition: []
-  action:
-  - if:
-    - condition: state
-      entity_id: alarm_control_panel.safe
-      state: armed_home
-    then:
-    - service: alarm_control_panel.alarm_disarm
-      data:
-        code: '5412'
-      target:
-        entity_id: alarm_control_panel.safe
-    - service: notify.alexa_media_bedroom_speaker
-      data:
-        message: Safe Alarm Disarmed!
-    - service: notify.alexa_media_bedroom_speaker
-      data:
-        message: <audio src="soundbank://soundlibrary/alarms/car_alarms/car_alarm_05"/>
-        data:
-          type: tts
-    else:
-    - service: alarm_control_panel.alarm_arm_home
-      data: {}
-      target:
-        entity_id: alarm_control_panel.safe
-    - service: notify.alexa_media_bedroom_speaker
-      data:
-        message: Safe Alarm Armed!
-    - service: notify.alexa_media_bedroom_speaker
-      data:
-        message: <audio src="soundbank://soundlibrary/alarms/car_alarms/car_alarm_05"/>
-        data:
-          type: tts
-  mode: single
 - id: '1694785263480'
   alias: Notification - Low battery level
   description: ''

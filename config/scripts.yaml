@@ -143,3 +143,39 @@ send_notification_to_mobile:
       name: message
       description: Enter a message for notify
       required: true
+safe_security_automation:
+  alias: Safe Security Automation
+  sequence:
+  - if:
+    - condition: state
+      entity_id: alarm_control_panel.safe
+      state: armed_home
+    then:
+    - service: alarm_control_panel.alarm_disarm
+      data:
+        code: '5412'
+      target:
+        entity_id: alarm_control_panel.safe
+    - service: notify.alexa_media_bedroom_speaker
+      data:
+        message: Safe Alarm Disarmed!
+    - service: notify.alexa_media_bedroom_speaker
+      data:
+        message: <audio src="soundbank://soundlibrary/alarms/car_alarms/car_alarm_05"/>
+        data:
+          type: tts
+    else:
+    - service: alarm_control_panel.alarm_arm_home
+      data: {}
+      target:
+        entity_id: alarm_control_panel.safe
+    - service: notify.alexa_media_bedroom_speaker
+      data:
+        message: Safe Alarm Armed!
+    - service: notify.alexa_media_bedroom_speaker
+      data:
+        message: <audio src="soundbank://soundlibrary/alarms/car_alarms/car_alarm_05"/>
+        data:
+          type: tts
+  mode: single
+  icon: mdi:safe
