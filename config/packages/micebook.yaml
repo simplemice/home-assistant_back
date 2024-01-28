@@ -39,6 +39,10 @@ automation:
         entity_id:
           - binary_sensor.micebook_is_online
         to: "off"
+      - platform: state
+        entity_id:
+          - binary_sensor.micebook_screen_lock_status
+        to: "on"
     condition:
       - condition: and
         conditions:
