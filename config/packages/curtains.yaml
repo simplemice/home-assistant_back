@@ -91,7 +91,7 @@ automation:
         entity_id: input_boolean.livingroom_curtains_time
 
   - id: eb4e7c85-6ada-4822-a3c0-c0b471fbc23c
-    alias: Livingroom - Curtains Open Ambient Off
+    alias: Curtains Open Ambient Off
     description: ""
     trigger:
       - platform: state
@@ -118,7 +118,7 @@ automation:
 
 script:
   curtains:
-    alias: Livingroom - Open and Closed Curtains
+    alias: Open and Closed Curtains
     sequence:
       - choose:
           - conditions:

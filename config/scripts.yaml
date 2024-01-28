@@ -87,28 +87,6 @@ notification_door_bell:
     data: {}
   mode: single
   icon: mdi:police-badge-outline
-send_notification_to_mobile:
-  alias: send_notification_to_mobile
-  sequence:
-  - service: notify.mobile_app_micemob
-    data:
-      message: '{{message}}'
-      title: '{{title}}'
-  mode: single
-  icon: mdi:bell-alert
-  fields:
-    title:
-      selector:
-        text:
-      name: title
-      description: Enter a title for notify
-      required: true
-    message:
-      selector:
-        text:
-      name: message
-      description: Enter a message for notify
-      required: true
 safe_security_automation:
   alias: Safe Security Automation
   sequence:

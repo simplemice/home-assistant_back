@@ -31,7 +31,7 @@ proximity:
     devices:
       - person.simplemice
     zone: home
-    tolerance: 5
+    tolerance: 100
     unit_of_measurement: km
 
 sensor:
@@ -317,7 +317,7 @@ script:
     mode: restart
 
   away_mode_with_snapshot:
-    alias: Alarm - Take snapshot of states before away
+    alias: Take snapshot of states before away
     sequence:
       - service: scene.create
         data:

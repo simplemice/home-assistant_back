@@ -53,7 +53,7 @@ automation:
         entity_id: input_boolean.ambient_automation
 
   - id: 1716453e-5d15-496d-a69f-1816edba2a0c
-    alias: Lights - Kitchen Ambient Automation
+    alias: Kitchen Ambient Automation
     description: ""
     trigger:
       - platform: state
@@ -139,7 +139,7 @@ automation:
     mode: single
 
   - id: a3327e8a-558f-498f-aaf9-860bc8319103
-    alias: Lights - Livingroom Ambient After Door Closed
+    alias: Livingroom Ambient After Door Closed
     description: ""
     trigger:
       - platform: state

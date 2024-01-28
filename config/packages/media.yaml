@@ -4,6 +4,10 @@
 #   @package        :   Camera
 #   @description    :   A Collection of Notification Scripts and Configs.
 ###############################################################################
+spotcast:
+  sp_dc: !secret sp_dc
+  sp_key: !secret sp_key
+
 input_select:
   media_speakers:
     name: Media Speakers Rooms

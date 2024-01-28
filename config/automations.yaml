@@ -1,5 +1,5 @@
 - id: '1693484009785'
-  alias: Kitchen - Button Automation
+  alias: Kitchen Button Automation
   description: ''
   use_blueprint:
     path: xiaomi_button.yaml
@@ -600,22 +600,6 @@
       data: {}
       target:
         entity_id: switch.raspberry_outlet
-  mode: single
-- id: '1699637491716'
-  alias: Notification - Check All Doors Before Sleep
-  description: ''
-  trigger:
-  - platform: tag
-    tag_id: 2ddc642f-dc9a-4720-848c-108e2859e925
-  condition: []
-  action:
-  - service: input_boolean.turn_off
-    data: {}
-    target:
-      entity_id: input_boolean.sleep_door_checker
-  - service: notify.alexa_media_bedroom_speaker
-    data:
-      message: Doors Check Complete
   mode: single
 - id: '1702781631789'
   alias: Service - Update Micewatch Device Tracker

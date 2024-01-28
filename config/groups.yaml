@@ -3,7 +3,7 @@
 
 family:
   name: Family
-  unique_id: family_group
+  icon: mdi:human-female-female-child
   entities:
     - person.simplemice
 

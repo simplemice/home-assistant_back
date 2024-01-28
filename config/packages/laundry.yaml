@@ -39,11 +39,9 @@ automation:
       platform: template
       value_template: "{{ states('sensor.time') == (state_attr('input_datetime.laundry_custom_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
     condition:
-      - condition:
-        conditions:
-          - condition: time
-            after: "07:30:00"
-            before: "15:00:00"
+      - condition: time
+        after: "07:30:00"
+        before: "15:00:00"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.laundry_helper
@@ -213,7 +211,8 @@ automation:
     mode: restart
 
   - id: 0c18e45f-842b-474f-9dbe-bb068507370a
-    description: "Turn Off Laundry Day"
+    alias: Turn Off Laundry Day
+    description: ""
     mode: restart
     trigger:
       - platform: tag
