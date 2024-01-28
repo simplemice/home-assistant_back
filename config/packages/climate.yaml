@@ -386,7 +386,7 @@ automation:
             entity_id: binary_sensor.bed_presense
             state: "off"
     action:
-      - service: script.door_circulation_fan_automation
+      - service: script.circulation_door_fan_automation
         metadata: {}
         data: {}
 

@@ -4,6 +4,7 @@
 #   @package        :   Notify
 #   @description    :   A Collection of Notification Scripts and Configs.
 ###############################################################################
+media_extractor:
 
 input_datetime:
   morning_report:
@@ -50,6 +51,10 @@ input_datetime:
     name: Visual Notifications Off
     has_date: false
     has_time: true
+  last_time_alexa_called:
+    name: Last Time Alexa Called
+    has_date: true
+    has_time: true
 
 input_boolean:
   audible_notifications:
@@ -91,6 +96,17 @@ template:
           {% else %}
           mdi:bullhorn-outline
           {% endif %}
+  - sensor:
+      - name: alexa_audio
+        state: >-
+          {%- if is_state('sensor.last_alexa', 'media_player.bedroom_speaker') %}
+            living_room
+          {% else %}
+            main
+          {%- endif %}
+      - name: last_alexa
+        state: >
+          {{ expand('group.all_echos') | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
 
 telegram_bot:
   - platform: polling
@@ -112,6 +128,103 @@ notify:
   - name: telegram_mice
     platform: telegram
     chat_id: !secret tg_me
+
+automation:
+  - id: 81bee5ee-6820-4626-aebf-3deb8de69e4d
+    alias: Turn On Audible Notifications
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.audible_notification_on', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.audible_notifications
+
+  - id: e0e9c774-6abe-42aa-bdab-32108bebb0e9
+    alias: Turn Off Audible Notifications
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.audible_notification_off', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.audible_notifications
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.audible_notifications
+
+  - id: 1b90aaff-bf0a-4bae-8228-5119e42aacb7
+    alias: Turn On Text Notifications
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.text_notification_on', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.text_notifications
+
+  - id: e6d25a55-4b6a-408f-9178-e1ec5ca80378
+    alias: Turn Off Text Notifications
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.text_notification_off', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.text_notifications
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.text_notifications
+
+  - id: c3935663-68a2-4a7d-8acb-58934a8aa8b3
+    alias: Turn On Telegram Notifications
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.telegram_notification_on', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.text_notifications
+
+  - id: 7899c9ea-1820-4e36-924f-9589963e608a
+    alias: Turn Off Telegram Notifications
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.telegram_notification_off', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.telegram_notifications
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.telegram_notifications
+
+  - id: acd6e703-0dff-469a-8b42-d2cc21c6494a
+    alias: Turn On Visual Notifications
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.visual_notification_on', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.visual_notifications
+
+  - id: 1f537570-478d-4de7-8c59-cc304f06cb1c
+    alias: Turn Off Visual Notifications
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.visual_notification_off', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.visual_notifications
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.visual_notifications
 
 script:
   ###############################################################################
@@ -262,3 +375,132 @@ script:
             {% set msg = msg.replace(".", " <break time='0.5s'/> ") %}
             {% set msg = msg + " </speak>" %}
             {{ msg }}
+
+  ################################
+  # local_audio is meant to be used to play audio in your media folder. (https://www.home-assistant.io/integrations/media_source/)
+  #
+  # Before using make sure you update as needed.
+  #
+  # To call this using in the action section of your automation:
+  #
+  # - service: script.local_audio
+  #   data:
+  #     speaker: main
+  #     volume: .3
+  #     media: /media/local_audio.mp3
+  #
+  local_audio:
+    sequence:
+      # Ensure that audible notifications are allowed. Comment out if not needed.
+      - condition: state
+        entity_id: input_boolean.audible_notifications
+        state: "on"
+      # Ensure the family is home. If you are using a group to track the family, or a person just update as needed. Comment out if not needed.
+      - condition: state
+        entity_id: sensor.family_home
+        state: "on"
+      # This sets the voume via a parameter when the script is called, and should be a value between .1 and 1.0
+      - service: media_player.volume_set
+        data:
+          entity_id: >
+            {% set who = speaker %}
+             {% if who == 'kitchen' %}
+               media_player.bedroom_speaker
+             {% elif who == 'main' %}
+               media_player.hbedroom_speaker
+             {% else %}
+               {% if states.input_boolean.audible_notifications.state == 'on' %}
+               media_player.bedroom_speaker
+               {% else %}
+               media_player.bedroom_speaker
+               {% endif %}
+             {% endif %}
+          volume_level: >
+            {{ volume }}
+      - delay: 00:00:05
+      # This tells it to play the media and is set when the script is called.
+      - service: media_player.play_media
+        data:
+          entity_id: >
+            {% set who = speaker %}
+            {% if who == 'kitchen' %}
+              media_player.bedroom_speaker
+            {% elif who == 'theater' %}
+              media_player.bedroom_speaker
+            {% elif who == 'main' %}
+              media_player.bedroom_speaker
+            {% else %}
+              {% if states.input_boolean.audible_notifications.state == 'on' %}
+              media_player.bedroom_speaker
+              {% else %}
+              media_player.bedroom_speaker
+              {% endif %}
+            {% endif %}
+          media_content_type: "music"
+          media_content_id: >
+            {{ media }}
+
+  ################################
+  # youtube_audio is meant to be used to play audio from well youtube.
+  # This scrtip requires the media_extractor integration.
+  #
+  # Before using make sure you update as needed.
+  #
+  # To call this using in the action section of your automation:
+  #
+  # - service: script.youtube_audio
+  #   data:
+  #     speaker: main
+  #     volume: .5
+  #     media: https://www.youtube.com/watch?v=pVeX4C9B1Lk
+  #
+  youtube_audio:
+    sequence:
+      # Ensure that audible notifications are allowed. Comment out if not needed.
+      - condition: state
+        entity_id: input_boolean.audible_notifications
+        state: "on"
+      # Ensure the family is home. If you are using a group to track the family, or a person just update as needed. Comment out if not needed.
+      - condition: state
+        entity_id: sensor.family_home
+        state: "on"
+      # This sets the voume via a parameter when the script is called, and should be a value between .1 and 1.0
+      - service: media_player.volume_set
+        data:
+          entity_id: >
+            {% set who = speaker %}
+            {% if who == 'kitchen' %}
+              media_player.bedroom_speaker
+            {% elif who == 'theater' %}
+              media_player.bedroom_speaker
+            {% elif who == 'main' %}
+              media_player.ha_blue
+            {% else %}
+              {% if states.input_boolean.audible_notifications.state == 'on' %}
+              media_player.ha_blue
+              {% else %}
+              media_player.bedroom_speaker
+              {% endif %}
+            {% endif %}
+          volume_level: >
+            {{ volume }}
+      # This tells it to play the media and is set when the script is called.
+      #  media_content_type: video/Youtube
+      - service: media_extractor.play_media
+        data:
+          entity_id: >
+            {% set who = speaker %}
+            {% if who == 'kitchen' %}
+              media_player.bedroom_speaker
+            {% elif who == 'main' %}
+              media_player.bedroom_speaker
+            {% else %}
+              {% if states.input_boolean.audible_notifications.state == 'on' %}
+              media_player.bedroom_speaker
+              {% else %}
+              media_player.bedroom_speaker
+              {% endif %}
+            {% endif %}
+          media_content_type: music
+          media_content_id: >
+            {{ media }}

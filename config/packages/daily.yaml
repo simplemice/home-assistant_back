@@ -29,7 +29,7 @@ automation:
             entity_id: binary_sensor.bedroom_door_contact
             state: "on"
     action:
-      - service: script.simplemice_wakeup_routime
+      - service: script.wakeup_routime
         metadata: {}
         data: {}
     mode: single
@@ -65,7 +65,7 @@ automation:
             entity_id: light.bedside_lamp
             state: "on"
     action:
-      - service: script.bedroom_simplemice_sleep
+      - service: script.sleep_routime
         metadata: {}
         data: {}
     mode: single

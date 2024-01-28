@@ -5,9 +5,9 @@
 #   @description    :   A Collection of Presence Related Trackers and Sensors
 ###############################################################################
 input_datetime:
-  micebook_sheldue:
-    name: Micebook Sheldue
-    has_date: true
+  micebook_schedule:
+    name: Micebook Schedule
+    has_date: false
     has_time: true
 
 input_select:
@@ -22,8 +22,15 @@ input_select:
     initial: None
     icon: mdi:laptop
 
+timer:
+  micebook_timer:
+    name: Micebook Timer
+    duration: "00:15:00"
+    icon: mdi:timer
+    restore: true
+
 automation:
-  - id: micebook_off_automation
+  - id: a31d6bf7-8a5c-439b-8306-76312078dd84
     alias: Micebook - Turn Off Automation
     description: Night Mode
     trigger:
@@ -32,11 +39,6 @@ automation:
         entity_id:
           - binary_sensor.micebook_is_online
         to: "off"
-      - alias: Micebook Turn Off
-        platform: state
-        entity_id:
-          - binary_sensor.micebook_screen_lock_status
-        to: "on"
     condition:
       - condition: and
         conditions:
@@ -54,7 +56,7 @@ automation:
         data: {}
     mode: single
 
-  - id: micebook_control
+  - id: 8a74e641-7155-4f86-827b-2390fa960d30
     alias: Micebook Control
     description: ""
     trigger:
@@ -110,16 +112,8 @@ script:
       - delay:
           hours: 0
           minutes: 0
-          seconds: 2
+          seconds: 5
           milliseconds: 0
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: binary_sensor.micebook_is_online
-            state: "off"
-          - condition: state
-            entity_id: binary_sensor.micebook_screen_lock_status
-            state: "on"
       - service: notify.alexa_media_bedroom_speaker
         data:
           message: Okay, i see laptop is turned off....
@@ -177,14 +171,6 @@ script:
         target:
           entity_id:
             - light.lumi_gateway_v3_light
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 5
-          milliseconds: 0
-      - service: script.nightly_briefing
-        metadata: {}
-        data: {}
       - delay:
           hours: 0
           minutes: 0

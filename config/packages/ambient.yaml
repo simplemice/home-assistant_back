@@ -29,7 +29,7 @@ timer:
 
 automation:
   - id: 9bfcfdfe-558f-4a3e-9f1d-bd0118a26210
-    alias: Turn On Ambient Auto Node
+    alias: Turn On Ambient Auto Mode
     initial_state: true
     trigger:
       platform: template

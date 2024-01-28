@@ -159,6 +159,7 @@ script:
             {% else %}
               No tasks for today.
             {% endif %}
+          finish: >
             {{ [
               'And that is your morning briefing, folks! Remember, if coffee is not helping, it is probably because you need more coffee!',
               'That wraps up your morning briefing! Now go out there and conquer the day, or at least survive until lunchtime!',
@@ -173,10 +174,10 @@ script:
             ] | random }}
       - variables:
           briefing: >
-            {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}"}
+            {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}", "finish":"{{ finish }}"}
       - service: notify.alexa_media_bedroom_speaker
         data:
-          message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }}"
+          message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }} {{ finish }}"
 
   nightly_briefing:
     sequence:
@@ -353,6 +354,7 @@ script:
               'Hello! Wind down your day surrounded by the warmth of ' ~ ambient_lights_count ~  ' ambient lights, the subtle glow of ' ~ active_lights_count ~  ' active lights, and the soothing presence of ' ~ active_fans_count ~  ' fans.',
               'Good evening! As the night begins, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans create a cozy and calming atmosphere in your home.'
             ] | random }}
+          finish: >
             {{ [
               'And that is your evening briefing wrapped up! Remember, bedtime stories are just dreams with deadlines!',
               'With that, we bid adieu to your evening briefing! Remember, the early bird catches the worm, but the night owl gets the pizza delivery!',
@@ -367,7 +369,7 @@ script:
             ] | random }}
       - variables:
           briefing: >
-            {"nightly_snark":"{{nightly_snark}}","home_status":"{{home_status}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}"}
+            {"nightly_snark":"{{nightly_snark}}","home_status":"{{home_status}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}","finish":"{{ finish }}"}
       - service: notify.alexa_media_bedroom_speaker
         data:
-          message: "{{ nightly_snark }} {{ weather_status }} {{ home_status }} {{ device_status }} {{ tasks }}"
+          message: "{{ nightly_snark }} {{ weather_status }} {{ home_status }} {{ device_status }} {{ tasks }} {{ finish }}"

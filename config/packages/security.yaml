@@ -5,22 +5,8 @@
 #   @description    :   Everything related to security functions.
 ###############################################################################
 
-input_boolean:
-  security_alarm:
-    name: Security Alarm
-    icon: mdi:speaker-wireless
-  fire_alarm:
-    name: Fire Alarm
-    icon: mdi:speaker-wireless
-  leakage_alarm:
-    name: Leakage Alarm
-    icon: mdi:speaker-wireless
-  safe_alarm:
-    name: Safe Alarm
-    icon: mdi:speaker-wireless
-
 automation:
-  - id: ha_restarted
+  - id: e371e77b-7457-4a3d-874f-0cc7f994ce5f
     alias: Alarm - HA Started Notification
     description: ""
     trigger:
@@ -68,10 +54,9 @@ automation:
                         "Systems are operational. Mouse House is now managed by the automation system.",
                         "The automation matrix is active. Mouse House is under control for your convenience."
                     ] | random }}
-    mode: single
 
   ############ Away and Return Automations
-  - id: away_mode
+  - id: d696d46d-0b6d-4768-aeba-0014da5e7447
     alias: Alarm - Away with Snapshot
     description: ""
     trigger:
@@ -102,83 +87,17 @@ automation:
                 entity_id: person.simplemice
                 state: Monkey Office
     action:
-      - service: alarm_control_panel.alarm_arm_away
-        data:
-          code: "5412"
-        target:
-          entity_id:
-            - alarm_control_panel.house
       - service: script.take_snapshot_of_states_before_away
         data: {}
       - delay:
           hours: 0
           minutes: 0
-          seconds: 2
+          seconds: 5
           milliseconds: 0
-      - parallel:
-          - service: light.turn_off
-            metadata: {}
-            data: {}
-            target:
-              entity_id:
-                - light.all_ambient
-                - light.all_lights
-                - light.awtrix_44dff8_matrix
-                - light.wled_matrix
-          - service: fan.turn_off
-            data: {}
-            target:
-              entity_id:
-                - fan.all_fans
-          - service: switch.turn_off
-            data: {}
-            target:
-              entity_id:
-                - switch.kitchen_kettle
-                - switch.livingroom_curtains
-          - service: input_boolean.turn_off
-            data: {}
-            target:
-              entity_id:
-                - input_boolean.garage_camera_notification
-                - input_boolean.backyard_camera_notification
-                - input_boolean.audible_notifications
-          - service: input_boolean.turn_on
-            metadata: {}
-            data: {}
-            target:
-              entity_id:
-                - input_boolean.text_notifications
-          - if:
-              - condition: state
-                entity_id: media_player.spotify_simplemice
-                state: playing
-            then:
-              - service: media_player.media_pause
-                target:
-                  entity_id: media_player.spotify_simplemice
-                data: {}
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 2
-          milliseconds: 0
-      - service: notify.mobile_app_micemob
-        data:
-          title: Notification
-          message: |
-            {{ [
-                "Alarm activated! Irregular states detected during away mode. Please investigate immediately.",
-                "Alert: The alarm has been triggered due to unexpected states while away. Check the situation urgently.",
-                "Security breach! The alarm is on because of unusual states during away mode. Investigate the issue now.",
-                "Emergency alert: The alarm has been triggered. Check for unexpected states during away mode.",
-                "Attention: Alarm activated! Irregular states detected while in away mode. Investigate for security reasons.",
-                "Security breach detected! The alarm is sounding due to unexpected states in away mode. Check the situation immediately.",
-                "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
-            ] | random }}
-    mode: single
+      - service: script.away_mode_all_off
+        data: {}
 
-  - id: return_mode
+  - id: eb3b6c4c-8150-4e63-a1e5-5ab844edce5e
     alias: Alarm - Return to Home
     description: ""
     trigger:
@@ -250,3 +169,79 @@ automation:
 
 ############### House and Safe Alarm Automations
 script:
+  away_mode_all_off:
+    alias: Away Mode All States Off
+    sequence:
+      - service: alarm_control_panel.alarm_arm_away
+        data:
+          code: "5412"
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - parallel:
+          - service: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - light.all_ambient
+                - light.all_lights
+                - light.awtrix_44dff8_matrix
+                - light.wled_matrix
+          - service: fan.turn_off
+            data: {}
+            target:
+              entity_id:
+                - fan.all_fans
+          - service: switch.turn_off
+            data: {}
+            target:
+              entity_id:
+                - switch.kitchen_kettle
+                - switch.livingroom_curtains
+          - service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.garage_camera_notification
+                - input_boolean.backyard_camera_notification
+                - input_boolean.audible_notifications
+          - service: input_boolean.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.text_notifications
+          - if:
+              - condition: state
+                entity_id: media_player.spotify_simplemice
+                state: playing
+            then:
+              - service: media_player.media_pause
+                target:
+                  entity_id: media_player.spotify_simplemice
+                data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: notify.mobile_app_micemob
+        data:
+          title: Notification
+          message: |
+            {{ [
+                "Alarm activated! Irregular states detected during away mode. Please investigate immediately.",
+                "Alert: The alarm has been triggered due to unexpected states while away. Check the situation urgently.",
+                "Security breach! The alarm is on because of unusual states during away mode. Investigate the issue now.",
+                "Emergency alert: The alarm has been triggered. Check for unexpected states during away mode.",
+                "Attention: Alarm activated! Irregular states detected while in away mode. Investigate for security reasons.",
+                "Security breach detected! The alarm is sounding due to unexpected states in away mode. Check the situation immediately.",
+                "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
+            ] | random }}
+    icon: mdi:shield-lock

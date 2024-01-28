@@ -1,0 +1,169 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Weather
+#   @description    :   Weather automations.
+###############################################################################
+
+geo_location:
+  - platform: usgs_earthquakes_feed
+    feed_type: "past_day_all_earthquakes"
+    radius: 1500
+    minimum_magnitude: 0.0
+
+sensor:
+  - platform: openweathermap_all
+    api_key: !secret openweather_all
+    latitude: !secret weather_lat
+    longitude: !secret weather_long
+
+  - platform: sun2
+    monitored_conditions:
+      - sunrise
+      - solar_noon
+      - sunset
+      - dusk
+      - nautical_dusk
+      - astronomical_dusk
+      - daylight
+      - civil_daylight
+      - nautical_daylight
+      - astronomical_daylight
+      - night
+      - civil_night
+      - nautical_night
+      - astronomical_night
+      - elevation
+      - min_elevation
+      - max_elevation
+      - sun_phase
+      - deconz_daylight
+
+  - platform: template
+    sensors:
+      day_duration:
+        friendly_name: "Day Duration"
+        value_template: >-
+          {% set sunrise = state_attr('sun.sun', 'next_rising') %}
+          {% set sunset = state_attr('sun.sun', 'next_setting') %}
+          {% set now = utcnow() %}
+          {% if now < sunrise %}
+            {{ (sunset - sunrise).total_seconds() }}
+          {% else %}
+            {{ (sunset - now).total_seconds() }}
+          {% endif %}
+        unit_of_measurement: seconds
+
+  - platform: template
+    sensors:
+      night_duration:
+        friendly_name: "Night Duration"
+        value_template: >-
+          {% set sunrise = state_attr('sun.sun', 'next_rising') %}
+          {% set sunset = state_attr('sun.sun', 'next_setting') %}
+          {% set now = utcnow() %}
+          {% if now < sunrise %}
+            {{ (sunrise - now).total_seconds() }}
+          {% else %}
+            {{ (sunrise - sunset).total_seconds() }}
+          {% endif %}
+        unit_of_measurement: seconds
+
+automation:
+  - id: 3059db4c-8602-4ab6-8cf4-1d07c5992d86
+    alias: Rain Outside Notification
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.rain_sensor
+        to: "on"
+    condition:
+      - condition: time
+        after: "08:00:00"
+        before: "20:00:00"
+    action:
+      - service: script.rain_outside_notification
+        metadata: {}
+        data: {}
+
+script:
+  rain_outside_notification:
+    alias: Rain Outside Notification
+    sequence:
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: <audio src="soundbank://soundlibrary/weather/thunder/thunder_10"/>
+          data:
+            type: tts
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: |
+                    {{ [
+                        "Rain alert: It's currently raining outside. Take necessary precautions when heading outdoors.",
+                        "Attention: Rain detected outside. Don't forget your umbrella if you plan to go out.",
+                        "Rainy weather: It's currently raining. Consider adjusting your plans accordingly.",
+                        "Weather update: Rain is falling outside. Stay dry and be cautious on the roads.",
+                        "Umbrella time: Rain detected outside. Grab an umbrella before heading out.",
+                        "Rainfall alert: It's raining. Make sure to check the weather conditions before going outside.",
+                        "Rainy day reminder: The weather outside is rainy. Take appropriate measures for your activities."
+                    ] | random }}
+              - service: select.select_option
+                target:
+                  entity_id: select.wled_matrix_preset
+                data:
+                  option: Lightning
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 10
+                  milliseconds: 0
+              - service: notify.alexa_media_bedroom_speaker
+                data:
+                  message: >-
+                    <audio
+                    src="soundbank://soundlibrary/weather/thunder/thunder_10"/>
+                  data:
+                    type: tts
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 15
+                  milliseconds: 0
+              - service: select.select_option
+                data:
+                  option: Black Hole
+                target:
+                  entity_id: select.wled_matrix_preset
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - service: notify.simplemice
+                data:
+                  message: TTS
+                  data:
+                    media_stream: alarm_stream_max
+                    tts_text: |
+                      {{ [
+                          "Rain alert: It's currently raining outside. Take necessary precautions when heading outdoors.",
+                          "Attention: Rain detected outside. Don't forget your umbrella if you plan to go out.",
+                          "Rainy weather: It's currently raining. Consider adjusting your plans accordingly.",
+                          "Weather update: Rain is falling outside. Stay dry and be cautious on the roads.",
+                          "Umbrella time: Rain detected outside. Grab an umbrella before heading out.",
+                          "Rainfall alert: It's raining. Make sure to check the weather conditions before going outside.",
+                          "Rainy day reminder: The weather outside is rainy. Take appropriate measures for your activities."
+                      ] | random }}
+    icon: fas:cloud-rain

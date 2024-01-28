@@ -355,5 +355,3 @@ sensor:
           {% else %}
             hue:room-living-off
           {% endif %}
-
-automation:

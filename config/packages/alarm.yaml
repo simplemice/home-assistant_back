@@ -16,9 +16,21 @@ input_datetime:
     has_time: true
 
 input_boolean:
-  house_away:
-    name: "House Away Mode"
+  alarm_mode_time:
+    name: "House Alarm Mode Time"
     icon: mdi:shield-lock
+  security_alarm:
+    name: Security Alarm
+    icon: mdi:speaker-wireless
+  fire_alarm:
+    name: Fire Alarm
+    icon: mdi:speaker-wireless
+  leakage_alarm:
+    name: Leakage Alarm
+    icon: mdi:speaker-wireless
+  safe_alarm:
+    name: Safe Alarm
+    icon: mdi:speaker-wireless
 
 timer:
   alarm_timer:
@@ -63,8 +75,32 @@ sensor:
           {% endif %}
 
 automation:
+  - id: 0707783c-c303-43e7-ad3a-52c383e90140
+    alias: Turn On Alarm Auto Mode
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.alarm_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.alarm_mode_time
+
+  - id: 354cb13f-0f67-4fd9-918f-81dcc433cc8f
+    alias: Turn Off Alarm Auto Mode
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.disarm_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.alarm_mode_time
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alarm_mode_time
+
   - id: ba39f2d2-8692-4cf4-a52c-529a1318bb14
-    alias: Alarm - Safe Alarm Automation
+    alias: Safe Alarm Automation
     description: ""
     trigger:
       - platform: tag
@@ -78,5 +114,3 @@ automation:
         metadata: {}
         data: {}
     mode: single
-
-script:
