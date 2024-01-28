@@ -74,63 +74,63 @@ mqtt:
 
 template:
   - sensor:
-      # - name: room_audio
-      #   state: >-
-      #     {% if is_state('input_boolean.audible_notifications', 'on') %}
-      #     {% if expand('group.rooms')
-      #     | selectattr('state', 'eq', 'on') | list | count >= 1 %}
-      #     {% set sensor_ro = expand('group.rooms')
-      #     | selectattr('state', 'eq', 'on')
-      #     | sort(attribute='last_changed') | last %}
-      #     {% endif %}
-      #     {% if sensor_ro is defined and
-      #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
-      #     | round(0) <= states('input_number.presence_threshold') | float %}
-      #     {{ sensor_ro.name.replace('_occupied','') }}
-      #     {% elif expand('group.room_presence')
-      #     | rejectattr('state', 'eq', 'NA')
-      #     | sort(attribute='last_changed') | list | count >=1  %}
-      #       {% set sensor_rp = expand('group.room_presence')
-      #       | rejectattr('state', 'eq', 'NA')
-      #       | sort(attribute='last_changed') | last %}
-      #         {% if sensor_rp is defined %}
-      #         {{ sensor_rp.state }}
-      #         {% endif %}
-      #     {% elif sensor_ro is defined %}
-      #       {{ sensor_ro.name.replace('_occupied','') }}
-      #     {% else -%}
-      #       main
-      #     {%- endif -%}
-      #     {% else %}
-      #     {%- if expand('group.rooms')
-      #     | rejectattr('name', 'search', 'NA|bedroom')
-      #     | selectattr('state', 'eq', 'on') | list | count >= 1 -%}
-      #     {%- set sensor_ro = expand('group.rooms')
-      #     | rejectattr('name', 'search', 'NA|bedroom')
-      #     | selectattr('state', 'eq', 'on')
-      #     | sort(attribute='last_changed') | last -%}
-      #     {%- endif -%}
-      #     {%- if sensor_ro is defined and
-      #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
-      #     | round(0) <= states('input_number.presence_threshold') | float -%}
-      #     {{ sensor_ro.name.replace('_occupied','') }}
-      #     {%- elif expand('group.room_presence')
-      #     | rejectattr('state', 'search', 'NA|bedroom')
-      #     | sort(attribute='last_changed') | list | count >=1  -%}
-      #       {%- set sensor_rp = expand('group.room_presence')
-      #       | rejectattr('state', 'search', 'NA|bedroom')
-      #       | sort(attribute='last_changed') | last %}
-      #         {%- if sensor_rp is defined %}
-      #         {{ sensor_rp.state }}
-      #         {%- endif %}
-      #     {%- elif sensor_ro is defined -%}
-      #       {{ sensor_ro.name.replace('_occupied','') }}
-      #     {%- else -%}
-      #       main
-      #     {%- endif %}
-      #     {%- endif %}
-      #   attributes:
-      #     presence_source: 'NA'
+    # - name: room_audio
+    #   state: >-
+    #     {% if is_state('input_boolean.audible_notifications', 'on') %}
+    #     {% if expand('group.rooms')
+    #     | selectattr('state', 'eq', 'on') | list | count >= 1 %}
+    #     {% set sensor_ro = expand('group.rooms')
+    #     | selectattr('state', 'eq', 'on')
+    #     | sort(attribute='last_changed') | last %}
+    #     {% endif %}
+    #     {% if sensor_ro is defined and
+    #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
+    #     | round(0) <= states('input_number.presence_threshold') | float %}
+    #     {{ sensor_ro.name.replace('_occupied','') }}
+    #     {% elif expand('group.room_presence')
+    #     | rejectattr('state', 'eq', 'NA')
+    #     | sort(attribute='last_changed') | list | count >=1  %}
+    #       {% set sensor_rp = expand('group.room_presence')
+    #       | rejectattr('state', 'eq', 'NA')
+    #       | sort(attribute='last_changed') | last %}
+    #         {% if sensor_rp is defined %}
+    #         {{ sensor_rp.state }}
+    #         {% endif %}
+    #     {% elif sensor_ro is defined %}
+    #       {{ sensor_ro.name.replace('_occupied','') }}
+    #     {% else -%}
+    #       main
+    #     {%- endif -%}
+    #     {% else %}
+    #     {%- if expand('group.rooms')
+    #     | rejectattr('name', 'search', 'NA|bedroom')
+    #     | selectattr('state', 'eq', 'on') | list | count >= 1 -%}
+    #     {%- set sensor_ro = expand('group.rooms')
+    #     | rejectattr('name', 'search', 'NA|bedroom')
+    #     | selectattr('state', 'eq', 'on')
+    #     | sort(attribute='last_changed') | last -%}
+    #     {%- endif -%}
+    #     {%- if sensor_ro is defined and
+    #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
+    #     | round(0) <= states('input_number.presence_threshold') | float -%}
+    #     {{ sensor_ro.name.replace('_occupied','') }}
+    #     {%- elif expand('group.room_presence')
+    #     | rejectattr('state', 'search', 'NA|bedroom')
+    #     | sort(attribute='last_changed') | list | count >=1  -%}
+    #       {%- set sensor_rp = expand('group.room_presence')
+    #       | rejectattr('state', 'search', 'NA|bedroom')
+    #       | sort(attribute='last_changed') | last %}
+    #         {%- if sensor_rp is defined %}
+    #         {{ sensor_rp.state }}
+    #         {%- endif %}
+    #     {%- elif sensor_ro is defined -%}
+    #       {{ sensor_ro.name.replace('_occupied','') }}
+    #     {%- else -%}
+    #       main
+    #     {%- endif %}
+    #     {%- endif %}
+    #   attributes:
+    #     presence_source: 'NA'
 
   - sensor:
       - name: "Living Room Occupied"
@@ -165,6 +165,26 @@ template:
           {% else %}
             no
           {% endif %}
+  - binary_sensor:
+      - name: "Family Home"
+        unique_id: family_home
+        value_template: >
+          {{ is_state('group.family', 'home') }}
+        icon_template: >
+          {% if is_state('sensor.family_home','0') %} mdi:account-off
+          {% elif is_state('sensor.family_home','1') %} mdi:account
+          {% elif is_state('sensor.family_home','2') %} mdi:account-multiple
+          {% elif is_state('sensor.family_home','3') %} mdi:account-multiple-check
+          {% else %} mdi:account-group
+          {% endif %}
+  - platform: tod
+    name: Morning
+    after: "07:30"
+    before: "08:30"
+  - platform: tod
+    name: Evening
+    after: "18:30"
+    before: "20:00"
 zone:
   - name: Home
     latitude: !secret home_lat
