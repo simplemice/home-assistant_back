@@ -2,7 +2,10 @@
 ### Groups ###
 
 family:
-  - person.simplemice
+  name: Family
+  unique_id: family_group
+  entities:
+    - person.simplemice
 
 arriving:
   name: Arriving
