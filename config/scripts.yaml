@@ -1,37 +1,3 @@
-take_snapshot_of_states_before_away:
-  alias: Alarm - Take snapshot of states before away
-  sequence:
-  - service: scene.create
-    data:
-      scene_id: go_away_states
-      snapshot_entities:
-      - fan.dmaker_p23_42a8_fan
-      - fan.dmaker_p28_19b6_fan
-      - fan.zhimi_fa1_4020_fan
-      - fan.kitchen_power_strip_switch
-      - climate.bedroom_aircon
-      - light.lightstrip
-      - light.kitchen_wall_switch_left
-      - light.kitchen_wall_switch_right
-      - light.kitchen_wall_switch_center
-      - light.lumi_gateway_v3_light
-      - light.tv_table_ambient
-      - light.kitchen_ambient
-      - light.livingroom_night_ambient
-      - light.wled_matrix
-      - light.awtrix_44dff8_matrix
-      - switch.raspberry_outlet
-      - switch.kitchen_kettle
-      - input_boolean.livingroom_curtains
-      - media_player.spotify_simplemice
-      - select.wled_matrix_preset
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 10
-      milliseconds: 0
-  mode: single
-  icon: mdi:state-machine
 spotify_start_playback:
   alias: Spotify Start Playback
   sequence:

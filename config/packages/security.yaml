@@ -57,6 +57,7 @@ automation:
 
   ############ Away and Return Automations
   - id: d696d46d-0b6d-4768-aeba-0014da5e7447
+    mode: restart
     alias: Alarm - Away with Snapshot
     description: ""
     trigger:
@@ -87,7 +88,7 @@ automation:
                 entity_id: person.simplemice
                 state: Monkey Office
     action:
-      - service: script.take_snapshot_of_states_before_away
+      - service: script.away_mode_with_snapshot
         data: {}
       - delay:
           hours: 0
@@ -98,6 +99,7 @@ automation:
         data: {}
 
   - id: eb3b6c4c-8150-4e63-a1e5-5ab844edce5e
+    mode: restart
     alias: Alarm - Return to Home
     description: ""
     trigger:
@@ -165,7 +167,6 @@ automation:
           milliseconds: 0
       - service: scene.reload
         data: {}
-    mode: single
 
 ############### House and Safe Alarm Automations
 script:
@@ -245,3 +246,39 @@ script:
                 "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
             ] | random }}
     icon: mdi:shield-lock
+    mode: restart
+
+  away_mode_with_snapshot:
+    alias: Alarm - Take snapshot of states before away
+    sequence:
+      - service: scene.create
+        data:
+          scene_id: go_away_states
+          snapshot_entities:
+            - fan.dmaker_p23_42a8_fan
+            - fan.dmaker_p28_19b6_fan
+            - fan.zhimi_fa1_4020_fan
+            - fan.kitchen_power_strip_switch
+            - climate.bedroom_aircon
+            - light.lightstrip
+            - light.kitchen_wall_switch_left
+            - light.kitchen_wall_switch_right
+            - light.kitchen_wall_switch_center
+            - light.lumi_gateway_v3_light
+            - light.tv_table_ambient
+            - light.kitchen_ambient
+            - light.livingroom_night_ambient
+            - light.wled_matrix
+            - light.awtrix_44dff8_matrix
+            - switch.raspberry_outlet
+            - switch.kitchen_kettle
+            - input_boolean.livingroom_curtains
+            - media_player.spotify_simplemice
+            - select.wled_matrix_preset
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+    mode: restart
+    icon: mdi:state-machine
