@@ -1,19 +1,33 @@
 ###############################################################################
-#   @author         :   Jeffrey Stone
-#   @date           :   02/19/2019
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
 #   @package        :   Presence
 #   @description    :   A Collection of Presence Related Trackers and Sensors
 ###############################################################################
+input_boolean:
+  presence_off:
+    name: "Auto Presence Mode Off"
+    icon: mdi:location-enter
+
+input_datetime:
+  manual_presence_on_time:
+    name: Disable Presence Detection for time
+    has_date: false
+    has_time: true
+  manual_presence_off_time:
+    name: Enable Presence Detection Auto Mode
+    has_date: false
+    has_time: true
+
+timer:
+  presence_off_timer:
+    name: Presence Off Timer
+    duration: "00:30:00"
+    icon: mdi:timer
+    restore: true
 
 proximity:
-  home_mice:
-    devices:
-      - person.simplemice
-    zone: home
-    tolerance: 5
-    unit_of_measurement: km
-
-  home:
+  simplemice:
     devices:
       - person.simplemice
     zone: home
@@ -158,4 +172,242 @@ zone:
     radius: 50
     icon: mdi:home
 
+automation:
+  ############ Away and Return Automations
+  - id: d696d46d-0b6d-4768-aeba-0014da5e7447
+    mode: restart
+    alias: Away with Snapshot
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: not_home
+        from: home
+        for:
+          hours: 0
+          minutes: 1
+          seconds: 0
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.all_doors
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.bed_presense
+            state: "off"
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: person.simplemice
+                state: not_home
+              - condition: state
+                entity_id: person.simplemice
+                state: Monkey Office
+    action:
+      - service: script.away_mode_with_snapshot
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: script.away_mode_all_off
+        data: {}
+
+  - id: eb3b6c4c-8150-4e63-a1e5-5ab844edce5e
+    mode: restart
+    alias: Away Off Return to Home
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: home
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: light.lumi_gateway_v3_light
+            state: "off"
+    action:
+      - service: script.return_home
+        metadata: {}
+        data: {}
+
 script:
+  away_mode_all_off:
+    alias: Away Mode All States Off
+    sequence:
+      - service: alarm_control_panel.alarm_arm_away
+        data:
+          code: !secret alarm_code
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - parallel:
+          - service: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - light.all_ambient
+                - light.all_lights
+                - light.awtrix_44dff8_matrix
+                - light.wled_matrix
+          - service: fan.turn_off
+            data: {}
+            target:
+              entity_id:
+                - fan.all_fans
+          - service: switch.turn_off
+            data: {}
+            target:
+              entity_id:
+                - switch.kitchen_kettle
+                - switch.livingroom_curtains
+          - service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.garage_camera_notification
+                - input_boolean.backyard_camera_notification
+                - input_boolean.audible_notifications
+          - service: input_boolean.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.text_notifications
+          - if:
+              - condition: state
+                entity_id: media_player.spotify_simplemice
+                state: playing
+            then:
+              - service: media_player.media_pause
+                target:
+                  entity_id: media_player.spotify_simplemice
+                data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: notify.mobile_app_micemob
+        data:
+          title: Notification
+          message: |
+            {{ [
+                "Alarm activated! Irregular states detected during away mode. Please investigate immediately.",
+                "Alert: The alarm has been triggered due to unexpected states while away. Check the situation urgently.",
+                "Security breach! The alarm is on because of unusual states during away mode. Investigate the issue now.",
+                "Emergency alert: The alarm has been triggered. Check for unexpected states during away mode.",
+                "Attention: Alarm activated! Irregular states detected while in away mode. Investigate for security reasons.",
+                "Security breach detected! The alarm is sounding due to unexpected states in away mode. Check the situation immediately.",
+                "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
+            ] | random }}
+    icon: mdi:shield-lock
+    mode: restart
+
+  away_mode_with_snapshot:
+    alias: Alarm - Take snapshot of states before away
+    sequence:
+      - service: scene.create
+        data:
+          scene_id: go_away_states
+          snapshot_entities:
+            - fan.dmaker_p23_42a8_fan
+            - fan.dmaker_p28_19b6_fan
+            - fan.zhimi_fa1_4020_fan
+            - fan.kitchen_power_strip_switch
+            - climate.bedroom_aircon
+            - light.lightstrip
+            - light.kitchen_wall_switch_left
+            - light.kitchen_wall_switch_right
+            - light.kitchen_wall_switch_center
+            - light.lumi_gateway_v3_light
+            - light.tv_table_ambient
+            - light.kitchen_ambient
+            - light.livingroom_night_ambient
+            - light.wled_matrix
+            - light.awtrix_44dff8_matrix
+            - switch.raspberry_outlet
+            - switch.kitchen_kettle
+            - input_boolean.livingroom_curtains
+            - media_player.spotify_simplemice
+            - select.wled_matrix_preset
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+    mode: restart
+    icon: mdi:state-machine
+
+  return_home:
+    alias: Return Home
+    sequence:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: alarm_control_panel.alarm_arm_home
+        data:
+          code: !secret alarm_code
+        target:
+          entity_id:
+            - alarm_control_panel.house
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - parallel:
+          - service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.garage_camera_notification
+                - input_boolean.backyard_camera_notification
+                - input_boolean.audible_notifications
+          - service: input_boolean.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id:
+                - input_boolean.text_notifications
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 40
+          milliseconds: 0
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: |
+            {{ [
+                "Great timing! The alarm is off as states returned to normal before leaving the house.",
+                "Lucky break: The alarm is now disarmed because regular states resumed before you left the house.",
+                "Smart move! The alarm is off since states have resumed to normal before your departure.",
+                "Perfect timing: The alarm is deactivated as states have resumed before leaving the house.",
+                "Well done! The alarm is disarmed as states returned to normal before you left the house.",
+                "Safe departure: The alarm is off. Regular states have resumed before leaving the house.",
+                "Timely disarm: The alarm is deactivated because states are back to normal before leaving the house."
+            ] | random }}
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      - service: scene.reload
+        data: {}
+      - stop: finish
+        response_variable: finish
+    mode: restart
+    icon: mdi:home

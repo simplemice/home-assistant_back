@@ -114,3 +114,5 @@ automation:
         metadata: {}
         data: {}
     mode: single
+
+script:

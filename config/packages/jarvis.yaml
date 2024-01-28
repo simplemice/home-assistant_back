@@ -131,6 +131,7 @@ sensor:
 
 script:
   speech_engine:
+    alias: Main Speech Engine
     sequence:
       - service: mqtt.publish
         data_template:
@@ -198,6 +199,7 @@ script:
             {{- cleanup(mother_of_all_macros()) -}}
 
   jarvis_voice:
+    alias: Speech Engine Jarvis Voice
     sequence:
       - if:
           - condition: template
@@ -267,6 +269,7 @@ script:
               data:
                 type: tts
   jarvis_alert:
+    alias: Jarvis Alert Speech
     sequence:
       - service: mqtt.publish
         data_template:
@@ -322,6 +325,7 @@ script:
             </speak>
           cache: true
   announcement:
+    alias: Announcement Speech Voice
     sequence:
       - service: script.speech_engine
         data:
@@ -360,6 +364,7 @@ script:
             {% endif %} 
             {{ message }}"
   briefing:
+    alias: Briefing Speech Engine
     sequence:
       - service: script.speech_engine
         data:
@@ -381,6 +386,7 @@ script:
             {% endif %}
             {{ message }}
   jarvis_already_done:
+    alias: Jarvis Already Done Voice
     sequence:
       - service: script.speech_engine
         data:
@@ -392,6 +398,7 @@ script:
             'I am so fast it is already done.'
             ]| random }}
   jarvis_response:
+    alias: Jarvis Response Voice
     sequence:
       - service: script.speech_engine
         data:
@@ -423,6 +430,7 @@ script:
           call_confirmation: 1
 
   jarvis_said_what:
+    alias: Repite Last Jarvis Message
     sequence:
       - service: script.speech_engine
         data:

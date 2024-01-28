@@ -49,7 +49,6 @@ smartir:
 
 automation: !include automations.yaml
 binary_sensor: !include_dir_merge_list binary_sensors
-sensor: !include_dir_merge_list sensors
 switch: !include_dir_merge_list switches
 script: !include scripts.yaml
 scene: !include scenes.yaml

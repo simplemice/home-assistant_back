@@ -243,85 +243,86 @@ automation:
         data: {}
 
 script:
-  alias: Kitchen Water Tank Low Notification
-  sequence:
-    - choose:
-        - conditions:
-            - condition: and
-              conditions:
-                - condition: state
-                  entity_id: person.simplemice
-                  state: home
-                - condition: state
-                  entity_id: input_boolean.audible_notifications
-                  state: "on"
-          sequence:
-            - repeat:
-                sequence:
-                  - service: notify.alexa_media_bedroom_speaker
-                    data:
-                      message: |
-                        {{ [
-                            "Warning: Water tank level is low. Consider refilling it to ensure a continuous water supply.",
-                            "Alert: The water tank is running low. Please check and refill to avoid interruptions.",
-                            "Low water level detected! Ensure the water tank is replenished to avoid disruptions.",
-                            "Attention: Water tank is nearly empty. Refill to maintain a sufficient water supply.",
-                            "Urgent: Low water level in the tank. Take action to prevent any water shortages.",
-                            "Water supply alert: The tank is low. Check and refill to avoid inconvenience.",
-                            "Critical: Water tank level is low. Refill promptly to ensure a continuous water supply."
-                          ] | random }}
-                  - delay:
-                      hours: 0
-                      minutes: 10
-                      seconds: 0
-                      milliseconds: 0
-                until:
-                  - type: is_value
-                    condition: device
-                    device_id: 9be7b2d13e72b6683f75158901d19ea5
-                    entity_id: e46e9bc06cadd14b8a18f9eebe612743
-                    domain: sensor
-                    above: 30
-        - conditions:
-            - condition: and
-              conditions:
-                - condition: state
-                  entity_id: input_boolean.text_notifications
-                  state: "on"
-                - condition: or
-                  conditions:
-                    - condition: state
-                      entity_id: person.simplemice
-                      state: not_home
-                    - condition: state
-                      entity_id: person.simplemice
-                      state: Monkey Office
-          sequence:
-            - repeat:
-                sequence:
-                  - service: notify.simplemice
-                    data:
-                      message: |
-                        {{ [
-                            "Warning: Water tank level is low. Consider refilling it to ensure a continuous water supply.",
-                            "Alert: The water tank is running low. Please check and refill to avoid interruptions.",
-                            "Low water level detected! Ensure the water tank is replenished to avoid disruptions.",
-                            "Attention: Water tank is nearly empty. Refill to maintain a sufficient water supply.",
-                            "Urgent: Low water level in the tank. Take action to prevent any water shortages.",
-                            "Water supply alert: The tank is low. Check and refill to avoid inconvenience.",
-                            "Critical: Water tank level is low. Refill promptly to ensure a continuous water supply."
-                          ] | random }}
-                  - delay:
-                      hours: 0
-                      minutes: 45
-                      seconds: 0
-                      milliseconds: 0
-                until:
-                  - type: is_value
-                    condition: device
-                    device_id: 9be7b2d13e72b6683f75158901d19ea5
-                    entity_id: e46e9bc06cadd14b8a18f9eebe612743
-                    domain: sensor
-                    above: 30
-  mode: single
-  icon: mdi:propane-tank-outline
+  water_tank_low_notify:
+    alias: Kitchen Water Tank Low Notification
+    sequence:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: person.simplemice
+                    state: home
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+            sequence:
+              - repeat:
+                  sequence:
+                    - service: notify.alexa_media_bedroom_speaker
+                      data:
+                        message: |
+                          {{ [
+                              "Warning: Water tank level is low. Consider refilling it to ensure a continuous water supply.",
+                              "Alert: The water tank is running low. Please check and refill to avoid interruptions.",
+                              "Low water level detected! Ensure the water tank is replenished to avoid disruptions.",
+                              "Attention: Water tank is nearly empty. Refill to maintain a sufficient water supply.",
+                              "Urgent: Low water level in the tank. Take action to prevent any water shortages.",
+                              "Water supply alert: The tank is low. Check and refill to avoid inconvenience.",
+                              "Critical: Water tank level is low. Refill promptly to ensure a continuous water supply."
+                            ] | random }}
+                    - delay:
+                        hours: 0
+                        minutes: 10
+                        seconds: 0
+                        milliseconds: 0
+                  until:
+                    - type: is_value
+                      condition: device
+                      device_id: 9be7b2d13e72b6683f75158901d19ea5
+                      entity_id: e46e9bc06cadd14b8a18f9eebe612743
+                      domain: sensor
+                      above: 30
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.text_notifications
+                    state: "on"
+                  - condition: or
+                    conditions:
+                      - condition: state
+                        entity_id: person.simplemice
+                        state: not_home
+                      - condition: state
+                        entity_id: person.simplemice
+                        state: Monkey Office
+            sequence:
+              - repeat:
+                  sequence:
+                    - service: notify.simplemice
+                      data:
+                        message: |
+                          {{ [
+                              "Warning: Water tank level is low. Consider refilling it to ensure a continuous water supply.",
+                              "Alert: The water tank is running low. Please check and refill to avoid interruptions.",
+                              "Low water level detected! Ensure the water tank is replenished to avoid disruptions.",
+                              "Attention: Water tank is nearly empty. Refill to maintain a sufficient water supply.",
+                              "Urgent: Low water level in the tank. Take action to prevent any water shortages.",
+                              "Water supply alert: The tank is low. Check and refill to avoid inconvenience.",
+                              "Critical: Water tank level is low. Refill promptly to ensure a continuous water supply."
+                            ] | random }}
+                    - delay:
+                        hours: 0
+                        minutes: 45
+                        seconds: 0
+                        milliseconds: 0
+                  until:
+                    - type: is_value
+                      condition: device
+                      device_id: 9be7b2d13e72b6683f75158901d19ea5
+                      entity_id: e46e9bc06cadd14b8a18f9eebe612743
+                      domain: sensor
+                      above: 30
+    mode: single
+    icon: mdi:propane-tank-outline

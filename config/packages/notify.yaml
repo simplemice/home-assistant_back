@@ -70,6 +70,28 @@ input_boolean:
     name: "Visual Led Notification"
     icon: mdi:television-ambient-light
 
+timer:
+  audible_notify_timer:
+    name: Audible Notification Timer
+    duration: "00:30:00"
+    icon: mdi:timer
+    restore: true
+  telegram_notify_timer:
+    name: Telegram Notification Timer
+    duration: "00:30:00"
+    icon: mdi:timer
+    restore: true
+  text_notify_timer:
+    name: Text Notification Timer
+    duration: "00:30:00"
+    icon: mdi:timer
+    restore: true
+  visual_notify_timer:
+    name: Visual Notification Timer
+    duration: "00:30:00"
+    icon: mdi:timer
+    restore: true
+
 mqtt:
   sensor:
     - name: "Jarvis Last Msg"
@@ -231,6 +253,7 @@ script:
   # Txt Notify
   ###############################################################################
   text_debug:
+    alias: Text Debug
     sequence:
       - condition: state
         entity_id: input_boolean.debug_texts
@@ -241,6 +264,7 @@ script:
             {{ message }}
 
   notify_telegram:
+    alias: Telegram Notification Service
     sequence:
       - condition: state
         entity_id: input_boolean.telegram_notifications
@@ -255,6 +279,7 @@ script:
           title: "{{ title }}"
 
   text_notify:
+    alias: Main Text Notification
     sequence:
       - condition: state
         entity_id: input_boolean.text_notifications
@@ -278,6 +303,7 @@ script:
               message: "{{ message }}"
 
   text_alert:
+    alias: Text Alert Notification
     sequence:
       - service: >
           {% if who == 'simplemice' %}
@@ -290,6 +316,7 @@ script:
           message: "{{ message }}"
 
   text_alert_image:
+    alias: Text Notification with image
     sequence:
       - service: >
           {% if who == 'simplemice' %}
@@ -311,6 +338,7 @@ script:
   ###############################################################################
 
   voice_notify:
+    alias: TTS Voice Notification
     sequence:
       - condition: template
         value_template: "{{ states('input_boolean.audible_notifications') == 'on' }}"
@@ -352,6 +380,7 @@ script:
   # Greeting
   ###############################################################################
   voice_greeting:
+    alias: Jarvis TTS Voice Greeting
     sequence:
       - service: tts.amazon_polly_say
         entity_id: media_player.bedroom_speaker
@@ -390,6 +419,7 @@ script:
   #     media: /media/local_audio.mp3
   #
   local_audio:
+    alias: Local Audio Notification
     sequence:
       # Ensure that audible notifications are allowed. Comment out if not needed.
       - condition: state
@@ -455,6 +485,7 @@ script:
   #     media: https://www.youtube.com/watch?v=pVeX4C9B1Lk
   #
   youtube_audio:
+    alias: Youtube Voice Notification
     sequence:
       # Ensure that audible notifications are allowed. Comment out if not needed.
       - condition: state
