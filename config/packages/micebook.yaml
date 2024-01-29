@@ -180,19 +180,5 @@ script:
           minutes: 0
           seconds: 5
           milliseconds: 0
-      - repeat:
-          sequence:
-            - service: notify.alexa_media_bedroom_speaker
-              data:
-                message: Please, Check All Doors For Closed State
-            - delay:
-                hours: 0
-                minutes: 1
-                seconds: 0
-                milliseconds: 0
-          until:
-            - condition: state
-              entity_id: input_boolean.sleep_door_checker
-              state: "off"
     mode: single
     icon: mdi:power-sleep
