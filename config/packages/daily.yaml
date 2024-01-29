@@ -176,7 +176,6 @@ script:
         target:
           entity_id:
             - switch.kitchen_kettle
-            - switch.micebook
       - service: wake_on_lan.send_magic_packet
         metadata: {}
         data:
