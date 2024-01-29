@@ -549,7 +549,7 @@ config:
       subtitle: ''
       title: Livingroom
       type: custom:mushroom-title-card
-    - entity: input_select.micebook_control
+    - entity: input_select.micebook_wol
       fill_container: true
       icon_color: purple
       name: Micebook Laptop
@@ -1502,7 +1502,7 @@ config:
         icon_color: purple
         type: template
       - content_info: state
-        entity: binary_sensor.threat
+        entity: binary_sensor.alarm_warnings
         icon_color: light-green
         type: entity
         use_entity_picture: true
@@ -2881,7 +2881,7 @@ config:
         icon_color: green
         name: Micebook
         type: custom:mushroom-entity-card
-      - entity: input_select.micebook_control
+      - entity: input_select.micebook_wol
         fill_container: true
         icon_color: purple
         type: custom:mushroom-select-card
@@ -3417,10 +3417,10 @@ config:
             columns: 6
           type: custom:mini-media-player
         - entities:
-          - entity: input_select.ytube_music_player_playlist
-          - entity: input_select.ytube_music_player_source
+          - entity: input_select.youtube_playlist
+          - entity: input_select.youtube_source
           - entity: input_select.ytube_music_player_speakers
-          - entity: input_select.ytube_music_player_playmode
+          - entity: input_select.youtube_playmode
           state_color: true
           title: Youtube Control
           type: entities
@@ -3441,8 +3441,8 @@ config:
           volume_stateless: false
         - cards:
           - entities:
-            - entity: input_select.speakers
-            - entity: input_select.playlist
+            - entity: input_select.media_speakers
+            - entity: input_select.spotify_playlist
             - entity: script.spotify_start_playback
             state_color: false
             style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\

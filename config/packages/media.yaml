@@ -38,6 +38,24 @@ input_select:
       - House
     initial: None
     icon: mdi:playlist-star
+  youtube_source:
+    name: YouTube Source
+    options:
+      - None
+      - Link1
+      - Link2
+      - Link3
+    initial: None
+    icon: mdi:playlist-star
+  youtube_playmode:
+    name: YouTube Playmode
+    options:
+      - None
+      - Mode1
+      - Mode2
+      - Mode3
+    initial: None
+    icon: mdi:play-box-multiple
 
 sensor:
   #=== Home Assistant Channels Youtube

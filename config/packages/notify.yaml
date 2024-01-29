@@ -56,6 +56,26 @@ input_datetime:
     has_date: true
     has_time: true
 
+input_select:
+  notify_voice:
+    name: Jarvis Voice
+    options:
+      - None
+      - Brian
+      - Anna
+      - Thomas
+      - None
+    initial: None
+    icon: mdi:amazon-alexa
+
+input_number:
+  notify_volume:
+    name: Alexa Notify Volume
+    initial: 0.5
+    min: 0
+    max: 1
+    step: 0.1
+
 input_boolean:
   audible_notifications:
     name: "Audible Notification"
@@ -128,8 +148,8 @@ template:
           {%- endif %}
       - name: last_alexa
         state: >
-          {{ expand('group.all_echos') | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
-
+          {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
+#          {{ expand('group.all_echos') | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
 telegram_bot:
   - platform: polling
     api_key: !secret tg_api
