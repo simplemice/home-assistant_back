@@ -70,6 +70,49 @@ automation:
         data: {}
     mode: single
 
+  - id: test_turn_on_wled
+    alias: Testing Turn On Wled
+    description: ""
+    mode: single
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bed_presense
+        from: "on"
+        to: "off"
+    condition:
+      - condition: time
+        after: "07:30:00"
+        before: "08:30:00"
+    action:
+      - service: select.select_option
+        metadata: {}
+        data:
+          option: Black Hole
+        target:
+          entity_id: select.wled_matrix_preset
+      - repeat:
+          sequence:
+            - service: light.turn_on
+              metadata: {}
+              data:
+                brightness_pct: 100
+              target:
+                entity_id:
+                  - light.tv_table_ambient
+                  - light.awtrix_44dff8_matrix
+            - delay:
+                hours: 0
+                minutes: 0
+                seconds: 2
+                milliseconds: 0
+          while:
+            - condition: and
+              conditions:
+                - condition: state
+                  entity_id: light.tv_table_ambient
+                  state: "off"
+
 script:
   wakeup_routime:
     alias: Simplemice WakeUp Routime
@@ -129,23 +172,6 @@ script:
           entity_id: select.wled_matrix_preset
         data:
           option: Black Hole
-      - repeat:
-          count: 2
-          sequence:
-            - service: light.turn_on
-              metadata: {}
-              data:
-                brightness_pct: 100
-              target:
-                entity_id:
-                  - light.awtrix_44dff8_matrix
-                  - light.wled_matrix
-                  - light.tv_table_ambient
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 5
-                milliseconds: 0
       - delay:
           hours: 0
           minutes: 0

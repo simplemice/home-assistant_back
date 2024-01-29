@@ -116,8 +116,16 @@ script:
       - delay:
           hours: 0
           minutes: 0
-          seconds: 5
+          seconds: 30
           milliseconds: 0
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.micebook_is_online
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.micebook_screen_lock_status
+            state: "on"
       - service: notify.alexa_media_bedroom_speaker
         data:
           message: Okay, i see laptop is turned off....

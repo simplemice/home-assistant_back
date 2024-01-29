@@ -176,7 +176,7 @@ script:
       - variables:
           briefing: >
             {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}", "finish":"{{ finish }}"}
-      - service: notify.alexa_media_bedroom_speaker
+      - service: notify.voice_greeting
         data:
           message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }} {{ finish }}"
 
@@ -310,40 +310,16 @@ script:
               map(attribute='entity_id') |
               list %}
             {% set open_doors_count = open_doors | count %}
-            {% if open_doors_count > 0 %}
-              Open doors:
-              {% for door in open_doors %}
-                - {{ door }}
-              {% endfor %}
-            {% else %}
-              No doors are open.
-            {% endif %}
             {% set active_fans = expand(state_attr('fan.all_fans', 'entity_id')) |
               selectattr('state', 'eq', 'on') |
               map(attribute='entity_id') |
               list %}
             {% set active_fans_count = active_fans | count %}
-            {% if active_fans_count > 0 %}
-              Active fans:
-              {% for fan in active_fans %}
-                - {{ fan }}
-              {% endfor %}
-            {% else %}
-              No fans are active.
-            {% endif %}
             {% set ambient_lights = expand(state_attr('light.all_ambient', 'entity_id')) |
               selectattr('state', 'eq', 'on') |
               map(attribute='entity_id') |
               list %}
             {% set ambient_lights_count = ambient_lights | count %}
-            {% if ambient_lights_count > 0 %}
-              Active ambient lights:
-              {% for light in ambient_lights %}
-                - {{ light }}
-              {% endfor %}
-            {% else %}
-              No ambient lights are active.
-            {% endif %}
             {{ [
               'Good evening! Currently, ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' lights, and ' ~ active_fans_count ~  ' fans are active in your home.',
               'As night falls, your home is illuminated with ' ~ ambient_lights_count ~  ' ambient lights, ' ~ active_lights_count ~  ' active lights, and ' ~ active_fans_count ~  ' fans providing a tranquil atmosphere.',
