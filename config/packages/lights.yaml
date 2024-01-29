@@ -181,7 +181,7 @@ automation:
                     - switch.adaptive_lighting_sleep_mode_lightstrip
 
   - id: d8158d2c-7f76-45ae-a493-885fc91da8ad
-    alias: Lights - Bedroom Wardrobe Lights Automation
+    alias: Bedroom Wardrobe Lights Automation
     description: ""
     trigger:
       - platform: state
@@ -212,7 +212,7 @@ automation:
                     - light.bedroom_wardrobe_light
 
   - id: e862df13-d2f6-4f40-8d89-1baecc4f42d0
-    alias: Lights - Bathroom Light Automation
+    alias: Bathroom Light Automation
     description: ""
     trigger:
       - platform: state
@@ -255,7 +255,7 @@ automation:
                   entity_id: switch.bathroom_light
 
   - id: fd86b035-6906-4328-8e2b-3fc5e727b6f9
-    alias: Lights - Bedside Lamp Automation
+    alias: Bedside Lamp Automation
     description: ""
     trigger:
       - platform: state
@@ -328,7 +328,7 @@ automation:
                   entity_id: light.bedside_lamp
 
   - id: e25083d0-69e0-4708-b949-0bbd5b508542
-    alias: Lights - Livingroom Sofa Ambient Automation
+    alias: Livingroom Sofa Ambient Automation
     description: ""
     trigger:
       - platform: state
@@ -401,7 +401,7 @@ automation:
                     - light.lumi_gateway_v3_light
 
   - id: 051fcd8b-e749-4f7d-aff8-19e730039903
-    alias: Lights - Garage Light Automation
+    alias: Garage Light Automation
     description: ""
     trigger:
       - platform: state
@@ -444,7 +444,7 @@ automation:
                 data: {}
 
   - id: edad5183-d951-4654-8d55-cfa6a834a1ba
-    alias: Lights - Livingroom Lightstrip Automation
+    alias: Livingroom Lightstrip Automation
     description: ""
     trigger:
       - platform: sun

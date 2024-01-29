@@ -129,15 +129,23 @@ script:
           entity_id: select.wled_matrix_preset
         data:
           option: Black Hole
-      - service: light.turn_on
-        metadata: {}
-        data:
-          brightness_pct: 100
-        target:
-          entity_id:
-            - light.awtrix_44dff8_matrix
-            - light.wled_matrix
-            - light.tv_table_ambient
+      - repeat:
+          count: 2
+          sequence:
+            - service: light.turn_on
+              metadata: {}
+              data:
+                brightness_pct: 100
+              target:
+                entity_id:
+                  - light.awtrix_44dff8_matrix
+                  - light.wled_matrix
+                  - light.tv_table_ambient
+            - delay:
+                hours: 0
+                minutes: 0
+                seconds: 5
+                milliseconds: 0
       - delay:
           hours: 0
           minutes: 0

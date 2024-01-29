@@ -133,7 +133,7 @@
       my_text: No rain
       lifetime: '10'
 - id: '1694008693413'
-  alias: Livingroom - Master Cube Automation
+  alias: Livingroom Master Cube Automation
   description: ''
   use_blueprint:
     path: Zigbee2MQTT-Xiaomi_Cube.yaml

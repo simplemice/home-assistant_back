@@ -87,7 +87,7 @@ input_boolean:
     name: "Text Notification"
     icon: mdi:clipboard-text-play
   visual_notifications:
-    name: "Visual Led Notification"
+    name: "Visual Notification"
     icon: mdi:television-ambient-light
 
 timer:
