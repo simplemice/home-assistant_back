@@ -661,3 +661,39 @@
         tts_text: Amazfit battery level is low, please charge watches!
         media_stream: alarm_stream_max
   mode: single
+- id: '1706623399464'
+  alias: Backyard Button Automation
+  description: ''
+  use_blueprint:
+    path: xiaomi_button.yaml
+    input:
+      action_sensor: sensor.backyard_button_action
+      single_action:
+      - if:
+        - condition: state
+          entity_id: switch.backyard_light
+          state: 'off'
+        then:
+        - service: switch.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: switch.backyard_light
+        else:
+        - service: switch.turn_off
+          metadata: {}
+          data: {}
+          target:
+            entity_id: switch.backyard_light
+- id: '1706624558103'
+  alias: Wake-up light alarm with sunrise effect
+  description: ''
+  use_blueprint:
+    path: wake-up-light-alarm-with-sunrise-effect.yaml
+    input:
+      timestamp_sensor: sensor.wake_up_alarm_time
+      manual_time: 07:45:00
+      light_entity: light.bedside_lamp
+      check_entity: person.simplemice
+      sunrise_duration: 10
+      end_brightness: 255
