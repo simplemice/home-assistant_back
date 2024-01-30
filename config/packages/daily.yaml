@@ -70,7 +70,7 @@ automation:
         data: {}
     mode: single
 
-  - id: test_turn_on_wled
+  - id: 27c0e60d-c65c-44e3-8f2c-6255e8821597
     alias: Testing Turn On Wled
     description: ""
     mode: single
@@ -101,17 +101,7 @@ automation:
                 entity_id:
                   - light.tv_table_ambient
                   - light.awtrix_44dff8_matrix
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 2
-                milliseconds: 0
-          while:
-            - condition: and
-              conditions:
-                - condition: state
-                  entity_id: light.tv_table_ambient
-                  state: "off"
+          count: 3
 
 script:
   wakeup_routime:

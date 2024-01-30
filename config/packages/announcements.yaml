@@ -115,7 +115,7 @@ automation:
         metadata: {}
         data: {}
 
-  - id: cooking_complete
+  - id: b668f047-c409-4bec-a12a-537b615038e4
     alias: Notification - Cooking Complete
     description: ""
     trigger:
@@ -198,7 +198,7 @@ automation:
         target:
           entity_id: input_boolean.cooking_timer_finish
 
-  - id: door_knock
+  - id: a520d0e6-b1ab-4946-903b-521ea68c23f2
     alias: Notification - Garage Door Knock
     description: ""
     trigger:
@@ -268,7 +268,7 @@ automation:
         data:
           option: Black Hole
 
-  - id: prepare_for_sleep
+  - id: f1cd3c8c-91e3-4c09-b135-c4116519bfc2
     alias: Notification - Sleep time go to bed
     trigger:
       - platform: time
