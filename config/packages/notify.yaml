@@ -139,14 +139,14 @@ template:
           mdi:bullhorn-outline
           {% endif %}
   - sensor:
-      - name: alexa_audio
+      - name: Last Alexa Audio Room
         state: >-
           {%- if is_state('sensor.last_alexa', 'media_player.bedroom_speaker') %}
             living_room
           {% else %}
             main
           {%- endif %}
-      - name: last_alexa
+      - name: Last Alexa Audio Name
         state: >
           {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
 #          {{ expand('group.all_echos') | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}

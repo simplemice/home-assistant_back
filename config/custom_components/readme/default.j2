@@ -25,22 +25,72 @@ Total entity objects | {{ states | count }}
 Entities in the [`{{domain}}`](https://www.home-assistant.io/components/{{domain}}) domain | {{states[domain] | count }}
 {%- endfor %}
 
+## Core integrations that I use
 
-## My installed extensions:
-### Lovelace plugins
-{%- for component in hacs_components | selectattr('category', 'equalto', 'plugin') | sort(attribute='name') %}
-- [{{component.name}}]({{component.documentation}})
-{%- endfor %}
+Integration | Configuration
+--|--
+{% for integration in core_integrations -%}
+[<img src="https://brands.home-assistant.io/_/{{integration.key}}/icon.png" height="24"/>](https://brands.home-assistant.io/_/{{integration.key}}/dark_icon.png#gh-dark-mode-only)[<img src="https://brands.home-assistant.io/_/{{integration.key}}/icon.png" height="24"/>](https://brands.home-assistant.io/_/{{integration.key}}/icon.png#gh-light-mode-only) [{{integration.name}}](https://home-assistant.io/integrations/{{integration.key}}) | {{"[" + integration.configuration + "](" + integration.configuration + ")" if integration.configuration else "Config flow[^1]"}}
+{% endfor -%}
+{%- set core_integrations = [
+    {
+        "key": "cloudflare",
+        "name": "Cloudflare",
+    },
+    {
+        "key": "default_config",
+        "name": "Default Config",
+        "configuration": "./configuration.yaml"
+    },
+    {
+        "key": "github",
+        "name": "GitHub",
+    },
+    {
+        "key": "mobile_app",
+        "name": "Mobile App",
+    },
+    {
+        "key": "cast",
+        "name": "Google Cast",
+    },
+    {
+        "key": "plex",
+        "name": "Plex Media Server",
+    },
+    {
+        "key": "spotify",
+        "name": "Spotify",
+        "configuration": "./packages/media.yaml"
+    },
+    {
+        "key": "hassio",
+        "name": "Supervisor",
+    },
+    {
+        "key": "version",
+        "name": "Version",
+    },
+    {
+        "key": "xiaomi_miio",
+        "name": "Xiaomi Miio",
+    },
 
-### Themes
-{%- for component in hacs_components | selectattr('category', 'equalto', 'theme') | sort(attribute='name') %}
-- [{{component.name}}]({{component.documentation}})
-{%- endfor %}
-
-### Add-ons
-{%- for addon in addons | sort(attribute='name') %}
-- {{addon.name}}
-{%- endfor %}
+] %}
+{%- set custom_categories = [
+    {
+        "key": "integration",
+        "name": "integrations"
+    },
+    {
+        "key": "plugin",
+        "name": "lovelace plugins"
+    },
+    {
+        "key": "theme",
+        "name": "themes"
+    }
+] %}
 
 {% for category in custom_categories -%}
 {%- set entries = hacs_components | selectattr("category", "eq", category.key) | selectattr("installed", "eq", True) | list -%}
@@ -66,6 +116,24 @@ _{{entry.description}}_
 {% endif -%}
 {%- endfor -%}
 {% endif -%}
+{%- endfor %}
+
+***
+
+## My installed extensions:
+### Lovelace plugins
+{%- for component in hacs_components | selectattr('category', 'equalto', 'plugin') | sort(attribute='name') %}
+- [{{component.name}}]({{component.documentation}})
+{%- endfor %}
+
+### Themes
+{%- for component in hacs_components | selectattr('category', 'equalto', 'theme') | sort(attribute='name') %}
+- [{{component.name}}]({{component.documentation}})
+{%- endfor %}
+
+### Add-ons
+{%- for addon in addons | sort(attribute='name') %}
+- {{addon.name}}
 {%- endfor %}
 
 ***
