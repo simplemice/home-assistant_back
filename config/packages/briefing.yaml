@@ -176,7 +176,7 @@ script:
       - variables:
           briefing: >
             {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}", "finish":"{{ finish }}"}
-      - service: notify.voice_greeting
+      - service: notify.alexa_media_bedroom_speaker
         data:
           message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }} {{ finish }}"
 

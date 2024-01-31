@@ -4,19 +4,18 @@
 #   @package        :   Daily
 #   @description    :   Daily automation
 ###############################################################################
+
 input_datetime:
-  wakeup_alarm_time:
-    name: WakeUp Alarm Time
+  mice_wakeup_alarm_time:
+    name: Simplemice WakeUp Alarm Time
     has_date: false
     has_time: true
 
-sensor:
-  - platform: template
-    sensors:
-      wake_up_alarm_time:
-        friendly_name: "Wake Up Alarm"
-        value_template: "{{ states('input_datetime.wakeup_alarm_time') }}"
+template:
+  - sensor:
+      - name: "Simplemice Wake Up Alarm"
         device_class: timestamp
+        state: "{{ today_at(states('input_datetime.mice_wakeup_alarm_time')) }}"
 
 automation:
   - id: 13ebe389-eddd-439b-9576-cd568109e42d
