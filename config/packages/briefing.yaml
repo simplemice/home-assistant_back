@@ -160,6 +160,28 @@ script:
             {% else %}
               No tasks for today.
             {% endif %}
+          main_tasks: >
+            {{ [
+              'Today brings a thrilling calendar event your way, embrace the excitement',
+              'Brace yourself! Today stands out with a noteworthy calendar event',
+              'Gear up for the exciting day ahead, as you have a distinguished calendar event awaiting',
+              'Ready, set, go! Today is calendar event is worth every bit of your enthusiasm',
+              'Today unfolds with an illustrious calendar event that awaits your involvement',
+              'Take note! Your schedule marks a momentous calendar event today',
+              'Prepare to be amazed! Today is calendar event is set to make a lasting impression',
+              'Today holds a promising calendar event deserving your utmost attention',
+              'Your itinerary shines today with a significant calendar event',
+              'Today brings a notable calendar event to highlight your agenda'
+            ] | random }}
+            {% set tasks = state_attr('calendar.simplemice_network', 'all_tasks') | default([]) %}
+            {% if tasks %}
+              Tasks for today:
+              {% for task in tasks %}
+                - {{ task }}
+              {% endfor %}
+            {% else %}
+              No tasks for today.
+            {% endif %}
           finish: >
             {{ [
               'And that is your morning briefing, folks! Remember, if coffee is not helping, it is probably because you need more coffee!',
@@ -175,10 +197,10 @@ script:
             ] | random }}
       - variables:
           briefing: >
-            {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}", "finish":"{{ finish }}"}
+            {"morning_snark":"{{morning_snark}}","weather_status":"{{weather_status}}","device_status":"{{device_status}}","tasks":"{{ tasks }}", "main_tasks":"{{ main_tasks }}", "finish":"{{ finish }}"}
       - service: notify.alexa_media_bedroom_speaker
         data:
-          message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }} {{ finish }}"
+          message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }} {{ main_tasks }} {{ finish }}"
 
   nightly_briefing:
     alias: Simplemice Nightly Briefing

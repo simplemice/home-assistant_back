@@ -83,7 +83,7 @@ automation:
     mode: single
 
   - id: 27c0e60d-c65c-44e3-8f2c-6255e8821597
-    alias: Testing Turn On Wled
+    alias: Morning Turn On All Matrix
     description: ""
     mode: single
     trigger:

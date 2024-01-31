@@ -4,6 +4,7 @@
 #   @package        :   Presence
 #   @description    :   A Collection of Presence Related Trackers and Sensors
 ###############################################################################
+
 input_boolean:
   presence_off:
     name: "Auto Presence Mode Off"
@@ -209,13 +210,6 @@ automation:
     action:
       - service: script.away_mode_with_snapshot
         data: {}
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 5
-          milliseconds: 0
-      - service: script.away_mode_all_off
-        data: {}
 
   - id: eb3b6c4c-8150-4e63-a1e5-5ab844edce5e
     mode: restart
@@ -236,11 +230,93 @@ automation:
       - service: script.return_home
         metadata: {}
         data: {}
+  ############ Presence
+
+  - id: 6d686767-7440-429a-b9e9-b12640663578
+    alias: Update Micemob Room Presence
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.micemob_room
+    condition:
+      - condition: template
+        value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
+        enabled: true
+    action:
+      - service: device_tracker.see
+        data:
+          dev_id: micemob_track
+          location_name: >
+            {% if trigger.to_state.state in ['livingroom', 'kitchen', 'bedroom',
+            'bathroom'] %}
+              home
+            {% elif trigger.to_state.state == 'not_home' %}
+              not_home
+            {% else %}
+              unknown
+            {% endif %}
+    mode: single
+
+  - id: e9b0fe3e-2c4f-4025-aa5e-5b81c9138d7a
+    alias: Update Micewatch Room Presence
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.amazfit_room
+    condition:
+      - condition: template
+        value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
+        enabled: true
+    action:
+      - service: device_tracker.see
+        data:
+          dev_id: mifit_track
+          location_name: >
+            {% if trigger.to_state.state in ['livingroom', 'kitchen', 'bedroom',
+            'bathroom'] %}
+              home
+            {% elif trigger.to_state.state == 'not_home' %}
+              not_home
+            {% else %}
+              unknown
+            {% endif %}
+    mode: single
 
 script:
-  away_mode_all_off:
-    alias: Away Mode All States Off
+  away_mode_with_snapshot:
+    alias: Take snapshot of states and turn on away mode
     sequence:
+      - service: scene.create
+        data:
+          scene_id: go_away_states
+          snapshot_entities:
+            - fan.dmaker_p23_42a8_fan
+            - fan.dmaker_p28_19b6_fan
+            - fan.zhimi_fa1_4020_fan
+            - fan.kitchen_power_strip_switch
+            - climate.bedroom_aircon
+            - light.lightstrip
+            - light.kitchen_wall_switch_left
+            - light.kitchen_wall_switch_right
+            - light.kitchen_wall_switch_center
+            - light.lumi_gateway_v3_light
+            - light.tv_table_ambient
+            - light.kitchen_ambient
+            - light.livingroom_night_ambient
+            - light.wled_matrix
+            - light.awtrix_44dff8_matrix
+            - switch.raspberry_outlet
+            - switch.kitchen_kettle
+            - input_boolean.livingroom_curtains
+            - media_player.spotify_simplemice
+            - select.wled_matrix_preset
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 20
+          milliseconds: 0
       - service: alarm_control_panel.alarm_arm_away
         data:
           code: !secret alarm_code
@@ -313,41 +389,6 @@ script:
                 "Security breach detected! The alarm is sounding due to unexpected states in away mode. Check the situation immediately.",
                 "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
             ] | random }}
-    icon: mdi:shield-lock
-    mode: restart
-
-  away_mode_with_snapshot:
-    alias: Take snapshot of states before away
-    sequence:
-      - service: scene.create
-        data:
-          scene_id: go_away_states
-          snapshot_entities:
-            - fan.dmaker_p23_42a8_fan
-            - fan.dmaker_p28_19b6_fan
-            - fan.zhimi_fa1_4020_fan
-            - fan.kitchen_power_strip_switch
-            - climate.bedroom_aircon
-            - light.lightstrip
-            - light.kitchen_wall_switch_left
-            - light.kitchen_wall_switch_right
-            - light.kitchen_wall_switch_center
-            - light.lumi_gateway_v3_light
-            - light.tv_table_ambient
-            - light.kitchen_ambient
-            - light.livingroom_night_ambient
-            - light.wled_matrix
-            - light.awtrix_44dff8_matrix
-            - switch.raspberry_outlet
-            - switch.kitchen_kettle
-            - input_boolean.livingroom_curtains
-            - media_player.spotify_simplemice
-            - select.wled_matrix_preset
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 10
-          milliseconds: 0
     mode: restart
     icon: mdi:state-machine
 

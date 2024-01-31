@@ -59,7 +59,7 @@ automation:
       - platform: homeassistant
         event: start
       - platform: time_pattern
-        hours: "12"
+        hours: "5"
     condition: []
     action:
       - service: hassio.addon_start
