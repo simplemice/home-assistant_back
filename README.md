@@ -1,3 +1,5 @@
+![MouseLogo](https://github.com/simplemice/home-assistant/blob/main/screenshot/logo.jpg)
+
 # SimpleMice Home Assistant Configuration
 
 Welcome to the SimpleMice's repository for Home Assistant, a comprehensive solution for your smart home automation needs!
