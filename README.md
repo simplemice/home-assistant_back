@@ -1,8 +1,9 @@
 <p align="center">
   <img width="500" height="500" src="https://github.com/simplemice/home-assistant/blob/main/screenshot/logo.jpg">
-</p>
 
 # SimpleMice Home Assistant Configuration
+
+</p>
 
 Welcome to the SimpleMice's repository for Home Assistant, a comprehensive solution for your smart home automation needs!
 
