@@ -59,55 +59,6 @@ Entities in the [`camera`](https://www.home-assistant.io/components/camera) doma
 
 
 ## My installed extensions:
-
-### Add-ons
-- Home Assistant Git Exporter
-- Home Assistant Google Drive Backup
-- Matter Server
-- Music Assistant BETA
-- openWakeWord
-- Piper
-- Samba share
-- Snapcast server
-- Spotify Connect
-- Studio Code Server
-- Terminal & SSH
-- Whisper
-
-### Custom integrations
-- [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting)
-- [Alarmo](https://github.com/nielsfaber/alarmo)
-- [Alexa Media Player](https://github.com/alandtse/alexa_media_player)
-- [Browser Mod](https://github.com/thomasloven/hass-browser_mod)
-- [Extended Openai Conversation](https://github.com/jekalmin/extended_openai_conversation)
-- [Fontawesome](https://github.com/thomasloven/hass-fontawesome)
-- [Frigate](https://github.com/blakeblackshear/frigate-hass-integration)
-- [Generate Readme](https://github.com/custom-components/readme)
-- [Google Fit](https://github.com/YorkshireIoT/ha-google-fit)
-- [Google Home](https://github.com/leikoilja/ha-google-home)
-- [HACS](https://github.com/hacs/integration)
-- [Hass Plate Recognizer](https://github.com/robmarkcole/HASS-plate-recognizer)
-- [Illuminance](https://github.com/pnbruckner/ha-illuminance)
-- [Local Tuya](https://github.com/rospogrigio/localtuya)
-- [Mikrotik Router](https://github.com/tomaae/homeassistant-mikrotik_router)
-- [Music Assistant](https://github.com/music-assistant/hass-music-assistant)
-- [Nws Alerts](https://github.com/finity69x2/nws_alerts)
-- [Openweathermap All](https://github.com/viktak/ha-cc-openweathermap_all)
-- [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor)
-- [Pirate Weather](https://github.com/Pirate-Weather/pirate-weather-ha)
-- [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve)
-- [Remote Home Assistant](https://github.com/custom-components/remote_homeassistant)
-- [Scheduler Component](https://github.com/nielsfaber/scheduler-component)
-- [Smartir](https://github.com/smartHomeHub/SmartIR)
-- [Spook 👻 Not Your Homie](https://github.com/frenck/spook)
-- [Spotcast](https://github.com/fondberg/spotcast)
-- [Sun2](https://github.com/pnbruckner/ha-sun2)
-- [Tuya Ble](https://github.com/PlusPlus-ua/ha_tuya_ble)
-- [Xiaomi Gateway 3](https://github.com/AlexxIT/XiaomiGateway3)
-- [Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot)
-- [Youtube](https://github.com/custom-components/youtube)
-- [Ytube Music Player](https://github.com/KoljaWindeler/ytube_music_player)
-
 ### Lovelace plugins
 - [Apexcharts Card](https://github.com/RomRider/apexcharts-card)
 - [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive)
@@ -149,3 +100,22 @@ Entities in the [`camera`](https://www.home-assistant.io/components/camera) doma
 - [Material 3 Dark & Light Theme C11: Purple](https://github.com/AmoebeLabs/HA-Theme_M3-C11-Purple)
 - [Your Name.](https://github.com/Nihvel/your_name)
 
+### Add-ons
+- Home Assistant Git Exporter
+- Home Assistant Google Drive Backup
+- Matter Server
+- Music Assistant BETA
+- openWakeWord
+- Piper
+- Samba share
+- Snapcast server
+- Spotify Connect
+- Studio Code Server
+- Terminal & SSH
+- Whisper
+
+***
+
+Like all other Home Assistant instances this is also a Work in Progress :D
+
+***
