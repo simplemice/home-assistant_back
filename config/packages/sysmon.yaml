@@ -180,8 +180,8 @@ sensor:
       holiday:
         friendly_name: "Holiday"
         value_template: >-
-          {% if states.calendar.holidays_in_united_states.state == 'on' %}
-            {{ states.calendar.holidays_in_united_states.attributes.message }}
+          {% if states.calendar.holidays == 'on' %}
+            {{ states.calendar.holidays.attributes.message }}
           {% elif states.calendar.anchorage_holidays.state == 'on' %}
             {{ states.calendar.anchorage_holidays.attributes.message }}
           {% else %}
