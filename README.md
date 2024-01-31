@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="460" height="300" src="https://github.com/simplemice/home-assistant/blob/main/screenshot/logo.jpg">
+  <img width="500" height="500" src="https://github.com/simplemice/home-assistant/blob/main/screenshot/logo.jpg">
 </p>
 # SimpleMice Home Assistant Configuration
 
