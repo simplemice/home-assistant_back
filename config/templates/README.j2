@@ -5,6 +5,7 @@
 
 </p>
 
+
 # Welcome !
 
 This is my Home Assistant installation.
@@ -13,7 +14,7 @@ This is my Home Assistant installation.
 
 Description | value
 --|--
-Installed version | {{ states('sensor.current_version') }}
+Installed version | {{ states('sensor.home_assistant_operating_system_version') }}
 Total entity objects | {{ states | count }}
 {%- set data = namespace(domains=[]) %}
 {%- for state in states %}
@@ -25,8 +26,10 @@ Total entity objects | {{ states | count }}
 Entities in the [`{{domain}}`](https://www.home-assistant.io/components/{{domain}}) domain | {{states[domain] | count }}
 {%- endfor %}
 
+## Core integrations that I use
 
 ## My installed extensions:
+
 ### Lovelace plugins
 {%- for component in hacs_components | selectattr('category', 'equalto', 'plugin') | sort(attribute='name') %}
 - [{{component.name}}]({{component.documentation}})
@@ -40,32 +43,6 @@ Entities in the [`{{domain}}`](https://www.home-assistant.io/components/{{domain
 ### Add-ons
 {%- for addon in addons | sort(attribute='name') %}
 - {{addon.name}}
-{%- endfor %}
-
-{% for category in custom_categories -%}
-{%- set entries = hacs_components | selectattr("category", "eq", category.key) | selectattr("installed", "eq", True) | list -%}
-{% if entries | count != 0 %}
-## The custom {{category.name}} that I use
-{% for entry in entries -%}
-{% if entry.installed %}
-### {% if entry.category == "integration" -%}
-[<img src="https://brands.home-assistant.io/_/{{entry.domain}}/icon.png" height="24"/>](https://brands.home-assistant.io/_/{{entry.domain}}/dark_icon.png#gh-dark-mode-only)[<img src="https://brands.home-assistant.io/_/{{entry.domain}}/icon.png" height="24"/>](https://brands.home-assistant.io/_/{{entry.domain}}/icon.png#gh-light-mode-only)
-{%- endif %} [{{entry.name}}]({{entry.documentation}})
-
-_{{entry.description}}_
-
-{% if category.key == "integration" and not entry.config_flow %}
-[**My configuration for {{entry.name}}**](./packages/integrations/custom/{{entry.domain}}.yaml)
-{% endif -%}
-
-**Version** | {{entry.installed_version}}
---|--
-{% if entry.authors -%}
-**Author(s)** | {{entry.authors|join(", ")}}
-{% endif -%}
-{% endif -%}
-{%- endfor -%}
-{% endif -%}
 {%- endfor %}
 
 ***

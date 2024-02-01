@@ -62,6 +62,13 @@ automation:
         hours: "5"
     condition: []
     action:
+      - service: readme.generate
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
       - service: hassio.addon_start
         metadata: {}
         data:
