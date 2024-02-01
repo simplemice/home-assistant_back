@@ -48,6 +48,16 @@ tts:
     cache: True
     engine: neural
 
+input_select:
+  polly_voice:
+    name: Choose Polly Voice
+    options:
+      - None
+      - Ave
+      - Brain
+    initial: None
+    icon: mdi:account-voice
+
 input_text:
   alexa_actionable_notification:
     name: Alexa Actionable Notification Holder
@@ -128,6 +138,14 @@ sensor:
             'You might not like this.',
             'There is something that needs your attention.'
             ] | random }}
+      tts_time_is:
+        friendly_name: TTS Time Is
+        value_template: >
+          {% if is_state('binary_sensor.morning','on') %}
+            Today is {{states.sensor.today_is.state }}, {{ as_timestamp(now()) | timestamp_custom('%B %d %Y') }} .
+          {% else %}
+            It is {{ now().strftime("%I:%M %p") }} .
+          {% endif %}
 
 script:
   speech_engine:
@@ -176,9 +194,13 @@ script:
         state: "off"
       - service: >
           {% if who in ['kitchen', 'media_player.bedroom_speaker'] %} 
-            {% set who = 'livingroom' %}
-          {% elif who in ['livingroom','media_player.bedroom_speaker','livingroom','main']  %} 
-            {% set who = 'livingroom' %}
+            {% set who = 'living_room' %}
+          {% elif who in ['livingroom_echo','media_player.bedroom_speaker']  %} 
+            {% set who = 'living_room' %}
+          {% elif who in ['bedroom','media_player.bedroom_speaker']%}
+            {% set who = 'bedroom' %}
+          {% elif who in ['studio','media_player.bedroom_speaker']%}
+            {% set who = 'studio' %}
           {% else %}
             {% set who = 'main' %}
           {% endif %} 
@@ -203,7 +225,7 @@ script:
     sequence:
       - if:
           - condition: template
-            value_template: "{{ who in ['livingroom', 'media_player.bedroom_speaker','livingroom'] }}"
+            value_template: "{{ who in ['livingroom', 'media_player.bedroom_speaker'] }}"
         then:
           - service: media_player.volume_set
             data:
@@ -306,7 +328,7 @@ script:
         data_template:
           entity_id: media_player.bedroom_speaker
           volume_level: >
-            {% if is_state('binary_sensor.lights_out', 'on') %}
+            {% if is_state('binary_sensor.all_lights', 'off') %}
               {{ states('input_number.tts_high_volume') | float }}
             {% else %}
               {{ states('input_number.tts_volume') | float }}
