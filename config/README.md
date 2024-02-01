@@ -15,12 +15,12 @@ This is my Home Assistant installation.
 Description | value
 --|--
 Installed version | 11.4
-Total entity objects | 1644
+Total entity objects | 1647
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
-Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 98
+Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 99
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
-Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 88
-Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 820
+Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 89
+Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 821
 Entities in the [`zone`](https://www.home-assistant.io/components/zone) domain | 8
 Entities in the [`device_tracker`](https://www.home-assistant.io/components/device_tracker) domain | 98
 Entities in the [`proximity`](https://www.home-assistant.io/components/proximity) domain | 1
@@ -55,8 +55,8 @@ Entities in the [`number`](https://www.home-assistant.io/components/number) doma
 Entities in the [`select`](https://www.home-assistant.io/components/select) domain | 33
 Entities in the [`wake_word`](https://www.home-assistant.io/components/wake_word) domain | 1
 Entities in the [`image_processing`](https://www.home-assistant.io/components/image_processing) domain | 1
-Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 2
 Entities in the [`camera`](https://www.home-assistant.io/components/camera) domain | 2
+Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 2
 
 ## Core integrations that I use
 
@@ -79,6 +79,7 @@ Entities in the [`camera`](https://www.home-assistant.io/components/camera) doma
 - [Frigate Card](https://github.com/dermotduffy/frigate-hass-card)
 - [Ha (Lovelace) Card Weather Conditions](https://github.com/r-renato/ha-card-weather-conditions)
 - [Hass Hue Icons](https://github.com/arallsopp/hass-hue-icons)
+- [Home Assistant Swipe Navigation](https://github.com/zanna-37/hass-swipe-navigation)
 - [Kiosk Mode](https://github.com/NemesisRE/kiosk-mode)
 - [Layout Card](https://github.com/thomasloven/lovelace-layout-card)
 - [Logbook Card](https://github.com/royto/logbook-card)

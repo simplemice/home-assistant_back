@@ -86,3 +86,6 @@ items:
 - id: cb16d0d757c04cb8861cc88eacf8c8eb
   type: module
   url: /hacsfiles/circle-sensor-card/circle-sensor-card.js?hacstag=141952963122
+- id: c6df9d56bad0408999248501c7d3edb9
+  type: module
+  url: /hacsfiles/hass-swipe-navigation/swipe-navigation.js?hacstag=5017254791132
