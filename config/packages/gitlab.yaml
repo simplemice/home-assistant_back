@@ -73,3 +73,17 @@ automation:
         metadata: {}
         data:
           addon: 76fa38ee_git-exporter
+      - service: script.notify_telegram
+        data:
+          message: >
+            {{ [ "GitLab Configuration Sync: All nodes have been updated successfully. Your settings are now synchronized across the network.",
+                  "Sync Completed: GitLab configuration synchronization is done. Your system configurations are now aligned across all nodes.",
+                  "Sync Status: GitLab configuration synchronization has finished. Your settings are now consistent across the network.",
+                  "Configuration Sync: GitLab configuration synchronization has been completed without errors. Your settings are now up-to-date.",
+                  "Sync Success: GitLab configuration synchronization is successful. All nodes are now running with the latest settings.",
+                  "Sync Confirmation: GitLab configuration sync process is complete. Your configurations are now unified across the platform.",
+                  "Syncronization Update: GitLab configuration synchronization has been successfully executed. Your system is now harmonized.",
+                  "Configuration Alignment: GitLab configuration synchronization is done. All nodes are in harmony with the latest settings.",
+                  "Syncronization Complete: The synchronization of GitLab configurations has been successfully executed. Your environment is now in sync.",
+                  "Syncronization Successful: GitLab configuration sync is complete. Your settings are consistent across the network."
+                ] | random }}
