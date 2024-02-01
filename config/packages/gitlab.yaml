@@ -78,7 +78,7 @@ automation:
           minutes: 0
           seconds: 5
           milliseconds: 0
-      - service: script.notify_telegram
+      - service: script.text_notify
         data:
           message: >
             {{ [  'GitLab Configuration Sync: All nodes have been updated successfully. Your settings are now synchronized across the network',

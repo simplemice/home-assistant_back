@@ -289,11 +289,11 @@ script:
       - condition: state
         entity_id: input_boolean.telegram_notifications
         state: "on"
-      - service: notify.telegram_group
+      - service: notify.telegram_mice
         data:
           message: "{{ message }}"
           title: "{{ title }}"
-      - service: notify.telegram_mice
+      - service: notify.telegram_group
         data:
           message: "{{ message }}"
           title: "{{ title }}"
@@ -306,8 +306,6 @@ script:
         state: "on"
       - choose:
           - conditions:
-              - condition: template
-                value_template: '{{ who == "simplemice"}}'
               - condition: state
                 entity_id: input_boolean.text_notifications
                 state: "on"
@@ -317,7 +315,7 @@ script:
                   title: "{{ title }}"
                   message: "{{ message }}"
         default:
-          - service: notify.telegram
+          - service: notify.telegram_mice
             data:
               title: "{{ title }}"
               message: "{{ message }}"
@@ -329,7 +327,7 @@ script:
           {% if who == 'simplemice' %}
             notify.simplemice
           {% else %}
-            script.notify_telegram
+            notify.telegram_mice
           {% endif %}
         data:
           title: "{{ title }}"
@@ -457,7 +455,7 @@ script:
              {% if who == 'kitchen' %}
                media_player.bedroom_speaker
              {% elif who == 'main' %}
-               media_player.hbedroom_speaker
+               media_player.bedroom_speaker
              {% else %}
                {% if states.input_boolean.audible_notifications.state == 'on' %}
                media_player.bedroom_speaker
