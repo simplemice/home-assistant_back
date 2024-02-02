@@ -1,0 +1,65 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Matrix
+#   @description    :   Matrix automation
+###############################################################################
+input_boolean:
+
+automation:
+  - id: 07731eb3-87f6-4aa6-a690-935d187cac86
+    alias: Awtrix - Clock Reload Automation
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - device_tracker.ulanzi_clock
+        to: home
+      - minutes: /59
+        platform: time_pattern
+    condition: []
+    action:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id:
+            - input_boolean.awtrix_weather
+            - input_boolean.awtrix_rain
+            - input_boolean.awtrix_outside_temp
+            - input_boolean.awtrix_home_temp
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id:
+            - input_boolean.awtrix_weather
+            - input_boolean.awtrix_rain
+            - input_boolean.awtrix_outside_temp
+            - input_boolean.awtrix_home_temp
+    mode: single
+
+  - id: 8df7e9cb-ff0b-476a-80e6-03fd8dc96d97
+    alias: Awtrix - Home Temp
+    description: ""
+    use_blueprint:
+      path: homeassistant/awtrix_create_sensor_app.yaml
+      input:
+        awtrix_displays:
+          - 878172095c71c90ce783d87cec0ac1af
+        toggle_helper: input_boolean.awtrix_home_temp
+        my_template_sensor: >-
+          Inside - {{ states('sensor.livingroom_temp_temperature') }} °C / {{
+          states('sensor.livingroom_temp_humidity') }} %
+        text_color:
+          - 157
+          - 10
+          - 255
+        my_sensor: sensor.livingroom_temp_temperature
+        my_icon: "13593"
+        switch_to_app: true
+        duration: "19"
+        scrollspeed: 50

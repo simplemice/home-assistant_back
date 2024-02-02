@@ -145,3 +145,17 @@ automation:
             target:
               entity_id: switch.raspberry_outlet
     mode: single
+
+  - id: 07101384-d03d-437d-b2be-70e72ae1a6ae
+    alias: Awtrix - Current playing song
+    description: ""
+    use_blueprint:
+      path: homeassistant/awtrix_spotify.yaml
+      input:
+        awtrix_light: 878172095c71c90ce783d87cec0ac1af
+        media_player: media_player.spotify_simplemice
+        icon_in: "18207"
+        text_color:
+          - 157
+          - 10
+          - 255

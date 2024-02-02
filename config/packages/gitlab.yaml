@@ -73,8 +73,17 @@ automation:
           addon: 76fa38ee_git-exporter
       - delay:
           hours: 0
-          minutes: 0
-          seconds: 5
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      - service: hassio.addon_restart
+        metadata: {}
+        data:
+          addon: 76fa38ee_git-exporter
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
           milliseconds: 0
       - service: script.text_notify
         data:

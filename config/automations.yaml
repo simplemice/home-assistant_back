@@ -53,85 +53,6 @@
           target:
             entity_id: light.kitchen_wall_switch_center
         alias: Kitchen Upstair Light
-- id: '1693541619909'
-  alias: Awtrix - Weather
-  description: ''
-  use_blueprint:
-    path: homeassistant/awtrix_weather_app.yaml
-    input:
-      awtrix_displays:
-      - 878172095c71c90ce783d87cec0ac1af
-      toggle_helper: input_boolean.awtrix_weather
-      my_sensor: weather.openweathermap
-      show_windspeed: false
-      background_color:
-      - 0
-      - 0
-      - 0
-      text_color:
-      - 157
-      - 10
-      - 255
-      switch_to_app: true
-      duration: '15'
-      scrollspeed: 50
-- id: '1693728515514'
-  alias: Awtrix - Home Temp
-  description: ''
-  use_blueprint:
-    path: homeassistant/awtrix_create_sensor_app.yaml
-    input:
-      awtrix_displays:
-      - 878172095c71c90ce783d87cec0ac1af
-      toggle_helper: input_boolean.awtrix_home_temp
-      my_template_sensor: Inside - {{ states('sensor.livingroom_temp_temperature')
-        }} °C / {{ states('sensor.livingroom_temp_humidity') }} %
-      text_color:
-      - 157
-      - 10
-      - 255
-      my_sensor: sensor.livingroom_temp_temperature
-      my_icon: '13593'
-      switch_to_app: true
-      duration: '19'
-      scrollspeed: 50
-- id: '1693809312342'
-  alias: Awtrix - Outside Temp
-  description: ''
-  use_blueprint:
-    path: homeassistant/awtrix_create_sensor_app.yaml
-    input:
-      my_sensor: sensor.outside_temp
-      my_template_sensor: Outside - {{ states('sensor.outside_temp') }} °C / {{ states('sensor.garage_temp_humidity')
-        }} %
-      my_icon: '13593'
-      awtrix_displays:
-      - 878172095c71c90ce783d87cec0ac1af
-      toggle_helper: input_boolean.awtrix_outside_temp
-      text_color:
-      - 157
-      - 10
-      - 255
-      switch_to_app: true
-      duration: '19'
-      scrollspeed: 50
-- id: '1693998540638'
-  alias: Awtrix - Rain Forecast
-  description: ''
-  use_blueprint:
-    path: homeassistant/awtrix_rain_forecast.yaml
-    input:
-      awtrix_displays:
-      - 878172095c71c90ce783d87cec0ac1af
-      toggle_helper: input_boolean.awtrix_rain
-      my_sensor: weather.openweathermap
-      graph_type: line
-      graph_color:
-      - 157
-      - 10
-      - 255
-      my_text: No rain
-      lifetime: '10'
 - id: '1694008693413'
   alias: Livingroom Master Cube Automation
   description: ''
@@ -265,37 +186,6 @@
       - service: notify.mobile_app_micemob
         data:
           message: Low Battery Device Found {{sensors}}
-- id: '1694858283012'
-  alias: Awtrix - Current playing song
-  description: ''
-  use_blueprint:
-    path: homeassistant/awtrix_spotify.yaml
-    input:
-      awtrix_light: 878172095c71c90ce783d87cec0ac1af
-      media_player: media_player.spotify_simplemice
-      icon_in: '18207'
-      text_color:
-      - 157
-      - 10
-      - 255
-- id: '1695050093305'
-  alias: Awtrix - Laundry Timer
-  description: ''
-  use_blueprint:
-    path: homeassistant/awtrix_create_sensor_app.yaml
-    input:
-      awtrix_displays:
-      - 878172095c71c90ce783d87cec0ac1af
-      toggle_helper: input_boolean.awtrix_laundry_timer
-      my_sensor: timer.laundry_timer
-      my_template_sensor: Laundry PickUp - {{ (as_timestamp(state_attr('timer.laundry_timer',
-        'finishes_at'))) | timestamp_custom('%X') }}
-      my_icon: '42893'
-      text_color:
-      - 157
-      - 10
-      - 255
-      lifetime: '3600'
 - id: '1695297243953'
   alias: Notification - Door Bell
   description: ''
@@ -502,40 +392,6 @@
       notify_device: 3816e92cf1dd4fe946cf4b81342b1633
       notification_message: '{{ motion_sensor_name }} detected !'
       blocker_entity: input_boolean.garage_camera_notification
-- id: '1695486112506'
-  alias: Awtrix - Clock Reload Automation
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - device_tracker.ulanzi_clock
-    to: home
-  - minutes: /59
-    platform: time_pattern
-  condition: []
-  action:
-  - service: input_boolean.turn_off
-    data: {}
-    target:
-      entity_id:
-      - input_boolean.awtrix_weather
-      - input_boolean.awtrix_rain
-      - input_boolean.awtrix_outside_temp
-      - input_boolean.awtrix_home_temp
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 5
-      milliseconds: 0
-  - service: input_boolean.turn_on
-    data: {}
-    target:
-      entity_id:
-      - input_boolean.awtrix_weather
-      - input_boolean.awtrix_rain
-      - input_boolean.awtrix_outside_temp
-      - input_boolean.awtrix_home_temp
-  mode: single
 - id: '1706623399464'
   alias: Backyard Button Automation
   description: ''
