@@ -83,7 +83,7 @@ automation:
     mode: single
 
   - id: 27c0e60d-c65c-44e3-8f2c-6255e8821597
-    alias: Morning Turn On All Matrix
+    alias: Turn On All Matrix
     description: ""
     mode: single
     trigger:
@@ -92,6 +92,11 @@ automation:
           - binary_sensor.bed_presense
         from: "on"
         to: "off"
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: home
+        from: not_home
     condition:
       - condition: time
         after: "07:30:00"

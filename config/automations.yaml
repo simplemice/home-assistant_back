@@ -572,3 +572,132 @@
       check_entity: person.simplemice
       sunrise_duration: 10
       end_brightness: 255
+- id: '1706845394597'
+  alias: Kitchen Scene Switch Automation
+  description: ''
+  use_blueprint:
+    path: TS0043_z2m.yaml
+    input:
+      switch: sensor.kitchen_scene_switch_action
+      button_two_short_press:
+      - service: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: light.kitchen_ambient
+        alias: Turn Off Kitchen Ambient
+      button_two_double_press:
+      - if:
+        - condition: state
+          entity_id: switch.kitchen_light
+          state: 'off'
+        then:
+        - service: light.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: light.kitchen_wall_switch_center
+        else:
+        - service: light.turn_off
+          metadata: {}
+          data: {}
+          target:
+            entity_id: light.kitchen_wall_switch_center
+        alias: On/Off Kitchen Upstairs Lights
+      button_one_short_press:
+      - if:
+        - condition: state
+          entity_id: switch.backyard_light
+          state: 'off'
+        then:
+        - service: light.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: light.kitchen_wall_switch_left
+        else:
+        - service: light.turn_off
+          metadata: {}
+          data: {}
+          target:
+            entity_id: light.kitchen_wall_switch_left
+        alias: On/Off Backyard Light
+      button_three_long_press:
+      - service: light.turn_off
+        target:
+          entity_id:
+          - light.all_ambient
+          - light.all_lights
+        data: {}
+        alias: Off All Lights and Ambient
+      button_three_double_press:
+      - if:
+        - condition: state
+          entity_id: light.lightstrip
+          state: 'off'
+        then:
+        - service: light.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id:
+            - light.lightstrip
+        else:
+        - service: light.turn_off
+          target:
+            entity_id: light.lightstrip
+          data: {}
+        alias: On/Off Lightstrip
+      button_three_short_press:
+      - if:
+        - condition: state
+          entity_id: switch.bathroom_light
+          state: 'off'
+        then:
+        - service: light.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: light.kitchen_wall_switch_right
+        else:
+        - service: light.turn_off
+          data: {}
+          target:
+            entity_id: light.kitchen_wall_switch_right
+        alias: On/Off Bathroom Lights
+      button_one_double_press:
+      - if:
+        - condition: state
+          entity_id: fan.kitchen_power_strip_switch
+          state: 'off'
+        then:
+        - service: fan.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: fan.kitchen_power_strip_switch
+        else:
+        - service: fan.turn_off
+          metadata: {}
+          data: {}
+          target:
+            entity_id: fan.kitchen_power_strip_switch
+        alias: On/Off Kitchen Fan
+      button_one_long_press:
+      - if:
+        - condition: state
+          entity_id: fan.dmaker_p23_42a8_fan
+          state: 'off'
+        then:
+        - service: fan.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: fan.dmaker_p23_42a8_fan
+        else:
+        - service: fan.turn_off
+          metadata: {}
+          data: {}
+          target:
+            entity_id: fan.dmaker_p23_42a8_fan
+        alias: On/Off Black Fan

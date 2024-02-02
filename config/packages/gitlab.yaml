@@ -19,13 +19,6 @@ input_datetime:
     has_date: false
     has_time: true
 
-timer:
-  gitlab_timer:
-    name: GitLab Timer
-    duration: "00:30:00"
-    icon: mdi:timer
-    restore: true
-
 automation:
   - id: ac547605-bdb4-44e8-b581-7067d6b96914
     alias: Turn On Gitlab Auto Mode
@@ -58,6 +51,11 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
+      - platform: state
+        entity_id:
+          - input_boolean.gitlab_automation
+        to: "on"
+        from: "off"
       - platform: time_pattern
         hours: "5"
     condition: []

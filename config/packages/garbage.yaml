@@ -1,0 +1,85 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Daily
+#   @description    :   Daily automation
+###############################################################################
+input_boolean:
+  garbage_day:
+    name: "Garbage Day"
+    icon: mdi:delete-circle
+
+automation:
+  - id: 04fd1933-8fb8-4359-87eb-1aa96596352d
+    description: "Move trash out On"
+    mode: single
+    trigger:
+      - platform: calendar
+        event: start
+        offset: "0:30:0"
+        entity_id: calendar.garbage
+    condition:
+      - condition: state
+        entity_id: calendar.garbage
+        attribute: message
+        state: Garbage Day
+    action:
+      - service: input_boolean.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.garbage_day
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - repeat:
+          sequence:
+            - service: notify.alexa_media_bedroom_speaker
+              data:
+                message: |
+                  {{ [
+                      "Reminder: It's garbage day! Don't forget to move the trash out for pickup.",
+                      "Attention: Today is garbage day. Remember to take the trash out for collection.",
+                      "Garbage day alert: Don't miss the opportunity to move the trash out for pickup.",
+                      "Trash collection reminder: It's time to put the trash out for disposal.",
+                      "Don't forget! Garbage collection is today. Take out the trash for pickup.",
+                      "Reminder: Make sure to move the trash out for collection on garbage day.",
+                      "Garbage day notice: Remember to take the trash out for pickup today."
+                  ] | random }}
+            - delay:
+                hours: 0
+                minutes: 5
+                seconds: 0
+                milliseconds: 0
+          while:
+            - condition: state
+              entity_id: input_boolean.garbage_day
+              state: "on"
+
+  - id: 7ac06a72-d62d-4b10-835f-6bc8a8e65eb3
+    description: "Garbage Mission Finish"
+    mode: single
+    trigger:
+      - platform: tag
+        tag_id: 2ddc642f-dc9a-4720-848c-108e2859e925
+    condition: []
+    action:
+      - service: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.garbage_day
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: |
+            {{ [
+                "Great news: The garbage has been successfully moved out from the house!",
+                "Success: The garbage has been removed from the house. Well done!",
+                "Mission accomplished: Garbage successfully removed from the house!",
+                "Congratulations: The garbage has been taken out of the house!",
+                "Good job: Garbage successfully moved out from the house!",
+                "Success alert: The garbage is no longer in the house. Keep it clean!",
+                "Notification: Garbage has been successfully removed from the house."
+            ] | random }}
