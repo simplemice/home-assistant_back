@@ -4,6 +4,12 @@
 #   @package        :   Ambient
 #   @description    :   Ambient automations.
 ###############################################################################
+light:
+  - platform: group
+    name: "Kitchen Ambient"
+    entities:
+      - light.kitchen_bottom_ambient
+      - light.kitchen_upper_ambient
 
 input_datetime:
   ambient_on_time:
