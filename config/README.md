@@ -15,7 +15,7 @@ This is my Home Assistant installation.
 Description | value
 --|--
 Installed version | 11.4
-Total entity objects | 1716
+Total entity objects | 1719
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
 Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 140
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
@@ -50,13 +50,14 @@ Entities in the [`event`](https://www.home-assistant.io/components/event) domain
 Entities in the [`remote`](https://www.home-assistant.io/components/remote) domain | 2
 Entities in the [`calendar`](https://www.home-assistant.io/components/calendar) domain | 10
 Entities in the [`weather`](https://www.home-assistant.io/components/weather) domain | 3
-Entities in the [`media_player`](https://www.home-assistant.io/components/media_player) domain | 10
+Entities in the [`media_player`](https://www.home-assistant.io/components/media_player) domain | 11
 Entities in the [`camera`](https://www.home-assistant.io/components/camera) domain | 4
 Entities in the [`image`](https://www.home-assistant.io/components/image) domain | 11
 Entities in the [`wake_word`](https://www.home-assistant.io/components/wake_word) domain | 1
 Entities in the [`select`](https://www.home-assistant.io/components/select) domain | 32
 Entities in the [`number`](https://www.home-assistant.io/components/number) domain | 31
 Entities in the [`image_processing`](https://www.home-assistant.io/components/image_processing) domain | 1
+Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 2
 
 ## Core integrations that I use
 
