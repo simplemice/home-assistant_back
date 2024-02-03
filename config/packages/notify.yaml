@@ -315,7 +315,7 @@ script:
                   title: "{{ title }}"
                   message: "{{ message }}"
         default:
-          - service: notify.telegram_mice
+          - service: notify.telegram_group
             data:
               title: "{{ title }}"
               message: "{{ message }}"
@@ -327,7 +327,7 @@ script:
           {% if who == 'simplemice' %}
             notify.simplemice
           {% else %}
-            notify.telegram_mice
+            notify.telegram_group
           {% endif %}
         data:
           title: "{{ title }}"

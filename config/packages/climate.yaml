@@ -406,7 +406,7 @@ script:
                     "Sterilization sequence initiated. The bedroom will be sanitized in 5 minutes. Clear the area.",
                     "Countdown to cleanliness: Bedroom sterilization starts in 5 minutes. Make necessary preparations."
                 ] | random }}
-      - service: notify.simplemice
+      - service: script.text_notify
         data:
           title: Notification
           message: >
@@ -465,7 +465,7 @@ script:
                 "The bedroom sterilization process has finished. You can now enjoy a fresh and clean living space.",
                 "Mission success: Bedroom sterilization is complete. Feel free to return to the sanitized room."
             ] | random }}
-      - service: notify.simplemice
+      - service: script.text_notify
         data:
           title: Notification
           message: >

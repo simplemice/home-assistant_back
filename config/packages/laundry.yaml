@@ -233,7 +233,7 @@ automation:
         data: {}
         target:
           entity_id: input_boolean.laundry_pickup
-      - service: notify.simplemice
+      - service: script.text_notify
         data:
           message: |
             {{ [
@@ -287,7 +287,7 @@ script:
         data: {}
         target:
           entity_id: input_boolean.laundry_helper
-      - service: notify.simplemice
+      - service: script.text_notify
         data:
           message: |
             {{ [
@@ -307,7 +307,7 @@ script:
     sequence:
       - repeat:
           sequence:
-            - service: notify.simplemice
+            - service: script.text_notify
               data:
                 message: |
                   {{ [
@@ -373,7 +373,7 @@ script:
             sequence:
               - repeat:
                   sequence:
-                    - service: notify.simplemice
+                    - service: script.text_notify
                       data:
                         message: |
                           {{ [

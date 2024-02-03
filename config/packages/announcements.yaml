@@ -336,7 +336,7 @@ script:
             sequence:
               - repeat:
                   sequence:
-                    - service: notify.simplemice
+                    - service: script.text_notify
                       data:
                         message: |
                           {{ [

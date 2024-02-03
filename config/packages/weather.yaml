@@ -44,30 +44,30 @@ sensor:
       day_duration:
         friendly_name: "Day Duration"
         value_template: >-
-          {% set sunrise = state_attr('sun.sun', 'next_rising') %}
-          {% set sunset = state_attr('sun.sun', 'next_setting') %}
-          {% set now = utcnow() %}
+          {% set sunrise = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+          {% set sunset = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+          {% set now = as_timestamp(utcnow()) %}
           {% if now < sunrise %}
-            {{ (sunset - sunrise).total_seconds() }}
+            {{ (sunset - sunrise) }}
           {% else %}
-            {{ (sunset - now).total_seconds() }}
+            {{ (sunset - now) }}
           {% endif %}
-        unit_of_measurement: seconds
+        unit_of_measurement: "h"
 
   - platform: template
     sensors:
       night_duration:
         friendly_name: "Night Duration"
         value_template: >-
-          {% set sunrise = state_attr('sun.sun', 'next_rising') %}
-          {% set sunset = state_attr('sun.sun', 'next_setting') %}
-          {% set now = utcnow() %}
+          {% set sunrise = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+          {% set sunset = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+          {% set now = as_timestamp(utcnow()) %}
           {% if now < sunrise %}
-            {{ (sunrise - now).total_seconds() }}
+            {{ ((sunrise - now)/60/60)|round(2) }}
           {% else %}
-            {{ (sunrise - sunset).total_seconds() }}
+            {{ ((24*60*60 - (sunset - sunrise))/60/60)|round(2) }}
           {% endif %}
-        unit_of_measurement: seconds
+        unit_of_measurement: "h"
 
 automation:
   - id: 3059db4c-8602-4ab6-8cf4-1d07c5992d86

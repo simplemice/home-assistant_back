@@ -156,7 +156,7 @@ automation:
                         entity_id: input_boolean.text_notifications
                         state: "on"
                     sequence:
-                      - service: notify.simplemice
+                      - service: script.text_notify
                         data:
                           message: |
                             {{ [

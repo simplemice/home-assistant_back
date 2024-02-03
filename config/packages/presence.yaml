@@ -376,7 +376,7 @@ script:
           minutes: 0
           seconds: 5
           milliseconds: 0
-      - service: notify.mobile_app_micemob
+      - service: script.text_notify
         data:
           title: Notification
           message: |

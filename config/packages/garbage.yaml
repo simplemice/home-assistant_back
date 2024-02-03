@@ -11,7 +11,8 @@ input_boolean:
 
 automation:
   - id: 04fd1933-8fb8-4359-87eb-1aa96596352d
-    description: "Move trash out On"
+    alias: Move trash out On
+    description: ""
     mode: single
     trigger:
       - platform: calendar
@@ -63,7 +64,7 @@ automation:
     mode: single
     trigger:
       - platform: tag
-        tag_id: 2ddc642f-dc9a-4720-848c-108e2859e925
+        tag_id: 97fc5722-dc1b-45e0-84e1-7e26b87157d8
     condition: []
     action:
       - service: input_boolean.turn_off

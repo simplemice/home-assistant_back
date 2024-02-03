@@ -15,12 +15,12 @@ This is my Home Assistant installation.
 Description | value
 --|--
 Installed version | 11.4
-Total entity objects | 1761
+Total entity objects | 1716
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
 Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 140
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
 Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 93
-Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 870
+Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 830
 Entities in the [`group`](https://www.home-assistant.io/components/group) domain | 12
 Entities in the [`zone`](https://www.home-assistant.io/components/zone) domain | 8
 Entities in the [`proximity`](https://www.home-assistant.io/components/proximity) domain | 1
@@ -37,7 +37,7 @@ Entities in the [`automation`](https://www.home-assistant.io/components/automati
 Entities in the [`script`](https://www.home-assistant.io/components/script) domain | 38
 Entities in the [`scene`](https://www.home-assistant.io/components/scene) domain | 4
 Entities in the [`switch`](https://www.home-assistant.io/components/switch) domain | 109
-Entities in the [`light`](https://www.home-assistant.io/components/light) domain | 33
+Entities in the [`light`](https://www.home-assistant.io/components/light) domain | 30
 Entities in the [`cover`](https://www.home-assistant.io/components/cover) domain | 3
 Entities in the [`fan`](https://www.home-assistant.io/components/fan) domain | 5
 Entities in the [`tts`](https://www.home-assistant.io/components/tts) domain | 2
@@ -56,7 +56,6 @@ Entities in the [`image`](https://www.home-assistant.io/components/image) domain
 Entities in the [`wake_word`](https://www.home-assistant.io/components/wake_word) domain | 1
 Entities in the [`select`](https://www.home-assistant.io/components/select) domain | 32
 Entities in the [`number`](https://www.home-assistant.io/components/number) domain | 31
-Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 2
 Entities in the [`image_processing`](https://www.home-assistant.io/components/image_processing) domain | 1
 
 ## Core integrations that I use
