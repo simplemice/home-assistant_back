@@ -336,7 +336,6 @@ script:
               entity_id:
                 - light.all_ambient
                 - light.all_lights
-                - light.awtrix_44dff8_matrix
                 - light.wled_matrix
           - service: fan.turn_off
             data: {}

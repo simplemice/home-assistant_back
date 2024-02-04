@@ -159,3 +159,16 @@ automation:
           - 157
           - 10
           - 255
+
+script:
+  spotify_start_playback:
+    alias: Spotify Start Playback
+    sequence:
+      - service: spotcast.start
+        data:
+          device_name: "{{ states('input_select.speakers') }}"
+          force_playback: true
+          start_volume: 30
+          shuffle: true
+    mode: single
+    icon: mdi:spotify

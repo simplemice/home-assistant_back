@@ -60,7 +60,8 @@ automation:
               state: "on"
 
   - id: 7ac06a72-d62d-4b10-835f-6bc8a8e65eb3
-    description: "Garbage Mission Finish"
+    alias: "Garbage Mission Finish"
+    description: ""
     mode: single
     trigger:
       - platform: tag

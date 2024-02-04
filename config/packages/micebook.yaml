@@ -160,7 +160,6 @@ script:
               entity_id:
                 - light.livingroom_night_ambient
                 - light.lightstrip
-                - light.awtrix_44dff8_matrix
                 - light.tv_table_ambient
                 - light.sofa_ambient
                 - light.wled_matrix

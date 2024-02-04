@@ -7,34 +7,6 @@ family:
   entities:
     - person.simplemice
 
-arriving:
-  name: Arriving
-  entities: []
-
-kitchen_occupancy:
-  name: "Kitchen occupancy"
-  entities: []
-
-living_room_occupancy:
-  name: "Livingroom occupancy"
-  entities: []
-
-bedroom_occupancy:
-  name: "Bedroom occupancy"
-  entities: []
-
-bathroom_occupancy:
-  name: "Bathroom occupancy"
-  entities: []
-
-garage_occupancy:
-  name: "Garage occupancy"
-  entities: []
-
-backyard_occupancy:
-  name: "Backyard occupancy"
-  entities: []
-
 audio_devices:
   - media_player.bedroom_speaker
 

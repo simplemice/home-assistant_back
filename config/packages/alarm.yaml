@@ -116,3 +116,38 @@ automation:
     mode: single
 
 script:
+  safe_security_automation:
+    alias: Safe Security Automation
+    sequence:
+      - if:
+          - condition: state
+            entity_id: alarm_control_panel.safe
+            state: armed_home
+        then:
+          - service: alarm_control_panel.alarm_disarm
+            data:
+              code: !secret alarm_code
+            target:
+              entity_id: alarm_control_panel.safe
+          - service: notify.alexa_media_bedroom_speaker
+            data:
+              message: Safe Alarm Disarmed!
+          - service: notify.alexa_media_bedroom_speaker
+            data:
+              message: <audio src="soundbank://soundlibrary/alarms/car_alarms/car_alarm_05"/>
+              data:
+                type: tts
+        else:
+          - service: alarm_control_panel.alarm_arm_home
+            data: {}
+            target:
+              entity_id: alarm_control_panel.safe
+          - service: notify.alexa_media_bedroom_speaker
+            data:
+              message: Safe Alarm Armed!
+          - service: notify.alexa_media_bedroom_speaker
+            data:
+              message: <audio src="soundbank://soundlibrary/alarms/car_alarms/car_alarm_05"/>
+              data:
+                type: tts
+    icon: mdi:safe
