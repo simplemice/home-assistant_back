@@ -15,12 +15,12 @@ This is my Home Assistant installation.
 Description | value
 --|--
 Installed version | 11.4
-Total entity objects | 1708
+Total entity objects | 1711
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
-Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 139
+Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 140
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
 Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 93
-Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 829
+Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 830
 Entities in the [`group`](https://www.home-assistant.io/components/group) domain | 5
 Entities in the [`input_number`](https://www.home-assistant.io/components/input_number) domain | 4
 Entities in the [`zone`](https://www.home-assistant.io/components/zone) domain | 8
@@ -55,7 +55,7 @@ Entities in the [`weather`](https://www.home-assistant.io/components/weather) do
 Entities in the [`wake_word`](https://www.home-assistant.io/components/wake_word) domain | 1
 Entities in the [`camera`](https://www.home-assistant.io/components/camera) domain | 4
 Entities in the [`image`](https://www.home-assistant.io/components/image) domain | 11
-Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 1
+Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 2
 Entities in the [`automation`](https://www.home-assistant.io/components/automation) domain | 84
 Entities in the [`image_processing`](https://www.home-assistant.io/components/image_processing) domain | 1
 
