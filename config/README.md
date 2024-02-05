@@ -14,13 +14,13 @@ This is my Home Assistant installation.
 
 Description | value
 --|--
-Installed version | unavailable
-Total entity objects | 1729
+Installed version | 11.5
+Total entity objects | 1734
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
-Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 139
+Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 140
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
 Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 94
-Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 841
+Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 842
 Entities in the [`group`](https://www.home-assistant.io/components/group) domain | 5
 Entities in the [`zone`](https://www.home-assistant.io/components/zone) domain | 8
 Entities in the [`input_number`](https://www.home-assistant.io/components/input_number) domain | 4
@@ -46,7 +46,7 @@ Entities in the [`todo`](https://www.home-assistant.io/components/todo) domain |
 Entities in the [`alarm_control_panel`](https://www.home-assistant.io/components/alarm_control_panel) domain | 3
 Entities in the [`button`](https://www.home-assistant.io/components/button) domain | 33
 Entities in the [`calendar`](https://www.home-assistant.io/components/calendar) domain | 11
-Entities in the [`media_player`](https://www.home-assistant.io/components/media_player) domain | 11
+Entities in the [`media_player`](https://www.home-assistant.io/components/media_player) domain | 12
 Entities in the [`event`](https://www.home-assistant.io/components/event) domain | 1
 Entities in the [`weather`](https://www.home-assistant.io/components/weather) domain | 3
 Entities in the [`air_quality`](https://www.home-assistant.io/components/air_quality) domain | 1
@@ -54,7 +54,7 @@ Entities in the [`number`](https://www.home-assistant.io/components/number) doma
 Entities in the [`select`](https://www.home-assistant.io/components/select) domain | 32
 Entities in the [`image`](https://www.home-assistant.io/components/image) domain | 11
 Entities in the [`device_tracker`](https://www.home-assistant.io/components/device_tracker) domain | 98
-Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 1
+Entities in the [`geo_location`](https://www.home-assistant.io/components/geo_location) domain | 3
 Entities in the [`image_processing`](https://www.home-assistant.io/components/image_processing) domain | 1
 Entities in the [`remote`](https://www.home-assistant.io/components/remote) domain | 2
 Entities in the [`wake_word`](https://www.home-assistant.io/components/wake_word) domain | 1
