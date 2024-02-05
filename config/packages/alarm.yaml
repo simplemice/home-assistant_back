@@ -4,6 +4,13 @@
 #   @package        :   Alarm
 #   @description    :   Alarm automations.
 ###############################################################################
+group:
+  External Doors:
+    - binary_sensor.livingroom_door_contact
+    - binary_sensor.backyard_door_contact
+
+  Internal Doors:
+    - binary_sensor.bedroom_door_contact
 
 input_datetime:
   disarm_time:

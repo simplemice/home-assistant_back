@@ -140,3 +140,15 @@ automation:
             - condition: state
               entity_id: input_boolean.sleep_door_checker
               state: "on"
+
+  - id: 7580ccb2-5fec-4cef-8c23-e7ef68c8bf58
+    alias: Notification - Garage Motion Detected
+    description: ""
+    use_blueprint:
+      path: Camera Snapshot Notify.yaml
+      input:
+        motion_sensor: binary_sensor.garage_door_motion_occupancy
+        camera: camera.garage
+        notify_device: 3816e92cf1dd4fe946cf4b81342b1633
+        notification_message: "{{ motion_sensor_name }} detected !"
+        blocker_entity: input_boolean.garage_camera_notification

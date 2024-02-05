@@ -1,0 +1,397 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Buttons
+#   @description    :   Buttons automations.
+###############################################################################
+
+automation:
+  - id: "1693484009785"
+    alias: Kitchen Button Automation
+    description: ""
+    use_blueprint:
+      path: xiaomi_button.yaml
+      input:
+        action_sensor: sensor.kitchen_button_action
+        single_action:
+          - if:
+              - condition: state
+                entity_id: switch.kitchen_kettle
+                state: "off"
+            then:
+              - service: switch.turn_on
+                data: {}
+                target:
+                  entity_id: switch.kitchen_kettle
+            else:
+              - service: switch.turn_off
+                data: {}
+                target:
+                  entity_id: switch.kitchen_kettle
+            alias: Kettle
+        double_action:
+          - if:
+              - condition: state
+                entity_id: fan.kitchen_power_strip_switch
+                state: "off"
+            then:
+              - service: fan.turn_on
+                data: {}
+                target:
+                  entity_id: fan.kitchen_power_strip_switch
+            else:
+              - service: fan.turn_off
+                data: {}
+                target:
+                  entity_id: fan.kitchen_power_strip_switch
+            alias: Fan
+        hold_action:
+          - if:
+              - condition: state
+                entity_id: light.kitchen_wall_switch_center
+                state: "off"
+            then:
+              - service: light.turn_on
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_center
+            else:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_center
+            alias: Kitchen Upstair Light
+
+  - id: 0a0c3b30-af3c-4422-8386-f18b5b9a2a44
+    alias: Kitchen Scene Switch Automation
+    description: ""
+    use_blueprint:
+      path: TS0043_z2m.yaml
+      input:
+        switch: sensor.kitchen_scene_switch_action
+        button_two_short_press:
+          - service: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id: light.kitchen_ambient
+            alias: Turn Off Kitchen Ambient
+        button_two_double_press:
+          - if:
+              - condition: state
+                entity_id: switch.kitchen_light
+                state: "off"
+            then:
+              - service: light.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_center
+            else:
+              - service: light.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_center
+            alias: On/Off Kitchen Upstairs Lights
+        button_one_short_press:
+          - if:
+              - condition: state
+                entity_id: switch.backyard_light
+                state: "off"
+            then:
+              - service: light.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_left
+            else:
+              - service: light.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_left
+            alias: On/Off Backyard Light
+        button_three_long_press:
+          - service: light.turn_off
+            target:
+              entity_id:
+                - light.all_ambient
+                - light.all_lights
+            data: {}
+            alias: Off All Lights and Ambient
+        button_three_double_press:
+          - if:
+              - condition: state
+                entity_id: light.lightstrip
+                state: "off"
+            then:
+              - service: light.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id:
+                    - light.lightstrip
+            else:
+              - service: light.turn_off
+                target:
+                  entity_id: light.lightstrip
+                data: {}
+            alias: On/Off Lightstrip
+        button_three_short_press:
+          - if:
+              - condition: state
+                entity_id: switch.bathroom_light
+                state: "off"
+            then:
+              - service: light.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_right
+            else:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id: light.kitchen_wall_switch_right
+            alias: On/Off Bathroom Lights
+        button_one_double_press:
+          - if:
+              - condition: state
+                entity_id: fan.kitchen_power_strip_switch
+                state: "off"
+            then:
+              - service: fan.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: fan.kitchen_power_strip_switch
+            else:
+              - service: fan.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: fan.kitchen_power_strip_switch
+            alias: On/Off Kitchen Fan
+        button_one_long_press:
+          - if:
+              - condition: state
+                entity_id: fan.dmaker_p23_42a8_fan
+                state: "off"
+            then:
+              - service: fan.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: fan.dmaker_p23_42a8_fan
+            else:
+              - service: fan.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: fan.dmaker_p23_42a8_fan
+            alias: On/Off Black Fan
+
+  - id: e8cd45c2-2874-46a4-a577-2b69463d5974
+    alias: Notification - Door Bell
+    description: ""
+    use_blueprint:
+      path: xiaomi_button.yaml
+      input:
+        action_sensor: sensor.door_bell_action
+        single_action:
+          - service: xiaomi_aqara.play_ringtone
+            data:
+              gw_mac: 04:CF:8C:A9:DA:39
+              ringtone_id: "10"
+              ringtone_vol: 15
+          - service: script.notification_door_bell
+            metadata: {}
+            data: {}
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.text_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.simplemice
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+          - service: select.select_option
+            target:
+              entity_id: select.wled_matrix_preset
+            data:
+              option: Black Hole
+        double_action:
+          - service: xiaomi_aqara.play_ringtone
+            data:
+              gw_mac: 04:CF:8C:A9:DA:39
+              ringtone_id: "10"
+              ringtone_vol: 15
+          - service: script.notification_door_bell
+            metadata: {}
+            data: {}
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.text_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.simplemice
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+          - service: select.select_option
+            target:
+              entity_id: select.wled_matrix_preset
+            data:
+              option: Black Hole
+        triple_action:
+          - service: xiaomi_aqara.play_ringtone
+            data:
+              gw_mac: 04:CF:8C:A9:DA:39
+              ringtone_id: "10"
+              ringtone_vol: 15
+          - service: script.notification_door_bell
+            metadata: {}
+            data: {}
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.text_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.simplemice
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+          - service: select.select_option
+            target:
+              entity_id: select.wled_matrix_preset
+            data:
+              option: Black Hole
+        hold_action:
+          - service: xiaomi_aqara.play_ringtone
+            data:
+              gw_mac: 04:CF:8C:A9:DA:39
+              ringtone_id: "10"
+              ringtone_vol: 15
+          - service: script.notification_door_bell
+            metadata: {}
+            data: {}
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.alexa_media_bedroom_speaker
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.text_notifications
+                    state: "on"
+                sequence:
+                  - service: notify.simplemice
+                    data:
+                      message:
+                        "{{ [\n    \"Doorbell alert: Someone is at the door! Time to
+                        see who's visiting.\",\n    \"Ding-dong! The doorbell has been pressed.
+                        Check to see who's at the door.\",\n    \"Attention: Doorbell has
+                        been pressed. Someone is waiting at the entrance.\",\n    \"Doorbell
+                        chime: A visitor is at the door. Go and greet them!\",\n    \"Ring,
+                        ring! The doorbell has been pressed. Investigate the visitor at the
+                        door.\",\n    \"Visitor alert: The doorbell has been pressed. Time
+                        to welcome someone new.\",\n    \"Doorbell announcement: Someone is
+                        at the door. Check and welcome your guest.\"\n] | random }}\n"
+          - service: select.select_option
+            target:
+              entity_id: select.wled_matrix_preset
+            data:
+              option: Black Hole

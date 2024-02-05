@@ -1,0 +1,131 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Cube Automations
+#   @description    :   A Collection of Notification Scripts and Configs.
+###############################################################################
+
+automation:
+  - id: bc520dbc-9bda-4349-89c9-172a29197119
+    alias: Livingroom Master Cube Automation
+    description: ""
+    use_blueprint:
+      path: Zigbee2MQTT-Xiaomi_Cube.yaml
+      input:
+        topic: zigbee2mqtt/MCube
+        doubletap_face_0:
+          - alias: Livingroom Lightstip
+            if:
+              - condition: state
+                entity_id: light.lightstrip
+                state: "off"
+            then:
+              - service: light.turn_on
+                data: {}
+                target:
+                  entity_id:
+                    - light.lightstrip
+            else:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id:
+                    - light.lightstrip
+        slide_face_0:
+          - if:
+              - condition: state
+                entity_id: input_boolean.livingroom_curtains
+                state: "off"
+            then:
+              - service: switch.turn_on
+                data: {}
+                target:
+                  entity_id: input_boolean.livingroom_curtains
+            else:
+              - service: switch.turn_off
+                data: {}
+                target:
+                  entity_id: input_boolean.livingroom_curtains
+            alias: Livingroom Curtains
+        shake:
+          - service: alarmo.disarm
+            data:
+              entity_id: alarm_control_panel.house
+              code: "5412"
+        flipped90_face_0:
+          - alias: Livingroom TV
+            if:
+              - condition: state
+                entity_id: input_boolean.livingroom_tv
+                state: "off"
+            then: []
+            else: []
+        rotate_cw_face_0:
+          - alias: Lightstrip Up
+            service: light.turn_on
+            data:
+              brightness_step_pct: 10
+            target:
+              entity_id:
+                - light.lightstrip
+        rotate_ccw_face_0:
+          - alias: Lightstrip Down
+            service: light.turn_on
+            data:
+              brightness_step_pct: -10
+            target:
+              entity_id:
+                - light.lightstrip
+        flipped180_face_0:
+          - if:
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: "off"
+            then:
+              - service: input_boolean.turn_on
+                data: {}
+                target:
+                  entity_id: input_boolean.guest_mode
+            else:
+              - service: input_boolean.turn_off
+                data: {}
+                target:
+                  entity_id: input_boolean.guest_mode
+            alias: Guest Mode
+        rotate_cw_face_1:
+          - service: media_player.media_next_track
+            data: {}
+            target:
+              entity_id: media_player.spotify_simplemice
+        rotate_ccw_face_1:
+          - service: media_player.media_previous_track
+            data: {}
+            target:
+              entity_id: media_player.spotify_simplemice
+        doubletap_face_1:
+          - if:
+              - condition: state
+                entity_id: media_player.spotify_simplemice
+                state: playing
+            then:
+              - service: media_player.media_pause
+                data: {}
+                target:
+                  entity_id: media_player.spotify_simplemice
+            else:
+              - service: script.1698025648038
+                data: {}
+            alias: Spotify Play/Stop
+        flipped180_face_1: []
+        slide_face_1: []
+        flipped90_face_1: []
+        rotate_cw_face_2:
+          - service: media_player.volume_up
+            data: {}
+            target:
+              entity_id: media_player.spotify_simplemice
+        rotate_ccw_face_2:
+          - service: media_player.volume_down
+            data: {}
+            target:
+              entity_id: media_player.spotify_simplemice

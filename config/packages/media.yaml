@@ -4,6 +4,13 @@
 #   @package        :   Camera
 #   @description    :   A Collection of Notification Scripts and Configs.
 ###############################################################################
+group:
+  audio_devices:
+    - media_player.bedroom_speaker
+
+  all_echos:
+    - media_player.bedroom_speaker
+
 spotcast:
   sp_dc: !secret sp_dc
   sp_key: !secret sp_key

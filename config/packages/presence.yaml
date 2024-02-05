@@ -4,6 +4,12 @@
 #   @package        :   Presence
 #   @description    :   A Collection of Presence Related Trackers and Sensors
 ###############################################################################
+group:
+  family:
+    name: Family
+    icon: mdi:human-female-female-child
+    entities:
+      - person.simplemice
 
 input_boolean:
   presence_off:
