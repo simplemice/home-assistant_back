@@ -5,7 +5,3 @@
 
 </p>
 
-
-# Welcome !
-
-This is my Home Assistant installation.
