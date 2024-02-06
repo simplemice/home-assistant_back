@@ -425,28 +425,43 @@ config:
       subtitle: ''
       title: Garage
       type: custom:mushroom-title-card
-    - color_thresholds:
-      - color: '#f39c12'
-        value: 32
-      - color: '#d35400'
-        value: 29
-      - color: '#c0392b'
-        value: 28
-      entities:
-      - entity: sensor.outside_temp
-        name: Temp
-        show_state: true
-      - entity: sensor.garage_temp_humidity
-        name: Humidity
-      hour24: true
-      hours_to_show: 24
-      more_info: true
-      name: Temperature
-      points_per_hour: 6
-      show:
-        extrema: true
-        legend: true
-      type: custom:mini-graph-card
+    - cards:
+      - cards:
+        - entity: sensor.outside_temp
+          icon_color: green
+          name: Temperature
+          primary_info: state
+          secondary_info: name
+          type: custom:mushroom-entity-card
+        - entity: sensor.garage_temp_humidity
+          icon_color: blue
+          name: Humidity
+          primary_info: state
+          secondary_info: name
+          type: custom:mushroom-entity-card
+        columns: 2
+        square: false
+        type: grid
+      - animate: true
+        entities:
+        - color: var(--green-color)
+          entity: sensor.outside_temp
+          name: Temperature
+        - color: var(--blue-color)
+          entity: sensor.garage_temp_humidity
+          name: Humidity
+          y_axis: secondary
+        font_size: 50
+        hours_to_show: 24
+        line_width: 3
+        show:
+          fill: fade
+          icon: false
+          legend: false
+          name: false
+          state: false
+        type: custom:mini-graph-card
+      type: custom:vertical-stack-in-card
     - alignment: center
       subtitle: Devices
       title: ''
@@ -557,28 +572,43 @@ config:
         box-shadow: none;\n}\n"
       type: custom:mushroom-entity-card
     - cards:
-      - color_thresholds:
-        - color: '#f39c12'
-          value: 32
-        - color: '#d35400'
-          value: 29
-        - color: '#c0392b'
-          value: 28
-        entities:
-        - entity: sensor.livingroom_temp_temperature
-          name: Temp
-          show_state: true
-        - entity: sensor.livingroom_temp_humidity
-          name: Humidity
-        hour24: true
-        hours_to_show: 24
-        more_info: true
-        name: Temperature
-        points_per_hour: 6
-        show:
-          extrema: true
-          legend: true
-        type: custom:mini-graph-card
+      - cards:
+        - cards:
+          - entity: sensor.livingroom_temp_temperature
+            icon_color: green
+            name: Temperature
+            primary_info: state
+            secondary_info: name
+            type: custom:mushroom-entity-card
+          - entity: sensor.livingroom_temp_humidity
+            icon_color: blue
+            name: Humidity
+            primary_info: state
+            secondary_info: name
+            type: custom:mushroom-entity-card
+          columns: 2
+          square: false
+          type: grid
+        - animate: true
+          entities:
+          - color: var(--green-color)
+            entity: sensor.livingroom_temp_temperature
+            name: Temperature
+          - color: var(--blue-color)
+            entity: sensor.livingroom_temp_humidity
+            name: Humidity
+            y_axis: secondary
+          font_size: 50
+          hours_to_show: 24
+          line_width: 3
+          show:
+            fill: fade
+            icon: false
+            legend: false
+            name: false
+            state: false
+          type: custom:mini-graph-card
+        type: custom:vertical-stack-in-card
       type: horizontal-stack
     - alignment: center
       subtitle: Lights

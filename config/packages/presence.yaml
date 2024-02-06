@@ -183,19 +183,13 @@ zone:
 automation:
   ############ Away and Return Automations
   - id: d696d46d-0b6d-4768-aeba-0014da5e7447
-    mode: restart
     alias: Away with Snapshot
     description: ""
     trigger:
-      - platform: state
+      - platform: numeric_state
         entity_id:
-          - person.simplemice
-        to: not_home
-        from: home
-        for:
-          hours: 0
-          minutes: 1
-          seconds: 0
+          - proximity.simplemice
+        above: 1
     condition:
       - condition: and
         conditions:
@@ -218,14 +212,13 @@ automation:
         data: {}
 
   - id: eb3b6c4c-8150-4e63-a1e5-5ab844edce5e
-    mode: restart
     alias: Away Off Return to Home
     description: ""
     trigger:
-      - platform: state
+      - platform: numeric_state
         entity_id:
-          - person.simplemice
-        to: home
+          - proximity.simplemice
+        below: 0.5
     condition:
       - condition: and
         conditions:
@@ -262,7 +255,6 @@ automation:
             {% else %}
               unknown
             {% endif %}
-    mode: single
 
   - id: e9b0fe3e-2c4f-4025-aa5e-5b81c9138d7a
     alias: Update Micewatch Room Presence
@@ -288,7 +280,6 @@ automation:
             {% else %}
               unknown
             {% endif %}
-    mode: single
 
 script:
   away_mode_with_snapshot:

@@ -89,3 +89,6 @@ items:
 - id: c6df9d56bad0408999248501c7d3edb9
   type: module
   url: /hacsfiles/hass-swipe-navigation/swipe-navigation.js?hacstag=5017254791132
+- id: 566c9a0a42ab49748a0611cd90239da7
+  type: module
+  url: /hacsfiles/tabbed-card/tabbed-card.js?hacstag=452866308032
