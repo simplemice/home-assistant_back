@@ -615,20 +615,71 @@ config:
       title: ''
       type: custom:mushroom-title-card
     - cards:
-      - collapsible_controls: true
-        entity: light.lightstrip
-        fill_container: true
-        icon: mdi:led-strip-variant
-        name: Lightstrip
-        show_brightness_control: true
-        show_color_control: true
-        show_color_temp_control: true
-        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
-          }\n"
-        tap_action:
-          action: toggle
-        type: custom:mushroom-light-card
-        use_light_color: true
+      - cards:
+        - cards:
+          - card_mod:
+              style: "ha-card {\n   box-shadow: none;\n} \n"
+            collapsible_controls: false
+            entity: light.lightstrip
+            fill_container: true
+            show_brightness_control: true
+            show_color_control: true
+            show_color_temp_control: true
+            type: custom:mushroom-light-card
+            use_light_color: true
+          - cards:
+            - chips:
+              - card_mod:
+                  style: "ha-card {\n  --chip-background: rgba(var(--rgb-amber), 0.2);\n\
+                    } \n"
+                icon: mdi:lightbulb
+                icon_color: blue
+                tap_action:
+                  action: call-service
+                  data: {}
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.blue_purple_lightstrip
+                type: action
+              type: custom:mushroom-chips-card
+            - chips:
+              - card_mod:
+                  style: "ha-card {\n  --chip-background: rgba(var(--rgb-orange),\
+                    \ 0.2);\n} \n"
+                icon: mdi:lightbulb
+                icon_color: cyan
+                tap_action:
+                  action: call-service
+                  data: {}
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.light_ocean_lightstrip
+                type: action
+              type: custom:mushroom-chips-card
+            - chips:
+              - card_mod:
+                  style: "ha-card {\n  --chip-background: rgba(var(--rgb-pink), 0.2);\n\
+                    }\n"
+                icon: mdi:lightbulb
+                icon_color: pink
+                tap_action:
+                  action: call-service
+                  data: {}
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.after_sunset_ambient
+                type: action
+              type: custom:mushroom-chips-card
+            type: vertical-stack
+          layout:
+            grid-template-columns: 90% 10%
+          layout_type: custom:grid-layout
+          type: custom:layout-card
+        layout: {}
+        layout_type: custom:vertical-layout
+        type: custom:layout-card
+      type: horizontal-stack
+    - cards:
       - collapsible_controls: true
         entity: light.lumi_gateway_v3_light
         fill_container: true

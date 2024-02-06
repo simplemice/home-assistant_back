@@ -92,3 +92,6 @@ items:
 - id: 566c9a0a42ab49748a0611cd90239da7
   type: module
   url: /hacsfiles/tabbed-card/tabbed-card.js?hacstag=452866308032
+- id: 004968cc1437459ca41e8121395ee9be
+  type: module
+  url: /hacsfiles/simple-weather-card/simple-weather-card-bundle.js?hacstag=172998062085

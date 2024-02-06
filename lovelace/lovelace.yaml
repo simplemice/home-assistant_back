@@ -363,9 +363,12 @@ config:
       - cards:
         - card_mod:
             style: "ha-card {\n   box-shadow: none;\n} \n"
+          collapsible_controls: false
           entity: light.lightstrip
+          fill_container: true
           show_brightness_control: true
           show_color_control: true
+          show_color_temp_control: true
           type: custom:mushroom-light-card
           use_light_color: true
         - cards:
@@ -374,13 +377,13 @@ config:
                 style: "ha-card {\n  --chip-background: rgba(var(--rgb-amber), 0.2);\n\
                   } \n"
               icon: mdi:lightbulb
-              icon_color: amber
+              icon_color: blue
               tap_action:
                 action: call-service
                 data: {}
                 service: scene.turn_on
                 target:
-                  entity_id: scene.buro_entspannen
+                  entity_id: scene.blue_purple_lightstrip
               type: action
             type: custom:mushroom-chips-card
           - chips:
@@ -388,13 +391,13 @@ config:
                 style: "ha-card {\n  --chip-background: rgba(var(--rgb-orange), 0.2);\n\
                   } \n"
               icon: mdi:lightbulb
-              icon_color: orange
+              icon_color: cyan
               tap_action:
                 action: call-service
                 data: {}
                 service: scene.turn_on
                 target:
-                  entity_id: scene.buro_sonnenuntergang
+                  entity_id: scene.light_ocean_lightstrip
               type: action
             type: custom:mushroom-chips-card
           - chips:
@@ -408,7 +411,7 @@ config:
                 data: {}
                 service: scene.turn_on
                 target:
-                  entity_id: scene.buro_vapor_wave
+                  entity_id: scene.after_sunset_ambient
               type: action
             type: custom:mushroom-chips-card
           type: vertical-stack

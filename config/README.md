@@ -15,13 +15,13 @@ This is my Home Assistant installation.
 Description | value
 --|--
 Installed version | 11.5
-Total entity objects | 1732
+Total entity objects | 1737
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
-Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 139
-Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 841
+Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 140
+Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 842
 Entities in the [`input_number`](https://www.home-assistant.io/components/input_number) domain | 4
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
-Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 95
+Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 96
 Entities in the [`group`](https://www.home-assistant.io/components/group) domain | 5
 Entities in the [`zone`](https://www.home-assistant.io/components/zone) domain | 8
 Entities in the [`input_select`](https://www.home-assistant.io/components/input_select) domain | 9
@@ -34,7 +34,7 @@ Entities in the [`device_tracker`](https://www.home-assistant.io/components/devi
 Entities in the [`counter`](https://www.home-assistant.io/components/counter) domain | 1
 Entities in the [`proximity`](https://www.home-assistant.io/components/proximity) domain | 1
 Entities in the [`automation`](https://www.home-assistant.io/components/automation) domain | 90
-Entities in the [`scene`](https://www.home-assistant.io/components/scene) domain | 3
+Entities in the [`scene`](https://www.home-assistant.io/components/scene) domain | 5
 Entities in the [`switch`](https://www.home-assistant.io/components/switch) domain | 109
 Entities in the [`script`](https://www.home-assistant.io/components/script) domain | 38
 Entities in the [`light`](https://www.home-assistant.io/components/light) domain | 30
@@ -92,6 +92,7 @@ Entities in the [`image_processing`](https://www.home-assistant.io/components/im
 - [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
 - [Scheduler Card](https://github.com/nielsfaber/scheduler-card)
 - [Search Card](https://github.com/postlund/search-card)
+- [Simple Weather Card](https://github.com/kalkih/simple-weather-card)
 - [Stack In Card](https://github.com/custom-cards/stack-in-card)
 - [State Switch](https://github.com/thomasloven/lovelace-state-switch)
 - [Tabbed Card](https://github.com/kinghat/tabbed-card)

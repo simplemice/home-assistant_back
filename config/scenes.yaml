@@ -405,3 +405,73 @@
       entity_only: true
     light.kitchen_bottom_ambient:
       entity_only: true
+- id: '1707232459563'
+  name: Blue-Purple Lightstrip
+  entities:
+    light.lightstrip:
+      supported_color_modes:
+      - brightness
+      - hs
+      - onoff
+      color_mode: hs
+      brightness: 36
+      hs_color:
+      - 272.816
+      - 96.078
+      rgb_color:
+      - 143
+      - 10
+      - 255
+      xy_color:
+      - 0.236
+      - 0.088
+      model: yeelink.light.strip2
+      lan_ip: 192.168.3.19
+      mac_address: 5C:E5:0C:BB:E5:2A
+      entity_class: MiotLightEntity
+      miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-strip2:1
+      light.on: true
+      light.brightness: 14
+      light.color: 9439999
+      state_updater: lan
+      icon: mdi:led-strip-variant
+      friendly_name: Lightstrip
+      supported_features: 32
+      state: 'on'
+  icon: mdi:led-strip-variant
+  metadata: {}
+- id: '1707232627206'
+  name: Light Ocean Lightstrip
+  entities:
+    light.lightstrip:
+      supported_color_modes:
+      - brightness
+      - hs
+      - onoff
+      color_mode: hs
+      brightness: 127
+      hs_color:
+      - 194
+      - 94.118
+      rgb_color:
+      - 14
+      - 198
+      - 255
+      xy_color:
+      - 0.148
+      - 0.25
+      model: yeelink.light.strip2
+      lan_ip: 192.168.3.19
+      mac_address: 5C:E5:0C:BB:E5:2A
+      entity_class: MiotLightEntity
+      miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-strip2:1
+      light.on: true
+      light.brightness: 50
+      light.color: 1034239
+      state_updater: lan
+      icon: mdi:led-strip-variant
+      friendly_name: Lightstrip
+      supported_features: 32
+      state: 'on'
+  icon: mdi:led-strip-variant
+  metadata: {}

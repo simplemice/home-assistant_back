@@ -1,0 +1,589 @@
+config:
+  views:
+  - badges: []
+    cards:
+    - alignment: center
+      subtitle: '{% set time = now().weekday() %}
+
+        {% if (time == 0) %}
+
+        Today is Monday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 1) %}
+
+        Today is Tuesday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 2) %}
+
+        Today is Wednesday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 3) %}
+
+        Today is Thursday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 4) %}
+
+        Today is Friday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 5) %}
+
+        Today is Saturday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 6) %}
+
+        Today is Sunday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% else %}
+
+        Today is fudged....
+
+        {% endif %}'
+      subtitle_tap_action:
+        action: navigate
+        navigation_path: /calendar
+      title: "{% set time = now().hour %}\n{% if (time >= 18) %}\n  Good Evening,\
+        \ Simplemice!\n{% elif (time >= 12) %}\n  Good Afternoon, Simplemice!\n{%\
+        \ elif (time >= 7) %}\n  Good Morning, Simplemice!\n{% elif (time <= 7) %}\n\
+        \  Good Night, Simplemice!\n{% else %}\n  Dude! Go Sleep!\n{% endif %}"
+      type: custom:mushroom-title-card
+    - cards:
+      - cards:
+        - entity: person.simplemice
+          hide_name: true
+          layout: vertical
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              data:
+                content:
+                  card:
+                    cards:
+                    - entity: sensor.micemob_geocoded_location
+                      icon: mdi:map-marker
+                      icon_color: yellow
+                      primary_info: none
+                      type: custom:mushroom-entity-card
+                    - auto_fit: true
+                      dark_mode: false
+                      default_zoom: 16
+                      entities:
+                      - entity: person.simplemice
+                      type: map
+                    type: vertical-stack
+                  style: "ha-card {\n   --padding-right: 15px;\n   --padding-left:\
+                    \ 15px;\n   --padding-bottom: 15px;\n   --box-shadow: 0px 0px;\n\
+                    \   --ha-card-border-width: 0px;\n}\n"
+                  type: custom:mod-card
+                title: Simplemice
+              service: browser_mod.popup
+          type: custom:mushroom-person-card
+          use_entity_picture: true
+        - alignment: center
+          chips:
+          - entity: binary_sensor.sm_s21_fabian_is_charging
+            icon: mdi:power-plug
+            icon_color: "          {% set state=states('sensor.micemob_battery_state')\
+              \ %}\n          {% if state=='charging' %}\n          green\n      \
+              \    {% elif state=='discharging' %}\n          #6f6f6f\n         {%\
+              \ endif %}"
+            tap_action:
+              action: more-info
+            type: template
+          - entity: sensor.sm_s21_fabian_battery_level
+            icon: "          {% set bl = states('sensor.micemob_battery_level') |\
+              \ int %}\n          {% if bl < 10 %} mdi:battery-outline\n         \
+              \ {% elif bl < 20 %} mdi:battery-10\n          {% elif bl < 30 %} mdi:battery-20\n\
+              \          {% elif bl < 40 %} mdi:battery-30\n          {% elif bl <\
+              \ 50 %} mdi:battery-40\n          {% elif bl < 60 %} mdi:battery-50\n\
+              \          {% elif bl < 70 %} mdi:battery-60\n          {% elif bl <\
+              \ 80 %} mdi:battery-70\n          {% elif bl < 90 %} mdi:battery-80\n\
+              \          {% elif bl < 100 %} mdi:battery-90\n          {% elif bl\
+              \ == 100 %} mdi:battery\n          {% else %} mdi:battery-unknown\n\
+              \          {% endif %}\n"
+            icon_color: "          {% set bl = states('sensor.micemob_battery_level')\
+              \ | int %}\n          {% if bl < 10 %} red\n          {% elif bl < 20\
+              \ %} red\n          {% elif bl < 30 %} red\n          {% elif bl < 40\
+              \ %} orange\n          {% elif bl < 50 %} orange\n          {% elif\
+              \ bl < 60 %} green\n          {% elif bl < 70 %} green\n          {%\
+              \ elif bl < 80 %} green\n          {% elif bl < 90 %} green\n      \
+              \    {% elif bl < 100 %} green\n          {% elif bl == 100 %} green\n\
+              \          {% else %} grey\n          {% endif %}"
+            tap_action:
+              action: more-info
+            type: template
+          - entity: binary_sensor.micemob_bluetooth_state
+            icon: '{% set state=states(''binary_sensor.micemob_bluetooth_state'')
+              %}
+
+              {% if state==''on'' %}
+
+              mdi:bluetooth
+
+              {% elif state==''off'' %}
+
+              mdi:bluetooth-off
+
+              {% endif %}
+
+              '
+            icon_color: '{% set state=states(''binary_sensor.micemob_bluetooth_state'')
+              %}
+
+              {% if state==''on'' %}
+
+              green
+
+              {% elif state==''off'' %}
+
+              red
+
+              {% endif %}
+
+              '
+            type: template
+          type: custom:mushroom-chips-card
+        mode: vertical
+        type: custom:stack-in-card
+      - cards:
+        - entity: person.simplemice
+          hide_name: true
+          layout: vertical
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              data:
+                content:
+                  card:
+                    cards:
+                    - entity: sensor.micemob_geocoded_location
+                      icon: mdi:map-marker
+                      icon_color: yellow
+                      primary_info: none
+                      type: custom:mushroom-entity-card
+                    - auto_fit: true
+                      dark_mode: false
+                      default_zoom: 16
+                      entities:
+                      - entity: person.simplemice
+                      type: map
+                    type: vertical-stack
+                  style: "ha-card {\n   --padding-right: 15px;\n   --padding-left:\
+                    \ 15px;\n   --padding-bottom: 15px;\n   --box-shadow: 0px 0px;\n\
+                    \   --ha-card-border-width: 0px;\n}\n"
+                  type: custom:mod-card
+                title: Simplemice
+              service: browser_mod.popup
+          type: custom:mushroom-person-card
+          use_entity_picture: true
+        - alignment: center
+          chips:
+          - entity: binary_sensor.sm_s21_fabian_is_charging
+            icon: mdi:power-plug
+            icon_color: "          {% set state=states('sensor.micemob_battery_state')\
+              \ %}\n          {% if state=='charging' %}\n          green\n      \
+              \    {% elif state=='discharging' %}\n          #6f6f6f\n         {%\
+              \ endif %}"
+            tap_action:
+              action: more-info
+            type: template
+          - entity: sensor.sm_s21_fabian_battery_level
+            icon: "          {% set bl = states('sensor.micemob_battery_level') |\
+              \ int %}\n          {% if bl < 10 %} mdi:battery-outline\n         \
+              \ {% elif bl < 20 %} mdi:battery-10\n          {% elif bl < 30 %} mdi:battery-20\n\
+              \          {% elif bl < 40 %} mdi:battery-30\n          {% elif bl <\
+              \ 50 %} mdi:battery-40\n          {% elif bl < 60 %} mdi:battery-50\n\
+              \          {% elif bl < 70 %} mdi:battery-60\n          {% elif bl <\
+              \ 80 %} mdi:battery-70\n          {% elif bl < 90 %} mdi:battery-80\n\
+              \          {% elif bl < 100 %} mdi:battery-90\n          {% elif bl\
+              \ == 100 %} mdi:battery\n          {% else %} mdi:battery-unknown\n\
+              \          {% endif %}\n"
+            icon_color: "          {% set bl = states('sensor.micemob_battery_level')\
+              \ | int %}\n          {% if bl < 10 %} red\n          {% elif bl < 20\
+              \ %} red\n          {% elif bl < 30 %} red\n          {% elif bl < 40\
+              \ %} orange\n          {% elif bl < 50 %} orange\n          {% elif\
+              \ bl < 60 %} green\n          {% elif bl < 70 %} green\n          {%\
+              \ elif bl < 80 %} green\n          {% elif bl < 90 %} green\n      \
+              \    {% elif bl < 100 %} green\n          {% elif bl == 100 %} green\n\
+              \          {% else %} grey\n          {% endif %}"
+            tap_action:
+              action: more-info
+            type: template
+          - entity: binary_sensor.micemob_bluetooth_state
+            icon: '{% set state=states(''binary_sensor.micemob_bluetooth_state'')
+              %}
+
+              {% if state==''on'' %}
+
+              mdi:bluetooth
+
+              {% elif state==''off'' %}
+
+              mdi:bluetooth-off
+
+              {% endif %}
+
+              '
+            icon_color: '{% set state=states(''binary_sensor.micemob_bluetooth_state'')
+              %}
+
+              {% if state==''on'' %}
+
+              green
+
+              {% elif state==''off'' %}
+
+              red
+
+              {% endif %}
+
+              '
+            type: template
+          type: custom:mushroom-chips-card
+        mode: vertical
+        type: custom:stack-in-card
+      type: horizontal-stack
+    - card_mod:
+        style: "ha-card {\n  height: 178px ;\n\n  margin-left: auto;\n  margin-right:\
+          \ auto;\n}\n"
+      cards:
+      - badge_color: "{% if is_state('binary_sensor.echo_salon_mouvement', 'on') %}\n\
+          \  orange\n{% else %}  \n  grey\n{% endif %}\n"
+        badge_icon: "{% if is_state('binary_sensor.echo_salon_mouvement', 'on') %}\n\
+          \  mdi:motion-sensor\n{% else %}  \n  mdi:motion-sensor-off\n{% endif %}\n"
+        card_mod:
+          style:
+            .: ":host {\n  --mush-icon-size: 146px;\n}\n"
+            mushroom-shape-icon$: ".shape {\n  position: relative;\n  left: -43px;\n\
+              \  top: 55px;\n}\n"
+            mushroom-state-info$: ".primary {\n  font-size: 16px !important;\n  position:\
+              \ relative;\n  top: -50px;\n  left: -155px;\n  overflow: visible !important;\n\
+              \  white-space: normal !important;\n}\n.secondary {\n  position: relative;\n\
+              \  overflow: visible !important;\n  top: -52px;\n  left: -155px;\n}\n"
+            style: "mushroom-badge-icon {\n  left: 60px;\n  top: 25px;\n}\n"
+        double_tap_action:
+          action: navigate
+          navigation_path: /lovelace-smartphone/salon
+        entity: group.lumieres_salon
+        hold_action:
+          action: toggle
+        icon: mdi:sofa
+        icon_color: "{% if is_state(entity, 'on') %}\n  #03A9F4\n{% else %}  \n  grey\n\
+          {% endif %}\n"
+        layout: horizontal
+        primary: Salon
+        secondary: "{{ states('sensor.echo_jeanne_temperature') }}\xB0C"
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-smartphone/salon
+        type: custom:mushroom-template-card
+      - card_mod:
+          style:
+            .: "ha-card {\n  width: 66px;\n  margin-left: 80%;\n  top: -170px;\n \
+              \ background: none;\n  --chip-border-width: 0;\n}\n"
+        chips:
+        - entity: light.0x84ba20fffe4b2581
+          hold_action:
+            action: toggle
+          icon: mdi:lightbulb
+          icon_color: "{% if is_state(entity, 'on') %} \n orange\n{% elif is_state(entity,\
+            \ 'off') %} \n grey\n{% else %}\n grey\n{% endif %}"
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              data:
+                content:
+                  cards:
+                  - collapsible_controls: true
+                    entity: light.0x84ba20fffe4b2581
+                    name: Petite Lampe
+                    show_brightness_control: true
+                    show_color_control: false
+                    show_color_temp_control: true
+                    type: custom:mushroom-light-card
+                    use_light_color: true
+                  - collapsible_controls: true
+                    entity: light.lampadaire
+                    show_brightness_control: false
+                    show_color_control: false
+                    show_color_temp_control: false
+                    type: custom:mushroom-light-card
+                    use_light_color: false
+                  - collapsible_controls: true
+                    entity: light.elephants
+                    show_brightness_control: false
+                    show_color_control: false
+                    show_color_temp_control: false
+                    type: custom:mushroom-light-card
+                    use_light_color: false
+                  - collapsible_controls: true
+                    entity: light.cerisier
+                    show_brightness_control: false
+                    show_color_control: false
+                    show_color_temp_control: false
+                    type: custom:mushroom-light-card
+                    use_light_color: false
+                  type: vertical-stack
+                title: "Lumi\xE8res salon"
+              service: browser_mod.popup
+          type: template
+        - entity: cover.salon
+          hold_action:
+            action: toggle
+          icon: "{% if is_state(entity, 'open') %} \n mdi:window-shutter-open\n{%\
+            \ elif is_state(entity, 'closed') %} \n mdi:window-shutter\n{% else %}\n\
+            \ mdi:window-shutter-alert\n{% endif %}"
+          icon_color: "{% if is_state(entity, 'open') %} \n grey\n{% elif is_state(entity,\
+            \ 'closed') %} \n grey\n{% else %}\n orange\n{% endif %}"
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              data:
+                content:
+                  cards:
+                  - entity: cover.volet_du_salon_apero
+                    name: Volet Apero
+                    show_buttons_control: true
+                    show_position_control: true
+                    show_tilt_position_control: false
+                    type: custom:mushroom-cover-card
+                  - entity: cover.volet_du_salon_tv
+                    name: Volet TV
+                    show_buttons_control: true
+                    show_position_control: true
+                    show_tilt_position_control: false
+                    type: custom:mushroom-cover-card
+                  type: vertical-stack
+                title: Volets du salon
+              service: browser_mod.popup
+          type: template
+        - entity: media_player.echo_jeanne
+          icon: mdi:play-pause
+          icon_color: "{% if is_state(entity, 'playing') %} \n  #03A9F4\n{% else %}\n\
+            \ grey\n{% endif %}"
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              data:
+                content:
+                  cards:
+                  - artwork: full-cover
+                    entity: media_player.echo_jeanne
+                    group: true
+                    shortcuts:
+                      buttons:
+                      - id: Playlist Jeanne
+                        name: Playlist Jeanne
+                        type: AMAZON_MUSIC
+                      - id: joue la station RTL deux
+                        name: RTL2
+                        type: custom
+                      - id: joue du pop rock
+                        name: Pop- Rock
+                        type: custom
+                      - id: joue du rock
+                        name: Rock
+                        type: custom
+                      - id: joue de la musique douce
+                        name: Musique douce
+                        type: custom
+                      - id: joue de la musique au piano
+                        name: Piano
+                        type: custom
+                      - id: joue du Queen
+                        name: Queen
+                        type: custom
+                      - id: joue du Vianney
+                        name: Vianney
+                        type: custom
+                      - id: joue du Louane
+                        name: Louane
+                        type: custom
+                      - icon: mdi:multicast
+                        id: Playlist Jeanne sur le groupe rez_de_chaussee
+                        name: Playlist Jeanne
+                        type: AMAZON_MUSIC
+                      - icon: mdi:multicast
+                        id: joue la station RTL deux sur le groupe rez_de_chaussee
+                        name: RTL2
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue du pop rock sur le groupe rez_de_chaussee
+                        name: Pop- Rock
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue du rock sur le groupe rez_de_chaussee
+                        name: Rock
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue de la musique douce sur le groupe rez_de_chaussee
+                        name: Musique douce
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue de la musique au piano sur le groupe rez_de_chaussee
+                        name: Piano
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue du Queen sur le groupe rez_de_chaussee
+                        name: Queen
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue du Vianney sur le groupe rez_de_chaussee
+                        name: Vianney
+                        type: custom
+                      - icon: mdi:multicast
+                        id: joue du Louane sur le groupe rez_de_chaussee
+                        name: Louane
+                        type: custom
+                      columns: 3
+                      hide_when_off: true
+                    source: full
+                    tts:
+                      entity_id: media_player.echo_jeanne
+                      platform: alexa
+                      type: announce
+                    type: custom:mini-media-player
+                    volume_stateless: false
+                  type: custom:stack-in-card
+                title: Echo salon
+              service: browser_mod.popup
+          type: template
+        - entity: plant.alocatia
+          icon: mdi:flower
+          icon_color: "{% if is_state(entity, 'problem') %} \n orange\n{% else %}\n\
+            \ grey\n{% endif %}"
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              data:
+                content:
+                  card:
+                    entity: plant.alocatia
+                    show_bars:
+                    - moisture
+                    - temperature
+                    - illuminance
+                    - conductivity
+                    type: custom:flower-card
+                  type: custom:mod-card
+                title: Plante Marsupilami
+              service: browser_mod.popup
+          type: template
+        type: custom:mushroom-chips-card
+      type: custom:vertical-stack-in-card
+    - cards:
+      - card_mod:
+          style: "ha-card {\n  {% set r = state_attr(config.entity, 'rgb_color')[0]\
+            \ %}\n  {% set g = state_attr(config.entity, 'rgb_color')[1] %}\n  {%\
+            \ set b = state_attr(config.entity, 'rgb_color')[2] %}\n  {% if is_state(config.entity,\
+            \ 'on') %}\n      background: rgba({{r}}, {{g}}, {{b}},0.1);\n      --primary-text-color:\
+            \ rgb({{r}}, {{g}}, {{b}});\n      --secondary-text-color: rgba({{r}},\
+            \ {{g}}, {{b}},0.5);\n  {% endif %}\n}\nha-card {\n  padding: px 24px\
+            \ !important;\n}\nha-card {\n  --badge-size: 0px;\n}\nha-card {\n  background:\
+            \ none;\n  --ha-card-box-shadow: 0px;\n}\n"
+        collapsible_controls: true
+        entity: light.all_lights
+        hold_action:
+          action: toggle
+        icon: mdi:sofa-outline
+        name: All Lights
+        show_brightness_control: true
+        show_color_control: true
+        show_color_temp_control: true
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            data:
+              content:
+                card:
+                  type: entities
+                filter:
+                  exclude: []
+                  include:
+                  - group: light.all_lights
+                    options:
+                      card_mod:
+                        style: "ha-card {\n  {% set r = state_attr(config.entity,\
+                          \ 'rgb_color')[0] %}\n  {% set g = state_attr(config.entity,\
+                          \ 'rgb_color')[1] %}\n  {% set b = state_attr(config.entity,\
+                          \ 'rgb_color')[2] %}\n  {% if is_state(config.entity, 'on')\
+                          \ %}\n      background: rgba({{r}}, {{g}}, {{b}},0.1);\n\
+                          \      --primary-text-color: rgb({{r}}, {{g}}, {{b}});\n\
+                          \      --secondary-text-color: rgba({{r}}, {{g}}, {{b}},0.5);\n\
+                          \  {% endif %}\n}\nha-card {\n  padding: 8px 24px !important;\n\
+                          }\nha-card {\n  --badge-size: 0px;\n}\n  ha-card {\n   \
+                          \ background: none;\n    --ha-card-box-shadow: 0px;\n  }\n"
+                      collapsible_controls: true
+                      show_brightness_control: true
+                      show_color_control: true
+                      show_color_temp_control: true
+                      tap_action:
+                        action: toggle
+                      type: custom:mushroom-light-card
+                      use_light_color: true
+                sort:
+                  method: friendly_name
+                type: custom:auto-entities
+              title: All Lights
+            service: browser_mod.popup
+        type: custom:mushroom-light-card
+        use_light_color: true
+      - card_mod:
+          style: "ha-card {\n  {% set r = state_attr(config.entity, 'rgb_color')[0]\
+            \ %}\n  {% set g = state_attr(config.entity, 'rgb_color')[1] %}\n  {%\
+            \ set b = state_attr(config.entity, 'rgb_color')[2] %}\n  {% if is_state(config.entity,\
+            \ 'on') %}\n      background: rgba({{r}}, {{g}}, {{b}},0.1);\n      --primary-text-color:\
+            \ rgb({{r}}, {{g}}, {{b}});\n      --secondary-text-color: rgba({{r}},\
+            \ {{g}}, {{b}},0.5);\n  {% endif %}\n}\nha-card {\n  padding: px 24px\
+            \ !important;\n}\nha-card {\n  --badge-size: 0px;\n}\nha-card {\n  background:\
+            \ none;\n  --ha-card-box-shadow: 0px;\n}\n"
+        collapsible_controls: true
+        entity: light.all_ambient
+        hold_action:
+          action: toggle
+        icon: mdi:sofa-outline
+        name: All Ambient
+        show_brightness_control: true
+        show_color_control: true
+        show_color_temp_control: true
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            data:
+              content:
+                card:
+                  type: entities
+                filter:
+                  exclude: []
+                  include:
+                  - group: light.all_ambient
+                    options:
+                      card_mod:
+                        style: "ha-card {\n  {% set r = state_attr(config.entity,\
+                          \ 'rgb_color')[0] %}\n  {% set g = state_attr(config.entity,\
+                          \ 'rgb_color')[1] %}\n  {% set b = state_attr(config.entity,\
+                          \ 'rgb_color')[2] %}\n  {% if is_state(config.entity, 'on')\
+                          \ %}\n      background: rgba({{r}}, {{g}}, {{b}},0.1);\n\
+                          \      --primary-text-color: rgb({{r}}, {{g}}, {{b}});\n\
+                          \      --secondary-text-color: rgba({{r}}, {{g}}, {{b}},0.5);\n\
+                          \  {% endif %}\n}\nha-card {\n  padding: 8px 24px !important;\n\
+                          }\nha-card {\n  --badge-size: 0px;\n}\n  ha-card {\n   \
+                          \ background: none;\n    --ha-card-box-shadow: 0px;\n  }\n"
+                      collapsible_controls: true
+                      show_brightness_control: true
+                      show_color_control: true
+                      show_color_temp_control: true
+                      tap_action:
+                        action: toggle
+                      type: custom:mushroom-light-card
+                      use_light_color: true
+                sort:
+                  method: friendly_name
+                type: custom:auto-entities
+              title: All Ambient
+            service: browser_mod.popup
+        type: custom:mushroom-light-card
+        use_light_color: true
+      type: horizontal-stack
+    path: /main
+    title: Home
+    type: custom:grid-layout
