@@ -80,7 +80,7 @@ config:
           use_entity_picture: true
         - alignment: center
           chips:
-          - entity: binary_sensor.sm_s21_fabian_is_charging
+          - entity: sensor.micemob_battery_state
             icon: mdi:power-plug
             icon_color: "          {% set state=states('sensor.micemob_battery_state')\
               \ %}\n          {% if state=='charging' %}\n          green\n      \
@@ -89,7 +89,7 @@ config:
             tap_action:
               action: more-info
             type: template
-          - entity: sensor.sm_s21_fabian_battery_level
+          - entity: sensor.micemob_battery_level
             icon: "          {% set bl = states('sensor.micemob_battery_level') |\
               \ int %}\n          {% if bl < 10 %} mdi:battery-outline\n         \
               \ {% elif bl < 20 %} mdi:battery-10\n          {% elif bl < 30 %} mdi:battery-20\n\
