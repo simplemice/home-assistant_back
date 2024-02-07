@@ -15,10 +15,10 @@ This is my Home Assistant installation.
 Description | value
 --|--
 Installed version | 11.5
-Total entity objects | 1735
+Total entity objects | 1739
 Entities in the [`person`](https://www.home-assistant.io/components/person) domain | 1
 Entities in the [`binary_sensor`](https://www.home-assistant.io/components/binary_sensor) domain | 140
-Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 842
+Entities in the [`sensor`](https://www.home-assistant.io/components/sensor) domain | 846
 Entities in the [`input_number`](https://www.home-assistant.io/components/input_number) domain | 4
 Entities in the [`stt`](https://www.home-assistant.io/components/stt) domain | 2
 Entities in the [`update`](https://www.home-assistant.io/components/update) domain | 96
