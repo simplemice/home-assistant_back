@@ -406,7 +406,7 @@
     light.kitchen_bottom_ambient:
       entity_only: true
 - id: '1707232459563'
-  name: Blue-Purple Lightstrip
+  name: Lightstrip Blue-Purple
   entities:
     light.lightstrip:
       supported_color_modes:
@@ -416,15 +416,15 @@
       color_mode: hs
       brightness: 36
       hs_color:
-      - 272.816
-      - 96.078
+      - 3.509
+      - 67.059
       rgb_color:
-      - 143
-      - 10
       - 255
+      - 94
+      - 83
       xy_color:
-      - 0.236
-      - 0.088
+      - 0.604
+      - 0.315
       model: yeelink.light.strip2
       lan_ip: 192.168.3.19
       mac_address: 5C:E5:0C:BB:E5:2A
@@ -432,7 +432,7 @@
       miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-strip2:1
       light.on: true
       light.brightness: 14
-      light.color: 9439999
+      light.color: 16735828
       state_updater: lan
       icon: mdi:led-strip-variant
       friendly_name: Lightstrip
@@ -441,7 +441,7 @@
   icon: mdi:led-strip-variant
   metadata: {}
 - id: '1707232627206'
-  name: Light Ocean Lightstrip
+  name: Lightstrip Light Ocean
   entities:
     light.lightstrip:
       supported_color_modes:
@@ -449,29 +449,176 @@
       - hs
       - onoff
       color_mode: hs
-      brightness: 127
+      brightness: 36
       hs_color:
-      - 194
-      - 94.118
+      - 3.509
+      - 67.059
       rgb_color:
-      - 14
-      - 198
       - 255
+      - 94
+      - 83
       xy_color:
-      - 0.148
-      - 0.25
+      - 0.604
+      - 0.315
       model: yeelink.light.strip2
       lan_ip: 192.168.3.19
       mac_address: 5C:E5:0C:BB:E5:2A
       entity_class: MiotLightEntity
       miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-strip2:1
       light.on: true
-      light.brightness: 50
-      light.color: 1034239
+      light.brightness: 14
+      light.color: 16735828
       state_updater: lan
       icon: mdi:led-strip-variant
       friendly_name: Lightstrip
       supported_features: 32
       state: 'on'
   icon: mdi:led-strip-variant
+  metadata: {}
+- id: '1707321173445'
+  name: Bedside Night Mode
+  entities:
+    light.bedside_lamp:
+      min_color_temp_kelvin: 1700
+      max_color_temp_kelvin: 6493
+      min_mireds: 154
+      max_mireds: 588
+      effect_list:
+      - Color
+      - Day
+      supported_color_modes:
+      - brightness
+      - color_temp
+      - hs
+      - onoff
+      color_mode: hs
+      brightness: 41
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 277.882
+      - 100
+      rgb_color:
+      - 160
+      - 0
+      - 255
+      xy_color:
+      - 0.259
+      - 0.096
+      effect: Color
+      model: yeelink.light.bslamp2
+      lan_ip: 192.168.3.20
+      mac_address: 5C:E5:0C:9D:53:08
+      entity_class: MiotLightEntity
+      miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-bslamp2:1
+      light.on: true
+      light.brightness: 16
+      light.color_temperature: 6494
+      light.color: 10551551
+      light.mode: 1
+      light.saturability: 100
+      state_updater: lan
+      icon: mdi:lamp
+      friendly_name: Bedside Lamp
+      supported_features: 36
+      state: 'on'
+  icon: mdi:lamp
+  metadata: {}
+- id: '1707321210808'
+  name: Bedside Evening Mode
+  entities:
+    light.bedside_lamp:
+      min_color_temp_kelvin: 1700
+      max_color_temp_kelvin: 6493
+      min_mireds: 154
+      max_mireds: 588
+      effect_list:
+      - Color
+      - Day
+      supported_color_modes:
+      - brightness
+      - color_temp
+      - hs
+      - onoff
+      color_mode: hs
+      brightness: 153
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 306.122
+      - 96.078
+      rgb_color:
+      - 255
+      - 10
+      - 230
+      xy_color:
+      - 0.418
+      - 0.171
+      effect: Color
+      model: yeelink.light.bslamp2
+      lan_ip: 192.168.3.20
+      mac_address: 5C:E5:0C:9D:53:08
+      entity_class: MiotLightEntity
+      miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-bslamp2:1
+      light.on: true
+      light.brightness: 60
+      light.color_temperature: 6494
+      light.color: 16714470
+      light.mode: 1
+      light.saturability: 96
+      state_updater: lan
+      icon: mdi:lamp
+      friendly_name: Bedside Lamp
+      supported_features: 36
+      state: 'on'
+  icon: mdi:lamp
+  metadata: {}
+- id: '1707321255404'
+  name: Bedside Day Mode
+  entities:
+    light.bedside_lamp:
+      min_color_temp_kelvin: 1700
+      max_color_temp_kelvin: 6493
+      min_mireds: 154
+      max_mireds: 588
+      effect_list:
+      - Color
+      - Day
+      supported_color_modes:
+      - brightness
+      - color_temp
+      - hs
+      - onoff
+      color_mode: hs
+      brightness: 255
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 182.177
+      - 97.255
+      rgb_color:
+      - 6
+      - 246
+      - 255
+      xy_color:
+      - 0.151
+      - 0.328
+      effect: Color
+      model: yeelink.light.bslamp2
+      lan_ip: 192.168.3.20
+      mac_address: 5C:E5:0C:9D:53:08
+      entity_class: MiotLightEntity
+      miot_type: urn:miot-spec-v2:device:light:0000A001:yeelink-bslamp2:1
+      light.on: true
+      light.brightness: 100
+      light.color_temperature: 6494
+      light.color: 521983
+      light.mode: 1
+      light.saturability: 97
+      state_updater: lan
+      icon: mdi:lamp
+      friendly_name: Bedside Lamp
+      supported_features: 36
+      state: 'on'
+  icon: mdi:lamp
   metadata: {}
