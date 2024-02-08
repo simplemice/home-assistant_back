@@ -1,7 +1,75 @@
 config:
   views:
-  - badges: []
+  - background: center / cover no-repeat fixed url('https://static.vecteezy.com/system/resources/previews/018/814/603/non_2x/black-abstract-background-free-vector.jpg')
+    badges: []
     cards:
+    - alignment: center
+      chips:
+      - entity: alarm_control_panel.house
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: alarm-control-panel
+      - entity: weather.openweathermap
+        show_conditions: true
+        show_temperature: true
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: weather
+      - entity: sensor.rain_sensor
+        icon_color: light-green
+        type: entity
+      - content: '{{expand(state_attr(''light.all_lights'', ''entity_id''))| selectattr(''state'',''eq'',''on'')|map(attribute=''entity_id'')|list|count}}
+
+          '
+        icon: mdi:lightbulb
+        icon_color: yellow
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: template
+      - content: '{{expand(state_attr(''light.all_ambient'', ''entity_id''))| selectattr(''state'',''eq'',''on'')|map(attribute=''entity_id'')|list|count}}
+
+          '
+        icon: mdi:led-strip-variant
+        icon_color: yellow
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: template
+      - content: '{{expand(state_attr(''cover.livingroom_curtains'', ''entity_id''))|
+          selectattr(''state'',''eq'',''on'')|map(attribute=''entity_id'')|list|count}}
+
+          '
+        icon: mdi:curtains
+        icon_color: purple
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: template
+      - content: '{{expand(state_attr(''group.external_doors'', ''entity_id''))| selectattr(''state'',''eq'',''on'')|map(attribute=''entity_id'')|list|count}}
+
+          '
+        icon: mdi:door
+        icon_color: purple
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: template
+      - content: '{{expand(state_attr(''binary_sensor.all_windows'', ''entity_id''))|
+          selectattr(''state'',''eq'',''on'')|map(attribute=''entity_id'')|list|count}}
+
+          '
+        icon: mdi:window-closed
+        icon_color: purple
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: template
+      - content: '{{expand(state_attr(''fan.all_fans'', ''entity_id''))| selectattr(''state'',''eq'',''on'')|map(attribute=''entity_id'')|list|count}}
+
+          '
+        icon: mdi:fan
+        icon_color: green
+        style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n\
+          }\n"
+        type: template
+      style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n}\n"
+      type: custom:mushroom-chips-card
     - alignment: center
       subtitle: '{% set time = now().weekday() %}
 
@@ -170,7 +238,7 @@ config:
         mode: vertical
         type: custom:stack-in-card
       - cards:
-        - entity: person.simplemice
+        - entity: person.mouse
           hide_name: true
           layout: vertical
           tap_action:
