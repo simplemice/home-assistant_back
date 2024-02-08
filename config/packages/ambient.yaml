@@ -199,24 +199,4 @@ automation:
         target:
           entity_id:
             - light.lightstrip
-      - repeat:
-          sequence:
-            - service: scene.turn_on
-              target:
-                entity_id: scene.after_sunset_ambient
-              metadata: {}
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 10
-                milliseconds: 0
-          while:
-            - condition: and
-              conditions:
-                - condition: state
-                  entity_id: light.livingroom_wardrobe_ambient
-                  state: "off"
-                - condition: state
-                  entity_id: light.livingroom_door_ambient
-                  state: "off"
     mode: single

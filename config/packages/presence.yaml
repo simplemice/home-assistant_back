@@ -33,14 +33,6 @@ timer:
     icon: mdi:timer
     restore: true
 
-proximity:
-  simplemice:
-    devices:
-      - person.simplemice
-    zone: home
-    tolerance: 100
-    unit_of_measurement: km
-
 sensor:
   - platform: mqtt_room
     device_id: "iBeacon:3e3d5952-a829-4d52-8e1e-c3ab9dbe69fa-100-1"

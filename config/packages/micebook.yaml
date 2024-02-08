@@ -163,9 +163,6 @@ script:
                 - light.tv_table_ambient
                 - light.sofa_ambient
                 - light.wled_matrix
-              device_id:
-                - 1cc8e86ebd79f2b9c2fc59cb67aab20a
-                - 18ec10c0ec1ddb0c7629081ddce2ec8c
       - delay:
           hours: 0
           minutes: 0

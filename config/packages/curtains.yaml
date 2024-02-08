@@ -113,8 +113,6 @@ automation:
           entity_id:
             - light.sofa_ambient
             - light.lumi_gateway_v3_light
-            - light.livingroom_wardrobe_ambient
-            - light.livingroom_door_ambient
 
 script:
   curtains:
