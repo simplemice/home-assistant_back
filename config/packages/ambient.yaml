@@ -150,7 +150,7 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - binary_sensor.all_doors
+          - binary_sensor.external_doors
         to: "off"
       - platform: time
         at: "20:30:00"
@@ -172,9 +172,6 @@ automation:
           - condition: state
             entity_id: light.lightstrip
             state: "on"
-          - condition: state
-            entity_id: light.livingroom_night_ambient
-            state: "off"
     action:
       - delay:
           hours: 0

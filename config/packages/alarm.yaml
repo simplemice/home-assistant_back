@@ -4,13 +4,6 @@
 #   @package        :   Alarm
 #   @description    :   Alarm automations.
 ###############################################################################
-group:
-  External Doors:
-    - binary_sensor.livingroom_door_contact
-    - binary_sensor.backyard_door_contact
-
-  Internal Doors:
-    - binary_sensor.bedroom_door_contact
 
 input_datetime:
   disarm_time:
@@ -80,6 +73,20 @@ sensor:
           {% else %}
             mdi:safe-square
           {% endif %}
+
+binary_sensor:
+  - platform: group
+    name: "External Doors"
+    device_class: opening
+    entities:
+      - binary_sensor.livingroom_door_contact
+      - binary_sensor.backyard_door_contact
+
+  - platform: group
+    name: "Internal Doors"
+    device_class: opening
+    entities:
+      - binary_sensor.bedroom_door_contact
 
 automation:
   - id: 0707783c-c303-43e7-ad3a-52c383e90140

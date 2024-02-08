@@ -186,7 +186,7 @@ automation:
       - condition: and
         conditions:
           - condition: state
-            entity_id: binary_sensor.all_doors
+            entity_id: binary_sensor.external_doors
             state: "off"
           - condition: state
             entity_id: binary_sensor.bed_presense

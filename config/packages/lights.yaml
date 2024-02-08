@@ -479,9 +479,6 @@ automation:
           - condition: state
             entity_id: light.lightstrip
             state: "off"
-          - condition: state
-            entity_id: light.livingroom_night_ambient
-            state: "off"
     action:
       - choose:
           - conditions:

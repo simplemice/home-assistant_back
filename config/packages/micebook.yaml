@@ -158,7 +158,6 @@ script:
               transition: 120
             target:
               entity_id:
-                - light.livingroom_night_ambient
                 - light.lightstrip
                 - light.tv_table_ambient
                 - light.sofa_ambient
