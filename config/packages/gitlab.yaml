@@ -58,7 +58,10 @@ automation:
         from: "off"
       - platform: time_pattern
         hours: "5"
-    condition: []
+    condition:
+      - condition: state
+        entity_id: input_boolean.gitlab_automation
+        state: "on"
     action:
       - service: readme.generate
         data: {}

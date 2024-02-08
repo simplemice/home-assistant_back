@@ -70,13 +70,13 @@ config:
                 style: "ha-card {\n  --chip-background: rgba(var(--rgb-amber), 0.2);\n\
                   } \n"
               icon: mdi:lightbulb
-              icon_color: blue
+              icon_color: cyan
               tap_action:
                 action: call-service
                 data: {}
                 service: scene.turn_on
                 target:
-                  entity_id: scene.blue_purple_lightstrip
+                  entity_id: scene.lightstrip_ocean_scene
               type: action
             type: custom:mushroom-chips-card
           - chips:
@@ -84,13 +84,13 @@ config:
                 style: "ha-card {\n  --chip-background: rgba(var(--rgb-orange), 0.2);\n\
                   } \n"
               icon: mdi:lightbulb
-              icon_color: cyan
+              icon_color: blue
               tap_action:
                 action: call-service
                 data: {}
                 service: scene.turn_on
                 target:
-                  entity_id: scene.light_ocean_lightstrip
+                  entity_id: scene.lightstrip_blue_scene
               type: action
             type: custom:mushroom-chips-card
           - chips:
@@ -104,7 +104,7 @@ config:
                 data: {}
                 service: scene.turn_on
                 target:
-                  entity_id: scene.after_sunset_ambient
+                  entity_id: scene.livingroom_sunset_scene
               type: action
             type: custom:mushroom-chips-card
           type: vertical-stack
@@ -466,11 +466,11 @@ config:
         style: "ha-card {\n  height: 178px ;\n\n  margin-left: auto;\n  margin-right:\
           \ auto;\n}\n"
       cards:
-      - badge_color: "{% if is_state('binary_sensor.livingroom_motion_group', 'on')\
-          \ %}\n  orange\n{% else %}  \n  grey\n{% endif %}\n"
-        badge_icon: "{% if is_state('binary_sensor.livingroom_motion_group', 'on')\
-          \ %}\n  mdi:motion-sensor\n{% else %}  \n  mdi:motion-sensor-off\n{% endif\
-          \ %}\n"
+      - badge_color: "{% if is_state('binary_sensor.garage_door_motion_occupancy',\
+          \ 'on') %}\n  orange\n{% else %}  \n  grey\n{% endif %}\n"
+        badge_icon: "{% if is_state('binary_sensor.garage_door_motion_occupancy',\
+          \ 'on') %}\n  mdi:motion-sensor\n{% else %}  \n  mdi:motion-sensor-off\n\
+          {% endif %}\n"
         card_mod:
           style:
             .: ":host {\n  --mush-icon-size: 146px;\n}\n"
@@ -483,19 +483,19 @@ config:
             style: "mushroom-badge-icon {\n  left: 60px;\n  top: 25px;\n}\n"
         double_tap_action:
           action: navigate
-          navigation_path: /livingroom
-        entity: light.lightstrip
+          navigation_path: /garage
+        entity: light.garage_bulb
         hold_action:
           action: toggle
-        icon: mdi:sofa
+        icon: mdi:motorbike
         icon_color: "{% if is_state(entity, 'on') %}\n  green\n{% else %}  \n  grey\n\
           {% endif %}\n"
         layout: horizontal
-        primary: Livingroom
-        secondary: "{{ states('sensor.livingroom_temp_temperature') }}\xB0C"
+        primary: Garage
+        secondary: "{{ states('sensor.outside_temp') }}\xB0C"
         tap_action:
           action: navigate
-          navigation_path: /livingroom
+          navigation_path: /garage
         type: custom:mushroom-template-card
       - card_mod:
           style:
@@ -515,72 +515,55 @@ config:
                 content:
                   cards:
                   - collapsible_controls: true
-                    entity: light.0x84ba20fffe4b2581
-                    name: Petite Lampe
+                    entity: light.garage_bulb
+                    name: Entrance Lamp
                     show_brightness_control: true
                     show_color_control: false
                     show_color_temp_control: true
                     type: custom:mushroom-light-card
                     use_light_color: true
                   - collapsible_controls: true
-                    entity: light.lampadaire
-                    show_brightness_control: false
-                    show_color_control: false
-                    show_color_temp_control: false
-                    type: custom:mushroom-light-card
-                    use_light_color: false
-                  - collapsible_controls: true
-                    entity: light.elephants
-                    show_brightness_control: false
-                    show_color_control: false
-                    show_color_temp_control: false
-                    type: custom:mushroom-light-card
-                    use_light_color: false
-                  - collapsible_controls: true
-                    entity: light.cerisier
+                    entity: light.garage_bulb
+                    name: Garage Bulb
                     show_brightness_control: false
                     show_color_control: false
                     show_color_temp_control: false
                     type: custom:mushroom-light-card
                     use_light_color: false
                   type: vertical-stack
-                title: "Lumi\xE8res salon"
+                title: Garage Light
               service: browser_mod.popup
           type: template
-        - entity: cover.livingroom_curtains
+        - entity: sensor.parking_motorcycle_count
           hold_action:
             action: toggle
-          icon: "{% if is_state(entity, 'open') %} \n mdi:window-shutter-open\n{%\
-            \ elif is_state(entity, 'closed') %} \n mdi:window-shutter\n{% else %}\n\
-            \ mdi:window-shutter-alert\n{% endif %}"
-          icon_color: "{% if is_state(entity, 'open') %} \n green\n{% elif is_state(entity,\
-            \ 'closed') %} \n grey\n{% else %}\n orange\n{% endif %}"
+          icon: "{% if states ('sensor.parking_motorcycle_count') | float >= 1 %}\n\
+            \   mdi:motorbike\n{% elif states ('sensor.parking_motorcycle_count')\
+            \ | float <= 1 %}\n   mdi:motorbike-off\n{% else %}\n   mdi:motorbike-electric\n\
+            {% endif %}"
+          icon_color: "{% if states ('sensor.parking_motorcycle_count') | float >=\
+            \ 1 %}\n   green\n{% elif states ('sensor.parking_motorcycle_count') |\
+            \ float <= 1 %}\n   red\n{% else %}\n   blue\n{% endif %}"
           tap_action:
             action: fire-dom-event
             browser_mod:
               data:
                 content:
                   cards:
-                  - entity: cover.livingroom_curtain_l
-                    name: Left Cover
-                    show_buttons_control: true
-                    show_position_control: true
-                    show_tilt_position_control: false
-                    type: custom:mushroom-cover-card
-                  - entity: cover.livingroom_curtain_r
-                    name: Right Cover
-                    show_buttons_control: true
-                    show_position_control: true
-                    show_tilt_position_control: false
-                    type: custom:mushroom-cover-card
+                  - cameras:
+                    - camera_entity: camera.garage
+                    type: custom:frigate-card
+                  - entity: sensor.parking_motorcycle_count
+                    type: custom:mushroom-template-card
                   type: vertical-stack
-                title: Livingroom Curtains
+                title: Motorbice
               service: browser_mod.popup
           type: template
-        - entity: media_player.bedroom_speaker
-          icon: mdi:play-pause
-          icon_color: "{% if is_state(entity, 'playing') %} \n  green\n{% else %}\n\
-            \ grey\n{% endif %}"
+        - entity: binary_sensor.garage_door_motion_occupancy
+          icon: "{% if is_state(entity, 'on') %} \n  mdi:motion-sensor\n{% else %}\n\
+            \ mdi:motion-sensor-off\n{% endif %}"
+          icon_color: "{% if is_state(entity, 'on') %} \n  red\n{% else %}\n green\n\
+            {% endif %}"
           tap_action:
             action: fire-dom-event
             browser_mod:
@@ -590,26 +573,6 @@ config:
                   - artwork: full-cover
                     entity: media_player.bedroom_speaker
                     group: true
-                    shortcuts:
-                      buttons:
-                      - id: Playlist Jeanne
-                        name: Playlist Jeanne
-                        type: AMAZON_MUSIC
-                      - id: joue la station RTL deux
-                        name: RTL2
-                        type: custom
-                      - id: joue du pop rock
-                        name: Pop- Rock
-                        type: custom
-                      - id: joue du rock
-                        name: Rock
-                        type: custom
-                      - icon: mdi:multicast
-                        id: joue de la musique douce
-                        name: Musique douce
-                        type: custom
-                      columns: 3
-                      hide_when_off: true
                     source: full
                     tts:
                       entity_id: media_player.bedroom_speaker
@@ -618,7 +581,7 @@ config:
                     type: custom:mini-media-player
                     volume_stateless: false
                   type: custom:stack-in-card
-                title: Bedroom Echo
+                title: Garage Motion
               service: browser_mod.popup
           type: template
         - entity: plant.alocatia
@@ -644,250 +607,72 @@ config:
           type: template
         type: custom:mushroom-chips-card
       type: custom:vertical-stack-in-card
+    - cards:
+      - cards:
+        - card_mod:
+            style: "ha-card {\n   box-shadow: none;\n} \n"
+          collapsible_controls: false
+          entity: light.bedside_lamp
+          fill_container: true
+          show_brightness_control: true
+          show_color_control: true
+          show_color_temp_control: true
+          type: custom:mushroom-light-card
+          use_light_color: true
+        - cards:
+          - chips:
+            - card_mod:
+                style: "ha-card {\n  --chip-background: rgba(var(--rgb-amber), 0.2);\n\
+                  } \n"
+              icon: mdi:lightbulb
+              icon_color: cyan
+              tap_action:
+                action: call-service
+                data: {}
+                service: scene.turn_on
+                target:
+                  entity_id: scene.bedside_day_mode
+              type: action
+            type: custom:mushroom-chips-card
+          - chips:
+            - card_mod:
+                style: "ha-card {\n  --chip-background: rgba(var(--rgb-orange), 0.2);\n\
+                  } \n"
+              icon: mdi:lightbulb
+              icon_color: blue
+              tap_action:
+                action: call-service
+                data: {}
+                service: scene.turn_on
+                target:
+                  entity_id: scene.bedside_evening_mode
+              type: action
+            type: custom:mushroom-chips-card
+          - chips:
+            - card_mod:
+                style: "ha-card {\n  --chip-background: rgba(var(--rgb-pink), 0.2);\n\
+                  }\n"
+              icon: mdi:lightbulb
+              icon_color: pink
+              tap_action:
+                action: call-service
+                data: {}
+                service: scene.turn_on
+                target:
+                  entity_id: scene.bedside_night_mode
+              type: action
+            type: custom:mushroom-chips-card
+          type: vertical-stack
+        layout:
+          grid-template-columns: 90% 10%
+        layout_type: custom:grid-layout
+        type: custom:layout-card
+      layout: {}
+      layout_type: custom:vertical-layout
+      type: custom:layout-card
     title: Home
   - badges: []
     cards:
-    - cards:
-      - elements:
-        - color_stops:
-            '0': '#55FF55'
-            '6': '#ffff21'
-            '8': '#ff0000'
-          entity: sensor.asthma_index_today
-          fill: '#125054'
-          font_style:
-            font-color: white
-            font-size: 14px
-            text-shadow: 2px 2px black
-          gradient: true
-          max: 12
-          min: 0
-          name: Asthma
-          stroke_width: 8
-          style:
-            height: 100px
-            left: 38%
-            top: 12%
-            transform: none
-            width: 100px
-          type: custom:circle-sensor-card
-          units: ' '
-        - color_stops:
-            '0': '#55FF55'
-            '6': '#ffff21'
-            '8': '#ff0000'
-          entity: sensor.allergy_index_today
-          fill: '#125054'
-          font_style:
-            font-color: white
-            font-size: 14px
-            text-shadow: 2px 2px black
-          gradient: true
-          max: 12
-          min: 0
-          name: Pollen
-          stroke_width: 8
-          style:
-            height: 100px
-            left: 6%
-            top: 12%
-            transform: none
-            width: 100px
-          type: custom:circle-sensor-card
-          units: ' '
-        - color_stops:
-            '0': '#55FF55'
-            '6': '#ffff21'
-            '8': '#ff0000'
-          entity: sensor.cold_flu_index_today
-          fill: '#125054'
-          font_style:
-            font-color: white
-            font-size: 14px
-            text-shadow: 2px 2px black
-          gradient: true
-          max: 12
-          min: 0
-          name: Cold/Flu
-          stroke_width: 8
-          style:
-            height: 100px
-            left: 70%
-            top: 12%
-            transform: none
-            width: 100px
-          type: custom:circle-sensor-card
-          units: ' '
-        - filter:
-            include:
-            - key: sensor.allergy_index_forecasted_average.rating
-              name: ' '
-          heading_name: ' '
-          heading_state: ' '
-          style:
-            --ha-card-background: none
-            --ha-card-box-shadow: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            left: 3%
-            text-align: center
-            text-shadow: 2px 2px black
-            top: 5%
-            transform: translate(0%,-50%)
-            width: 100px
-          type: custom:entity-attributes-card
-        - filter:
-            include:
-            - key: sensor.asthma_index_forecasted_average.rating
-              name: ' '
-          heading_name: ' '
-          heading_state: ' '
-          style:
-            --ha-card-background: none
-            --ha-card-box-shadow: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            left: 35%
-            text-align: center
-            text-shadow: 2px 2px black
-            top: 5%
-            transform: translate(0%,-50%)
-            width: 100px
-          type: custom:entity-attributes-card
-        - filter:
-            include:
-            - key: sensor.cold_flu_forecasted_average.rating
-              name: ' '
-          heading_name: ' '
-          heading_state: ' '
-          style:
-            --ha-card-background: none
-            --ha-card-box-shadow: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            left: 67%
-            text-align: center
-            text-shadow: 2px 2px black
-            top: 5%
-            transform: translate(0%,-50%)
-            width: 100px
-          type: custom:entity-attributes-card
-        - filter:
-            include:
-            - key: sensor.allergy_index_today.allergen_name_1
-              name: ' '
-            - key: sensor.allergy_index_today.allergen_name_2
-              name: ' '
-            - key: sensor.allergy_index_today.allergen_name_3
-              name: ' '
-          heading_name: Allergens
-          heading_state: ' '
-          style:
-            --ha-card-background: none
-            --ha-card-box-shadow: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            height: 100px
-            left: 3%
-            line-height: 10px
-            text-align: left
-            text-shadow: 2px 2px black
-            top: 58%
-            transform: translate(0%,-50%)
-            width: 100px
-          type: custom:entity-attributes-card
-        - filter:
-            include:
-            - key: sensor.asthma_index_today.allergen_name_1
-              name: ' '
-            - key: sensor.asthma_index_today.allergen_name_2
-              name: ' '
-            - key: sensor.asthma_index_today.allergen_name_3
-              name: ' '
-          heading_name: ' '
-          heading_state: Pollutants
-          style:
-            --ha-card-background: none
-            --ha-card-box-shadow: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            height: 100px
-            left: 36%
-            line-height: 10px
-            text-align: left
-            text-shadow: 2px 2px black
-            top: 58%
-            transform: translate(0%,-50%)
-            width: 100px
-          type: custom:entity-attributes-card
-        - filter:
-            include:
-            - key: sensor.cold_flu_index_today.flu_index
-              name: 'Flu:'
-            - key: sensor.cold_flu_index_today.fever_index
-              name: 'Fever:'
-            - key: sensor.cold_flu_index_today.strep_index
-              name: 'Strep:'
-            - key: sensor.cold_flu_index_today.cough_index
-              name: 'Cough:'
-          heading_name: Constituents
-          heading_state: ' '
-          style:
-            --ha-card-background: none
-            --ha-card-box-shadow: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            height: 100px
-            left: 67%
-            line-height: 10px
-            text-align: left
-            text-shadow: 2px 2px black
-            top: 58%
-            transform: translate(0%,-50%)
-            width: 100px
-          type: custom:entity-attributes-card
-        - filter:
-            include:
-            - key: sensor.allergy_index_forecasted_average.outlook
-              name: ' '
-          heading_name: ' '
-          heading_state: Pollen Outlook
-          style:
-            --ha-card-background: none
-            --secondary-background-color: none
-            color: white
-            font-size: 14px
-            left: 3%
-            line-height: 10px
-            text-shadow: 2px 2px black
-            top: 80%
-            transform: translate(0%,-50%)
-          type: custom:entity-attributes-card
-        image: https://www.wallpaperflare.com/static/381/988/62/flowers-yellow-flowers-black-background-digital-art-wallpaper.jpg
-        type: picture-elements
-      - card_mod:
-          style: ":host {\n  --mush-card-primary-font-size: 22px;\n  --mush-card-secondary-font-size:\
-            \ 22px;\n  --mush-card-primary-font-weight: bolder;\n  --mush-card-secondary-font-weight:\
-            \ lighter;\n}\n"
-        fill_container: true
-        icon: mdi:list-status
-        icon_color: purple
-        layout: vertical
-        multiline_secondary: true
-        primary: 'TODO List:'
-        secondary: "            {% set tasks = state_attr('calendar.inbox', 'all_tasks')\
-          \ | default([]) %}\n            {% if tasks %}\n               Tasks for\
-          \ today:\n              {% for task in tasks %}\n                {{ task\
-          \ }}\n              {% endfor %}\n            {% else %}\n             \
-          \ No tasks for today.\n            {% endif %}"
-        type: custom:mushroom-template-card
-      type: horizontal-stack
     - card_mod:
         style: "ha-card {\n  padding: 0px !important;\n  @media only screen and (min-width:\
           \ 1000px) {\n    min-height: 52rem;  \n  }      \n}\n"
