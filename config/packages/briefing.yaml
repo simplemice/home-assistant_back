@@ -201,6 +201,8 @@ script:
       - service: notify.alexa_media_bedroom_speaker
         data:
           message: " {{morning_snark}} {{weather_status}} {{device_status}} {{ tasks }} {{ main_tasks }} {{ finish }}"
+      - stop: finish
+        response_variable: morning_briefing
 
   nightly_briefing:
     alias: Simplemice Nightly Briefing
@@ -373,3 +375,5 @@ script:
       - service: notify.alexa_media_bedroom_speaker
         data:
           message: "{{ nightly_snark }} {{ weather_status }} {{ home_status }} {{ device_status }} {{ tasks }} {{ finish }}"
+      - stop: finish
+        response_variable: nightly_briefing

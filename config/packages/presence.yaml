@@ -15,6 +15,21 @@ input_boolean:
   presence_off:
     name: "Auto Presence Mode Off"
     icon: mdi:location-enter
+  living_room_occupancy:
+    name: "Livingroom Occupancy"
+    icon: mdi:location-enter
+  bedroom_room_occupancy:
+    name: "Bedroom Occupancy"
+    icon: mdi:location-enter
+  kitchen_room_occupancy:
+    name: "Kitchen Occupancy"
+    icon: mdi:location-enter
+  garage_room_occupancy:
+    name: "Garage Occupancy"
+    icon: mdi:location-enter
+  bathroom_room_occupancy:
+    name: "Bathroom Occupancy"
+    icon: mdi:location-enter
 
 input_datetime:
   manual_presence_on_time:
@@ -42,14 +57,6 @@ sensor:
     timeout: 5
     away_timeout: 30
 
-  - platform: mqtt_room
-    device_id: "mifit:c890208b7c94"
-    unique_id: amazfit_room
-    name: "Amazfit Watches"
-    state_topic: "espresense/devices/mifit:c890208b7c94"
-    timeout: 5
-    away_timeout: 30
-
   - platform: template
     sensors:
       family_home:
@@ -72,65 +79,6 @@ mqtt:
       state_topic: "house/presence/source"
 
 template:
-  - sensor:
-    # - name: room_audio
-    #   state: >-
-    #     {% if is_state('input_boolean.audible_notifications', 'on') %}
-    #     {% if expand('group.rooms')
-    #     | selectattr('state', 'eq', 'on') | list | count >= 1 %}
-    #     {% set sensor_ro = expand('group.rooms')
-    #     | selectattr('state', 'eq', 'on')
-    #     | sort(attribute='last_changed') | last %}
-    #     {% endif %}
-    #     {% if sensor_ro is defined and
-    #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
-    #     | round(0) <= states('input_number.presence_threshold') | float %}
-    #     {{ sensor_ro.name.replace('_occupied','') }}
-    #     {% elif expand('group.room_presence')
-    #     | rejectattr('state', 'eq', 'NA')
-    #     | sort(attribute='last_changed') | list | count >=1  %}
-    #       {% set sensor_rp = expand('group.room_presence')
-    #       | rejectattr('state', 'eq', 'NA')
-    #       | sort(attribute='last_changed') | last %}
-    #         {% if sensor_rp is defined %}
-    #         {{ sensor_rp.state }}
-    #         {% endif %}
-    #     {% elif sensor_ro is defined %}
-    #       {{ sensor_ro.name.replace('_occupied','') }}
-    #     {% else -%}
-    #       main
-    #     {%- endif -%}
-    #     {% else %}
-    #     {%- if expand('group.rooms')
-    #     | rejectattr('name', 'search', 'NA|bedroom')
-    #     | selectattr('state', 'eq', 'on') | list | count >= 1 -%}
-    #     {%- set sensor_ro = expand('group.rooms')
-    #     | rejectattr('name', 'search', 'NA|bedroom')
-    #     | selectattr('state', 'eq', 'on')
-    #     | sort(attribute='last_changed') | last -%}
-    #     {%- endif -%}
-    #     {%- if sensor_ro is defined and
-    #     ((as_timestamp(now()) - (as_timestamp(sensor_ro.last_changed)) | float ) % 3600)
-    #     | round(0) <= states('input_number.presence_threshold') | float -%}
-    #     {{ sensor_ro.name.replace('_occupied','') }}
-    #     {%- elif expand('group.room_presence')
-    #     | rejectattr('state', 'search', 'NA|bedroom')
-    #     | sort(attribute='last_changed') | list | count >=1  -%}
-    #       {%- set sensor_rp = expand('group.room_presence')
-    #       | rejectattr('state', 'search', 'NA|bedroom')
-    #       | sort(attribute='last_changed') | last %}
-    #         {%- if sensor_rp is defined %}
-    #         {{ sensor_rp.state }}
-    #         {%- endif %}
-    #     {%- elif sensor_ro is defined -%}
-    #       {{ sensor_ro.name.replace('_occupied','') }}
-    #     {%- else -%}
-    #       main
-    #     {%- endif %}
-    #     {%- endif %}
-    #   attributes:
-    #     presence_source: 'NA'
-
   - sensor:
       - name: "Living Room Occupied"
         unique_id: living_room_occupied
@@ -164,6 +112,28 @@ template:
           {% else %}
             no
           {% endif %}
+  - sensor:
+      - name: "Garage/Entrance Occupied"
+        unique_id: garage_room_occupied
+        state: >-
+          {% if states('sensor.micemob_room') == 'garage' %}
+            yes
+          {% elif states('binary_sensor.garage_room_occupancy') == 'on' %}
+            yes
+          {% else %}
+            no
+          {% endif %}
+  - sensor:
+      - name: "Bathroom Occupied"
+        unique_id: bathroom_room_occupied
+        state: >-
+          {% if states('sensor.micemob_room') == 'bathroom' %}
+            yes
+          {% elif states('binary_sensor.bathroom_occupancy') == 'on' %}
+            yes
+          {% else %}
+            no
+          {% endif %}
 
 zone:
   - name: Home
@@ -181,24 +151,17 @@ automation:
       - platform: numeric_state
         entity_id:
           - proximity.simplemice
-        above: 1
+        attribute: nearest
+        above: 0.2
     condition:
       - condition: and
         conditions:
           - condition: state
             entity_id: binary_sensor.external_doors
             state: "off"
-          - condition: state
-            entity_id: binary_sensor.bed_presense
-            state: "off"
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: person.simplemice
-                state: not_home
-              - condition: state
-                entity_id: person.simplemice
-                state: Monkey Office
+          - condition: numeric_state
+            entity_id: sensor.home_nearest_distance
+            above: 0.2
     action:
       - service: script.away_mode_with_snapshot
         data: {}
@@ -210,18 +173,21 @@ automation:
       - platform: numeric_state
         entity_id:
           - proximity.simplemice
-        below: 0.5
+        attribute: nearest
+        below: 0.2
     condition:
       - condition: and
         conditions:
           - condition: state
             entity_id: light.lumi_gateway_v3_light
             state: "off"
+          - condition: numeric_state
+            entity_id: sensor.home_nearest_distance
+            above: 0.2
     action:
       - service: script.return_home
         metadata: {}
         data: {}
-  ############ Presence
 
   - id: 6d686767-7440-429a-b9e9-b12640663578
     alias: Update Micemob Room Presence
@@ -238,31 +204,6 @@ automation:
       - service: device_tracker.see
         data:
           dev_id: micemob_track
-          location_name: >
-            {% if trigger.to_state.state in ['livingroom', 'kitchen', 'bedroom',
-            'bathroom'] %}
-              home
-            {% elif trigger.to_state.state == 'not_home' %}
-              not_home
-            {% else %}
-              unknown
-            {% endif %}
-
-  - id: e9b0fe3e-2c4f-4025-aa5e-5b81c9138d7a
-    alias: Update Micewatch Room Presence
-    description: ""
-    trigger:
-      - platform: state
-        entity_id:
-          - sensor.amazfit_room
-    condition:
-      - condition: template
-        value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
-        enabled: true
-    action:
-      - service: device_tracker.see
-        data:
-          dev_id: mifit_track
           location_name: >
             {% if trigger.to_state.state in ['livingroom', 'kitchen', 'bedroom',
             'bathroom'] %}
@@ -377,6 +318,8 @@ script:
                 "Security breach detected! The alarm is sounding due to unexpected states in away mode. Check the situation immediately.",
                 "Warning: Alarm activated. Irregular states detected during away mode. Please address the issue promptly."
             ] | random }}
+      - stop: finish
+        response_variable: away_mode
     mode: restart
     icon: mdi:state-machine
 
@@ -415,8 +358,8 @@ script:
                 - input_boolean.text_notifications
       - delay:
           hours: 0
-          minutes: 0
-          seconds: 40
+          minutes: 1
+          seconds: 0
           milliseconds: 0
       - service: notify.alexa_media_bedroom_speaker
         data:
@@ -437,7 +380,12 @@ script:
           milliseconds: 0
       - service: scene.reload
         data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
       - stop: finish
-        response_variable: finish
+        response_variable: return_mode
     mode: restart
     icon: mdi:home

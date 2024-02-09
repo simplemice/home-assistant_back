@@ -670,6 +670,75 @@ config:
       layout: {}
       layout_type: custom:vertical-layout
       type: custom:layout-card
+    - alignment: center
+      subtitle: '{% set time = now().weekday() %}
+
+        {% if (time == 0) %}
+
+        Today is Monday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 1) %}
+
+        Today is Tuesday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 2) %}
+
+        Today is Wednesday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 3) %}
+
+        Today is Thursday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 4) %}
+
+        Today is Friday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 5) %}
+
+        Today is Saturday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% elif (time == 6) %}
+
+        Today is Sunday, {{ now().date()}} Time: {{ now().hour}}:{{ now().minute}}
+
+        {% else %}
+
+        Today is fudged....
+
+        {% endif %}'
+      subtitle_tap_action:
+        action: fire-dom-event
+        browser_mod:
+          data:
+            content:
+              card:
+                cards:
+                - entities:
+                  - binary_sensor.backyard_window_motion_occupancy
+                  - binary_sensor.garage_door_motion_occupancy
+                  - binary_sensor.backyard_door_contact
+                  - binary_sensor.livingroom_door_contact
+                  - alarm_control_panel.house
+                  - alarm_control_panel.safe
+                  - binary_sensor.gas_detector_gas
+                  - binary_sensor.smoke_detector
+                  - binary_sensor.kitchen_water_leak
+                  - binary_sensor.bathroom_water_leak
+                  hours_to_show: 48
+                  title: Security Logbook
+                  type: logbook
+                type: vertical-stack
+              style: "ha-card {\n   --padding-right: 15px;\n   --padding-left: 15px;\n\
+                \   --padding-bottom: 15px;\n   --box-shadow: 0px 0px;\n   --ha-card-border-width:\
+                \ 0px;\n}\n"
+              type: custom:mod-card
+            title: Status & Logbook
+          service: browser_mod.popup
+      title: "{% set time = now().hour %}\n{% if (time >= 18) %}\n  Good Evening,\
+        \ Simplemice!\n{% elif (time >= 12) %}\n  Good Afternoon, Simplemice!\n{%\
+        \ elif (time >= 7) %}\n  Good Morning, Simplemice!\n{% elif (time <= 7) %}\n\
+        \  Good Night, Simplemice!\n{% else %}\n  Dude! Go Sleep!\n{% endif %}"
+      type: custom:mushroom-title-card
     title: Home
   - badges: []
     cards:

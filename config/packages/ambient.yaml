@@ -43,6 +43,11 @@ timer:
     duration: "00:15:00"
     icon: mdi:timer
     restore: true
+  wled_timer:
+    name: Wled Timer
+    duration: "00:15:00"
+    icon: mdi:timer
+    restore: true
 
 automation:
   - id: 9bfcfdfe-558f-4a3e-9f1d-bd0118a26210
@@ -77,7 +82,7 @@ automation:
       value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wled_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.ambient_automation
+        entity_id: input_boolean.wled_automation
 
   - id: c9334520-5275-40ce-8d7c-479cbec8f912
     alias: Turn Off Wled Auto Mode

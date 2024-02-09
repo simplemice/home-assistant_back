@@ -98,7 +98,6 @@ automation:
   - id: c6ca90f9-87ff-489f-812e-a1ce448bc90f
     alias: Check All Doors Before Sleep
     description: ""
-    mode: single
     trigger:
       - platform: state
         entity_id:
