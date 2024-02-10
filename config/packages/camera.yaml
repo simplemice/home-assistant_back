@@ -27,6 +27,13 @@ image_processing:
       - name: person
       - name: car
 
+light:
+  - platform: group
+    name: "Camera Night Light"
+    entities:
+      - light.garage_camera_light
+      - light.kitchen_power_strip_switch
+
 input_boolean:
   backyard_camera_notification:
     name: "Backyard Camera Notification"

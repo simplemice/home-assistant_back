@@ -21,6 +21,11 @@ input_number:
     max: 1
     step: 0.1
 
+input_boolean:
+  debug_texts:
+    name: "Debug Text"
+    icon: mdi:debug-step-into
+
 automation:
   - id: 9f8e66eb-06d4-4bba-b264-7bc98f78c928
     alias: Replace Toothbrush Consumable Notification
@@ -167,7 +172,7 @@ automation:
         after: "08:00:00"
         before: "22:00:00"
     action:
-      - service: script.kitchen_water_tank_low_notification
+      - service: script.water_tank_low_notify
         metadata: {}
         data: {}
 

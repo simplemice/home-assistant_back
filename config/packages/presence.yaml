@@ -30,6 +30,12 @@ input_boolean:
   bathroom_room_occupancy:
     name: "Bathroom Occupancy"
     icon: mdi:location-enter
+  guest_mode:
+    name: "Guest Mode"
+    icon: mdi:account-group
+  vacation_mode:
+    name: "Vacation Mode"
+    icon: mdi:party-popper
 
 input_datetime:
   manual_presence_on_time:
@@ -183,7 +189,7 @@ automation:
             state: "off"
           - condition: numeric_state
             entity_id: sensor.home_nearest_distance
-            above: 0.2
+            below: 0.2
     action:
       - service: script.return_home
         metadata: {}

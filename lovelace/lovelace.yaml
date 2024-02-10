@@ -739,6 +739,16 @@ config:
         \ elif (time >= 7) %}\n  Good Morning, Simplemice!\n{% elif (time <= 7) %}\n\
         \  Good Night, Simplemice!\n{% else %}\n  Dude! Go Sleep!\n{% endif %}"
       type: custom:mushroom-title-card
+    - card:
+        type: entities
+      filter:
+        exclude: []
+        include:
+        - entity_id: input_boolean.*
+          options: {}
+      sort:
+        method: friendly_name
+      type: custom:auto-entities
     title: Home
   - badges: []
     cards:

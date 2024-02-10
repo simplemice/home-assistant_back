@@ -1,0 +1,11 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Home
+#   @description    :   Recorder and Logger Configurations
+###############################################################################
+
+input_boolean:
+  home_cleaning:
+    name: "Home Cleaning"
+    icon: mdi:spray-bottle

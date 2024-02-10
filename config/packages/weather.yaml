@@ -5,6 +5,11 @@
 #   @description    :   Weather automations.
 ###############################################################################
 
+input_boolean:
+  weather_alert:
+    name: "Weather Alert Notification"
+    icon: mdi:weather-lightning-rainy
+
 geo_location:
   - platform: usgs_earthquakes_feed
     feed_type: "past_day_all_earthquakes"
@@ -85,6 +90,9 @@ automation:
       - condition: time
         after: "08:00:00"
         before: "20:00:00"
+      - condition: state
+        entity_id: input_boolean.weather_alert
+        state: "on"
     action:
       - service: script.rain_outside_notification
         metadata: {}
