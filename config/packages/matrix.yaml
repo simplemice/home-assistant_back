@@ -63,3 +63,122 @@ automation:
         switch_to_app: true
         duration: "19"
         scrollspeed: 50
+
+  - id: 1716453e-5b25-136d-a69f-4816adda2a0f
+    alias: Clock and Wled Automation
+    description: ""
+    mode: single
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.wled_automation
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.wled_automation
+                state: "on"
+            sequence:
+              - service: light.turn_on
+                metadata: {}
+                data:
+                  brightness_pct: 100
+                target:
+                  entity_id: light.tv_table_ambient
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: light.turn_on
+                metadata: {}
+                data:
+                  brightness_pct: 100
+                target:
+                  entity_id: light.awtrix_44dff8_matrix
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: select.select_option
+                target:
+                  entity_id: select.wled_matrix_preset
+                data:
+                  option: Black Hole
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.wled_automation
+                state: "off"
+            sequence:
+              - service: light.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.tv_table_ambient
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: light.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.wled_matrix
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: light.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: light.awtrix_44dff8_matrix
+
+  - id: 27c0e60d-c65c-44e3-8f2c-6255e8821597
+    alias: Turn on All Matrix
+    description: ""
+    mode: single
+    trigger:
+      - platform: conversation
+        command:
+          - "turn on matrix"
+      - platform: state
+        entity_id:
+          - binary_sensor.bed_presense
+        from: "on"
+        to: "off"
+      - platform: state
+        entity_id:
+          - person.simplemice
+        to: home
+        from: not_home
+      - platform: state
+        entity_id:
+          - input_boolean.wled_automation
+        to: "on"
+    condition:
+      - condition: time
+        after: "07:30:00"
+        before: "22:30:00"
+    action:
+      - service: select.select_option
+        metadata: {}
+        data:
+          option: Black Hole
+        target:
+          entity_id: select.wled_matrix_preset
+      - repeat:
+          sequence:
+            - service: light.turn_on
+              metadata: {}
+              data:
+                brightness_pct: 100
+              target:
+                entity_id:
+                  - light.tv_table_ambient
+                  - light.awtrix_44dff8_matrix
+          count: 3

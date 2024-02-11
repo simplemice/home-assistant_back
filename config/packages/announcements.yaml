@@ -27,6 +27,23 @@ input_boolean:
     icon: mdi:debug-step-into
 
 automation:
+  - id: ebcc502a-5aeb-4447-a73a-75397d1195fa
+    alias: Assist Ready Notify
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.livingroom_voice_assist_assist
+        to: "on"
+    condition: []
+    action:
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: <audio src="soundbank://soundlibrary/alarms/beeps_and_bloops/bell_03"/>
+          data:
+            type: tts
+    mode: single
+
   - id: 9f8e66eb-06d4-4bba-b264-7bc98f78c928
     alias: Replace Toothbrush Consumable Notification
     description: ""
@@ -175,6 +192,7 @@ automation:
       - service: script.water_tank_low_notify
         metadata: {}
         data: {}
+    mode: restart
 
   - id: b668f047-c409-4bec-a12a-537b615038e4
     alias: Notification - Cooking Complete
@@ -273,31 +291,34 @@ automation:
           - condition: state
             entity_id: binary_sensor.bed_presense
             state: "off"
+          - condition: state
+            entity_id: input_boolean.briefing_mode
+            state: "on"
     action:
-      - repeat:
-          count: 2
-          sequence:
-            - service: notify.alexa_media_bedroom_speaker
-              data:
-                message: |
-                  {{ [
-                      "Bedtime routine initiated. It is time to wind down and prepare for sleep.",
-                      "Nighttime rituals starting: Turning off the laptop, saving work, and getting ready to wash and sleep.",
-                      "Attention: Bedtime has begun. Time to wrap up work, turn off the laptop, and prepare for a good nights sleep.",
-                      "Bedtime alert! Save your work, turn off the laptop, and get ready to wash and sleep.",
-                      "Nighttime preparations underway: Turning off the laptop, saving work, and getting ready for bedtime.",
-                      "Sleep mode activated: Save your work, turn off the laptop, and prepare to wash and sleep.",
-                      "Goodnight routine started: Turning off the laptop, saving work, and preparing for a restful night.",
-                      "Time to unwind: Bedtime is here. Save your work, turn off the laptop, and get ready to sleep.",
-                      "Bedtime sequence initiated. Turn off the laptop, save your work, and prepare to wash and sleep.",
-                      "Nighttime rituals in progress: Turning off the laptop, saving work, and preparing to wash before sleep."
-                  ] | random }}
-            - delay:
-                hours: 0
-                minutes: 5
-                seconds: 0
-                milliseconds: 0
+      - service: notify.alexa_media_bedroom_speaker
+        data:
+          message: |
+            {{ [
+                "Bedtime routine initiated. It is time to wind down and prepare for sleep.",
+                "Nighttime rituals starting: Turning off the laptop, saving work, and getting ready to wash and sleep.",
+                "Attention: Bedtime has begun. Time to wrap up work, turn off the laptop, and prepare for a good nights sleep.",
+                "Bedtime alert! Save your work, turn off the laptop, and get ready to wash and sleep.",
+                "Nighttime preparations underway: Turning off the laptop, saving work, and getting ready for bedtime.",
+                "Sleep mode activated: Save your work, turn off the laptop, and prepare to wash and sleep.",
+                "Goodnight routine started: Turning off the laptop, saving work, and preparing for a restful night.",
+                "Time to unwind: Bedtime is here. Save your work, turn off the laptop, and get ready to sleep.",
+                "Bedtime sequence initiated. Turn off the laptop, save your work, and prepare to wash and sleep.",
+                "Nighttime rituals in progress: Turning off the laptop, saving work, and preparing to wash before sleep."
+            ] | random }}
+      - delay:
+          hours: 0
+          minutes: 5
+          seconds: 0
+          milliseconds: 0
       - service: script.nightly_briefing
+        metadata: {}
+        data: {}
+        response_variable: nightly_briefing
       - delay:
           hours: 0
           minutes: 5
@@ -405,5 +426,5 @@ script:
                       entity_id: e46e9bc06cadd14b8a18f9eebe612743
                       domain: sensor
                       above: 30
-    mode: single
+    mode: restart
     icon: mdi:propane-tank-outline

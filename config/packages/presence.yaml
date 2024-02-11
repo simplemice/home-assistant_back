@@ -184,9 +184,6 @@ automation:
     condition:
       - condition: and
         conditions:
-          - condition: state
-            entity_id: light.lumi_gateway_v3_light
-            state: "off"
           - condition: numeric_state
             entity_id: sensor.home_nearest_distance
             below: 0.2
@@ -291,6 +288,7 @@ script:
                 - input_boolean.garage_camera_notification
                 - input_boolean.backyard_camera_notification
                 - input_boolean.audible_notifications
+                - input_boolean.wled_automation
           - service: input_boolean.turn_on
             metadata: {}
             data: {}
@@ -356,6 +354,7 @@ script:
                 - input_boolean.garage_camera_notification
                 - input_boolean.backyard_camera_notification
                 - input_boolean.audible_notifications
+                - input_boolean.wled_automation
           - service: input_boolean.turn_off
             metadata: {}
             data: {}

@@ -144,6 +144,11 @@ script:
             data: {}
             target:
               entity_id: input_boolean.sleep_door_checker
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 2
+              milliseconds: 0
           - service: fan.turn_off
             data: {}
             target:

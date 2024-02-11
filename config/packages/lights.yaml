@@ -445,8 +445,22 @@ automation:
 
   - id: edad5183-d951-4654-8d55-cfa6a834a1ba
     alias: Livingroom Lightstrip Automation
+    mode: restart
     description: ""
     trigger:
+      - platform: conversation
+        command:
+          - turn on lightstrip
+          - turn on strip
+          - turn on main light
+        id: voice_start
+      - platform: conversation
+        command:
+          - turn off lightstrip
+          - turn off main light
+          - turn off strip
+          - turn off light
+        id: voice_stop
       - platform: sun
         event: sunset
         offset: "-0:25:00"
@@ -476,26 +490,26 @@ automation:
           - condition: time
             after: "08:00:00"
             before: "23:00:00"
-          - condition: state
-            entity_id: light.lightstrip
-            state: "off"
     action:
       - choose:
           - conditions:
-              - condition: trigger
-                id:
-                  - sunset
-                  - dark_inside
-                  - return
-              - type: is_illuminance
-                condition: device
-                device_id: eeb2922badef2325eb62a6000199fa17
-                entity_id: 46658705a5108d2559636aa170af924b
-                domain: sensor
-                below: 30
-              - condition: state
-                entity_id: light.lightstrip
-                state: "off"
+              - condition: and
+                conditions:
+                  - condition: trigger
+                    id:
+                      - sunset
+                      - dark_inside
+                      - return
+                      - voice_start
+                  - type: is_illuminance
+                    condition: device
+                    device_id: eeb2922badef2325eb62a6000199fa17
+                    entity_id: 46658705a5108d2559636aa170af924b
+                    domain: sensor
+                    below: 30
+                  - condition: state
+                    entity_id: light.lightstrip
+                    state: "off"
             sequence:
               - service: light.turn_on
                 data:
@@ -507,12 +521,13 @@ automation:
           - conditions:
               - condition: and
                 conditions:
-                  - condition: state
-                    entity_id: light.lightstrip
-                    state: "on"
                   - condition: trigger
                     id:
                       - turn_off
+                      - voice_stop
+                  - condition: state
+                    entity_id: light.lightstrip
+                    state: "on"
             sequence:
               - service: light.turn_off
                 data: {}

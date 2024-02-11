@@ -5,9 +5,29 @@
 #   @description    :   Daily automation
 ###############################################################################
 
+input_boolean:
+  morning_briefing:
+    name: "Morning Briefing Mode"
+    icon: mdi:chat
+  evening_briefing:
+    name: "Evening Briefing Mode"
+    icon: mdi:chat
+
 input_datetime:
   mice_wakeup_alarm_time:
     name: Simplemice WakeUp Alarm Time
+    has_date: false
+    has_time: true
+  morning_briefing:
+    name: Morning Briefing Time
+    has_date: false
+    has_time: true
+  evening_briefing:
+    name: Evening Briefing Time
+    has_date: false
+    has_time: true
+  briefing_off:
+    name: Turn Off Briefing Time
     has_date: false
     has_time: true
 
@@ -18,6 +38,44 @@ template:
         state: "{{ today_at(states('input_datetime.mice_wakeup_alarm_time')) }}"
 
 automation:
+  - id: 3bea6bb4-2464-40bf-8f2a-bb380190821f
+    alias: Turn On Morning Briefing Mode
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.morning_briefing', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id:
+          - input_boolean.morning_briefing
+
+  - id: 0dca3168-f2b0-403d-87ca-6867e50ccbaf
+    alias: Turn On Evening Briefing Mode
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.evening_briefing', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id:
+          - input_boolean.evening_briefing
+
+  - id: c2d05dfd-aad6-482f-9338-ba86bc067369
+    alias: Turn Off Briefing Mode
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.briefing_off', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.morning_briefing
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id:
+          - input_boolean.morning_briefing
+          - input_boolean.evening_briefing
+
   - id: 13ebe389-eddd-439b-9576-cd568109e42d
     alias: Simplemice WakeUp Automation
     description: ""
@@ -40,10 +98,14 @@ automation:
           - condition: state
             entity_id: binary_sensor.bedroom_door_contact
             state: "on"
+          - condition: state
+            entity_id: input_boolean.briefing_mode
+            state: "on"
     action:
       - service: script.wakeup_routime
         metadata: {}
         data: {}
+        response_variable: wakeup_routime
     mode: single
 
   - id: be838b9d-da2f-498f-bb04-b7c18ff0588b
@@ -80,45 +142,8 @@ automation:
       - service: script.sleep_routime
         metadata: {}
         data: {}
+        response_variable: sleep_routime
     mode: single
-
-  - id: 27c0e60d-c65c-44e3-8f2c-6255e8821597
-    alias: Turn On All Matrix
-    description: ""
-    mode: single
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.bed_presense
-        from: "on"
-        to: "off"
-      - platform: state
-        entity_id:
-          - person.simplemice
-        to: home
-        from: not_home
-    condition:
-      - condition: time
-        after: "07:30:00"
-        before: "08:30:00"
-    action:
-      - service: select.select_option
-        metadata: {}
-        data:
-          option: Black Hole
-        target:
-          entity_id: select.wled_matrix_preset
-      - repeat:
-          sequence:
-            - service: light.turn_on
-              metadata: {}
-              data:
-                brightness_pct: 100
-              target:
-                entity_id:
-                  - light.tv_table_ambient
-                  - light.awtrix_44dff8_matrix
-          count: 3
 
   - id: a8fb536e-7996-4d69-a176-78efd53b5619
     alias: Wake-up light alarm with sunrise effect
@@ -169,6 +194,7 @@ script:
       - service: script.morning_briefing
         metadata: {}
         data: {}
+        response_variable: morning_briefing
       - delay:
           hours: 0
           minutes: 0
@@ -227,6 +253,8 @@ script:
         data:
           broadcast_port: 9
           mac: 48:2a:e3:10:f6:04
+      - stop: finigh
+        response_variable: wakeup_routime
     mode: single
     icon: mdi:sun-clock
 
@@ -275,5 +303,7 @@ script:
         data: {}
         target:
           entity_id: fan.zhimi_fa1_4020_fan
+      - stop: finigh
+        response_variable: sleep_routime
     mode: single
     icon: mdi:sleep

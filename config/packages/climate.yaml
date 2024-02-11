@@ -206,6 +206,7 @@ automation:
   - id: 4f4dbbe4-3698-416e-bbf6-17dfcb619395
     alias: Bedroom Night Climate Automation
     description: ""
+    mode: restart
     trigger:
       - platform: state
         entity_id:
@@ -244,14 +245,17 @@ automation:
           - binary_sensor.bedroom_door_contact
         to: "off"
         id: door_closed
+      - platform: conversation
+        command:
+          - "turn on climate"
+          - "turn on aircon"
+          - "turn on air"
+        id: voice_start
     condition:
       - condition: and
         conditions:
-          - condition: state
-            entity_id: binary_sensor.bedroom_door_contact
-            state: "off"
           - condition: time
-            after: "20:00:00"
+            after: "18:00:00"
             before: "08:00:00"
           - condition: state
             entity_id: input_boolean.climate_automation
@@ -265,6 +269,7 @@ automation:
                   - door_closed
                   - auto_start
                   - hum_on
+                  - voice_start
             sequence:
               - service: climate.turn_on
                 metadata: {}
@@ -340,6 +345,184 @@ automation:
                 data: {}
                 target:
                   entity_id: climate.bedroom_aircon
+
+  - id: 31811431-d148-43d4-809d-88c45b2ff0c8
+    alias: Fan Automation
+    description: ""
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.livingroom_temp_temperature
+        above: 29
+        id: turn_on
+      - platform: numeric_state
+        entity_id:
+          - sensor.livingroom_temp_temperature
+        below: 29
+        id: turn_off
+      - platform: state
+        entity_id:
+          - input_boolean.fan_automation
+        id: state_on
+        to: "on"
+      - platform: state
+        entity_id:
+          - input_boolean.fan_automation
+        id: state_off
+        to: "off"
+      - platform: conversation
+        command:
+          - "turn on fan"
+          - "turn on ventilation"
+          - "turn on brease"
+        id: voice_start
+      - platform: conversation
+        command:
+          - "turn off fan"
+          - "turn off ventilation"
+          - "turn off brease"
+        id: voice_stop
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_boolean.fan_automation
+            state: "on"
+          - condition: state
+            entity_id: sensor.family_home
+            state: "True"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - turn_on
+                  - state_on
+                  - voice_start
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.audible_notifications
+                        state: "on"
+                    sequence:
+                      - service: notify.alexa_media_bedroom_speaker
+                        data:
+                          message: >
+                            {{ [  'Attention: High temperature alert at Mouse House.
+                            Fans are now running to regulate the climate and ensure
+                            comfort',
+                                  'Critical Alert: Mouse House temperature is too high. Fans activated for immediate cooling. Check and adjust as necessary',
+                                  'Hot Conditions: Mouse House temperature is elevated. Fans are running to provide relief. Ensure a comfortable living space',
+                                  'Temperature Alert: Mouse House is too warm. Fans activated. Please monitor the temperature for improved conditions',
+                                  'High Heat Warning: Fans initiated at Mouse House due to high temperatures. Ensure proper cooling for resident comfort',
+                                  'Heat Advisory: Mouse House temperature alert! Fans are now operational. Check and adjust settings for an optimal living environment'
+                                ] | random }}
+                      - delay:
+                          hours: 0
+                          minutes: 0
+                          seconds: 2
+                          milliseconds: 0
+                      - service: fan.turn_on
+                        metadata: {}
+                        data: {}
+                        target:
+                          entity_id:
+                            - fan.dmaker_p23_42a8_fan
+                            - fan.kitchen_power_strip_switch
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.text_notifications
+                        state: "on"
+                    sequence:
+                      - service: script.text_notify
+                        data:
+                          message: >
+                            {{ [  'Attention: High temperature alert at Mouse House.
+                            Fans are now running to regulate the climate and ensure
+                            comfort',
+                                  'Critical Alert: Mouse House temperature is too high. Fans activated for immediate cooling. Check and adjust as necessary',
+                                  'Hot Conditions: Mouse House temperature is elevated. Fans are running to provide relief. Ensure a comfortable living space',
+                                  'Temperature Alert: Mouse House is too warm. Fans activated. Please monitor the temperature for improved conditions',
+                                  'High Heat Warning: Fans initiated at Mouse House due to high temperatures. Ensure proper cooling for resident comfort',
+                                  'Heat Advisory: Mouse House temperature alert! Fans are now operational. Check and adjust settings for an optimal living environment'
+                                ] | random }}
+                      - delay:
+                          hours: 0
+                          minutes: 0
+                          seconds: 2
+                          milliseconds: 0
+                      - service: fan.turn_on
+                        metadata: {}
+                        data: {}
+                        target:
+                          entity_id:
+                            - fan.dmaker_p23_42a8_fan
+                            - fan.kitchen_power_strip_switch
+          - conditions:
+              - condition: trigger
+                id:
+                  - turn_off
+                  - state_off
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.audible_notifications
+                        state: "on"
+                    sequence:
+                      - service: notify.alexa_media_bedroom_speaker
+                        data:
+                          message: >
+                            {{ [  'Cool Conditions: Temperature at Mouse House is
+                            below the threshold. Fans are off to prevent excessive
+                            cooling. Ensure a cozy living space',
+                                  'Low Temp Notification: Fans are now off at Mouse House as the temperature drops below the threshold. Observe for preferred warmth',
+                                  'Temperature Notification: Mouse House is cooler than desired. Fans are off for energy conservation. Check and adjust for comfort',
+                                  'Mild Conditions: Mouse House temperature is below the specified limit. Fans have been turned off. Adjust settings as needed for comfort',
+                                  'Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation. Enjoy the balanced environment',
+                                  'Optimal Conditions: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the balanced atmosphere'
+                                ] | random }}
+                      - delay:
+                          hours: 0
+                          minutes: 0
+                          seconds: 2
+                          milliseconds: 0
+                      - service: fan.turn_off
+                        target:
+                          entity_id:
+                            - fan.dmaker_p23_42a8_fan
+                            - fan.kitchen_power_strip_switch
+                        data: {}
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.text_notifications
+                        state: "on"
+                    sequence:
+                      - service: script.text_notify
+                        data:
+                          message: >
+                            {{ [  'Cool Conditions: Temperature at Mouse House is
+                            below the threshold. Fans are off to prevent excessive
+                            cooling. Ensure a cozy living space',
+                                  'Low Temp Notification: Fans are now off at Mouse House as the temperature drops below the threshold. Observe for preferred warmth',
+                                  'Temperature Notification: Mouse House is cooler than desired. Fans are off for energy conservation. Check and adjust for comfort',
+                                  'Mild Conditions: Mouse House temperature is below the specified limit. Fans have been turned off. Adjust settings as needed for comfort',
+                                  'Information: Temperature at Mouse House is within the normal range. Fans have been turned off for energy conservation. Enjoy the balanced environment',
+                                  'Optimal Conditions: Fans at Mouse House are deactivated as the temperature is within the normal range. Enjoy the balanced atmosphere'
+                                ] | random }}
+                      - delay:
+                          hours: 0
+                          minutes: 0
+                          seconds: 2
+                          milliseconds: 0
+                      - service: fan.turn_off
+                        target:
+                          entity_id:
+                            - fan.dmaker_p23_42a8_fan
+                            - fan.kitchen_power_strip_switch
+                        data: {}
+    mode: restart
 
 script:
   bedroom_sterilization:
@@ -429,5 +612,5 @@ script:
                 "The bedroom sterilization process has finished. You can now enjoy a fresh and clean living space.",
                 "Mission success: Bedroom sterilization is complete. Feel free to return to the sanitized room."
             ] | random }}
-    mode: single
+    mode: restart
     icon: mdi:bug
