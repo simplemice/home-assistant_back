@@ -87,7 +87,7 @@ automation:
         for:
           hours: 0
           minutes: 0
-          seconds: 20
+          seconds: 10
         from: "on"
     condition:
       - condition: and
@@ -99,7 +99,7 @@ automation:
             entity_id: binary_sensor.bedroom_door_contact
             state: "on"
           - condition: state
-            entity_id: input_boolean.briefing_mode
+            entity_id: input_boolean.morning_briefing
             state: "on"
     action:
       - service: script.wakeup_routime
@@ -118,8 +118,8 @@ automation:
         to: "on"
         for:
           hours: 0
-          minutes: 1
-          seconds: 0
+          minutes: 0
+          seconds: 10
         from: "off"
     condition:
       - condition: and

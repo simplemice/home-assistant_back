@@ -1,0 +1,24 @@
+apexcharts_card_templates:
+  tufte:
+    apex_config:
+      legend:
+        show: false
+      grid:
+        show: false
+      xaxis:
+        axisBorder:
+          show: false
+    all_series_config:
+      stroke_width: 1
+  temp_hum:
+    config_templates: tufte
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+    yaxis:
+      - id: temp
+      - id: hum
+        opposite: true
+
+

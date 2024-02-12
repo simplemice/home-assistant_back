@@ -353,12 +353,12 @@ automation:
       - platform: numeric_state
         entity_id:
           - sensor.livingroom_temp_temperature
-        above: 29
+        above: 28
         id: turn_on
       - platform: numeric_state
         entity_id:
           - sensor.livingroom_temp_temperature
-        below: 29
+        below: 28
         id: turn_off
       - platform: state
         entity_id:

@@ -1,0 +1,164 @@
+config:
+  apexcharts_card_templates:
+    temp_hum:
+      config_templates: tufte
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+      yaxis:
+      - id: temp
+      - id: hum
+        opposite: true
+    tufte:
+      all_series_config:
+        stroke_width: 1
+      apex_config:
+        grid:
+          show: false
+        legend:
+          show: false
+        xaxis:
+          axisBorder:
+            show: false
+  views:
+  - badges: []
+    cards:
+    - entity: weather.forecast_home
+      forecast_type: daily
+      name: Pro Forecast
+      show_current: true
+      show_forecast: true
+      type: weather-forecast
+      view_layout:
+        grid-area: a
+    - aspect_ratio: 50%
+      type: iframe
+      url: "https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=\xB0\
+        C&metricWind=m/s&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=7.864&lon=98.35&message=true\"\
+        \ frameborder=\"0\""
+      view_layout:
+        grid-area: b
+        place-self: center stretch
+    - all_series_config:
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 36h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Temps
+      series:
+      - entity: sensor.weather_station_temperature
+        name: Temperature
+        show:
+          extremas: true
+      - entity: sensor.weather_station_heat_index
+        name: Heat Index
+      - entity: sensor.weather_station_wind_chill
+        name: Wind Chill
+      - entity: sensor.weather_station_dewpoint
+        name: Dewpoint
+      type: custom:apexcharts-card
+      view_layout:
+        grid-area: c
+    - all_series_config:
+        show:
+          extremas: max
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 36h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Wind
+      series:
+      - entity: sensor.weather_station_wind_speed
+        name: Wind Speed
+      - entity: sensor.weather_station_wind_gust
+        name: Gust
+        opacity: 0.2
+        type: area
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: true
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 2d
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Pressure
+      series:
+      - entity: sensor.weather_station_barometer
+        name: Pressure
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: true
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 1d
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Humidity
+      series:
+      - entity: sensor.weather_station_humidity
+        name: Humidity
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: max
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 1d
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Rain
+      series:
+      - color: rebeccapurple
+        entity: sensor.weather_station_rain_rate
+        name: Rain Rate
+        stroke_width: 2
+        type: column
+        yaxis_id: rate
+      - entity: sensor.weather_station_rain_total
+        yaxis_id: total
+      type: custom:apexcharts-card
+      yaxis:
+      - id: rate
+      - id: total
+        opposite: true
+    icon: mdi:weather-partly-cloudy
+    layout:
+      grid-template-areas: '"a b b b"
+
+        "c b b b"
+
+        "d e f g"'
+      grid-template-columns: repeat(4, 1fr)
+      mediaquery:
+        '(max-width: 1300px)':
+          grid-template-areas: '"a"
+
+            "b"
+
+            "c"'
+          grid-template-columns: 1fr
+      place-content: stretch
+    path: weather
+    title: Weather
+    type: custom:grid-layout
