@@ -749,6 +749,15 @@ config:
       sort:
         method: friendly_name
       type: custom:auto-entities
+    - badge_icon: ''
+      entity: sensor.micemob_last_notification
+      fill_container: true
+      icon: mdi:information-slab-box
+      layout: vertical
+      multiline_secondary: true
+      primary: Hello, {{user}}
+      secondary: '{{ states(''sensor.micemob_last_notification'') }}'
+      type: custom:mushroom-template-card
     title: Home
   - badges: []
     cards:
