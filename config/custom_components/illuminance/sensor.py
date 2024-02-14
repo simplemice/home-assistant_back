@@ -170,7 +170,7 @@ def _sensor(
 ) -> Entity:
     """Create entity to add."""
     entity_description = IlluminanceSensorEntityDescription(
-        DOMAIN,
+        key=DOMAIN,
         device_class=SensorDeviceClass.ILLUMINANCE,
         name=cast(str, config[CONF_NAME]),
         native_unit_of_measurement=LIGHT_LUX,

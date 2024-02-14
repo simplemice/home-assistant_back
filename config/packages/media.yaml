@@ -121,53 +121,6 @@ sensor:
     channel_id: UCipZJ6748kd8TbelSxcvcVg
 
 automation:
-  - id: f28b619f-5eb7-4d56-a5c8-bbd213f9ecf2
-    alias: Raspberry Monitor Automation
-    description: ""
-    trigger:
-      - platform: state
-        entity_id:
-          - media_player.spotify_simplemice
-        to: playing
-        id: spotify_play
-      - platform: state
-        entity_id:
-          - media_player.spotify_simplemice
-        to: paused
-        id: pause
-      - platform: state
-        entity_id:
-          - media_player.spotify_simplemice
-        to: idle
-        id: idle
-    condition:
-      - condition: time
-        after: "07:30:00"
-        before: "22:00:00"
-    action:
-      - if:
-          - condition: and
-            conditions:
-              - condition: trigger
-                id:
-                  - spotify_play
-              - condition: state
-                entity_id: person.simplemice
-                state: home
-        then:
-          - service: switch.turn_on
-            data: {}
-            target:
-              entity_id:
-                - switch.raspberry_outlet
-        else:
-          - service: switch.turn_off
-            metadata: {}
-            data: {}
-            target:
-              entity_id: switch.raspberry_outlet
-    mode: single
-
   - id: 07101384-d03d-437d-b2be-70e72ae1a6ae
     alias: Awtrix - Current playing song
     description: ""
