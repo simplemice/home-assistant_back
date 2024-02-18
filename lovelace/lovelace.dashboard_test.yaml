@@ -24,9 +24,18 @@ config:
   views:
   - badges: []
     cards:
-    - entity: weather.forecast_home
-      forecast_type: daily
-      name: Pro Forecast
+    - content: "{% for state in states.geo_location %}\n  {% if state.attributes.source==\"\
+        gdacs\" %}\n<ha-icon icon=\"{{ state.attributes.icon }}\"></ha-icon> **<font\
+        \ color=\"{{ state.attributes.alert_level }}\">{{ state.name }}</font>**\n\
+        {{ state.attributes.description }}\n*Issued: {{ state.attributes.from_date.strftime(\"\
+        %d.%m.%Y %H:%M\") }}*\n  {% endif %}\n{% endfor %}"
+      style: "ha-card { \nbackground-color: rgba(0,0,0,0);\nbox-shadow: none;\n}\n"
+      title: GDACS alerts
+      type: markdown
+    - entity: weather.openweathermap
+      forecast_type: hourly
+      name: Home Forecast
+      secondary_info_attribute: apparent_temperature
       show_current: true
       show_forecast: true
       type: weather-forecast
@@ -34,36 +43,10 @@ config:
         grid-area: a
     - aspect_ratio: 50%
       type: iframe
-      url: "https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=\xB0\
-        C&metricWind=m/s&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=7.864&lon=98.35&message=true\"\
-        \ frameborder=\"0\""
+      url: https://embed.windy.com/embed2.html?lat=8.47&lon=99.19&detailLat=8.47&detailLon=99.47&width=650&height=450&zoom=10&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=m%2Fs&metricTemp=%C2%B0C&radarRange=-1
       view_layout:
         grid-area: b
         place-self: center stretch
-    - all_series_config:
-        stroke_width: 1
-      config_templates:
-      - tufte
-      graph_span: 36h
-      header:
-        colorize_states: true
-        show: true
-        show_states: true
-        title: Temps
-      series:
-      - entity: sensor.weather_station_temperature
-        name: Temperature
-        show:
-          extremas: true
-      - entity: sensor.weather_station_heat_index
-        name: Heat Index
-      - entity: sensor.weather_station_wind_chill
-        name: Wind Chill
-      - entity: sensor.weather_station_dewpoint
-        name: Dewpoint
-      type: custom:apexcharts-card
-      view_layout:
-        grid-area: c
     - all_series_config:
         show:
           extremas: max
@@ -75,30 +58,14 @@ config:
         colorize_states: true
         show: true
         show_states: true
-        title: Wind
+        title: Temp
       series:
-      - entity: sensor.weather_station_wind_speed
-        name: Wind Speed
-      - entity: sensor.weather_station_wind_gust
-        name: Gust
+      - entity: sensor.openweathermap_forecast_temperature
+        name: Forecast Temp
+      - entity: sensor.openweathermap_feels_like_temperature
+        name: Feels Like
         opacity: 0.2
         type: area
-      type: custom:apexcharts-card
-    - all_series_config:
-        show:
-          extremas: true
-        stroke_width: 1
-      config_templates:
-      - tufte
-      graph_span: 2d
-      header:
-        colorize_states: true
-        show: true
-        show_states: true
-        title: Pressure
-      series:
-      - entity: sensor.weather_station_barometer
-        name: Pressure
       type: custom:apexcharts-card
     - all_series_config:
         show:
@@ -113,8 +80,48 @@ config:
         show_states: true
         title: Humidity
       series:
-      - entity: sensor.weather_station_humidity
-        name: Humidity
+      - entity: sensor.openweathermap_humidity
+        name: Weather Humidity
+      - entity: sensor.garage_temp_humidity
+        name: Outside Humidity
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: true
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 2d
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Pressure
+      series:
+      - entity: sensor.openweathermap_forecast_pressure
+        name: Weather Pressure
+      - entity: sensor.bedroom_temp_pressure
+        name: House Pressure
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: max
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 36h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Wind
+      series:
+      - entity: sensor.openweathermap_wind_speed
+        name: Wind Speed
+      - entity: sensor.openweathermap_wind_bearing
+        name: Bearing
+        opacity: 0.3
+        type: area
       type: custom:apexcharts-card
     - all_series_config:
         show:
@@ -130,31 +137,94 @@ config:
         title: Rain
       series:
       - color: rebeccapurple
-        entity: sensor.weather_station_rain_rate
-        name: Rain Rate
+        entity: sensor.openweathermap_forecast_precipitation_probability
+        name: Rain Probability
         stroke_width: 2
         type: column
         yaxis_id: rate
-      - entity: sensor.weather_station_rain_total
+      - entity: sensor.openweathermap_forecast_precipitation
+        name: Rain
         yaxis_id: total
       type: custom:apexcharts-card
       yaxis:
       - id: rate
       - id: total
         opposite: true
+    - all_series_config:
+        show:
+          extremas: max
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 36h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Pollution Forecast
+      series:
+      - entity: sensor.owm_pollution_carbon_monoxide_co
+        name: Pollution Carbon
+      - entity: sensor.owm_pollution_coarse_particles_pm10
+        name: Pollution Coarse PM10
+      - entity: sensor.owm_pollution_fine_particles_pm2_5
+        name: Pollution Fine PM2.5
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: max
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 36h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Pollution Forecast
+      series:
+      - entity: sensor.owm_pollution_nitrogen_monoxide_no
+        name: Pollution Nitrogen NO
+      - entity: sensor.owm_pollution_nitrogen_dioxide_no2
+        name: Pollution Nitrogen NO2
+      - entity: sensor.owm_pollution_ozone_o3
+        name: Pollution Ozone
+      type: custom:apexcharts-card
+    - all_series_config:
+        show:
+          extremas: max
+        stroke_width: 1
+      config_templates:
+      - tufte
+      graph_span: 36h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Pollution Forecast
+      series:
+      - entity: sensor.owm_pollution_ammonia_nh3
+        name: Pollution Ammonia
+      - entity: sensor.owm_pollution_sulphur_dioxide_so2
+        name: Pollution Sulphur SO2
+      type: custom:apexcharts-card
     icon: mdi:weather-partly-cloudy
     layout:
       grid-template-areas: '"a b b b"
 
         "c b b b"
 
-        "d e f g"'
+        "d e f g"
+
+        "h i j k"'
       grid-template-columns: repeat(4, 1fr)
       mediaquery:
         '(max-width: 1300px)':
           grid-template-areas: '"a"
 
             "b"
+
+            "c"
 
             "c"'
           grid-template-columns: 1fr

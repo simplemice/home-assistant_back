@@ -714,7 +714,7 @@ config:
                   data: {}
                   service: scene.turn_on
                   target:
-                    entity_id: scene.blue_purple_lightstrip
+                    entity_id: scene.lightstrip_blue_scene
                 type: action
               type: custom:mushroom-chips-card
             - chips:
@@ -728,7 +728,7 @@ config:
                   data: {}
                   service: scene.turn_on
                   target:
-                    entity_id: scene.light_ocean_lightstrip
+                    entity_id: scene.lightstrip_ocean_scene
                 type: action
               type: custom:mushroom-chips-card
             - chips:
@@ -742,7 +742,7 @@ config:
                   data: {}
                   service: scene.turn_on
                   target:
-                    entity_id: scene.after_sunset_ambient
+                    entity_id: scene.livingroom_sunset_scene
                 type: action
               type: custom:mushroom-chips-card
             type: vertical-stack

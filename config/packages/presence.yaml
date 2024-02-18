@@ -156,18 +156,14 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id:
-          - proximity.simplemice
-        attribute: nearest
-        above: 0.2
+          - sensor.home_nearest_distance
+        above: 500
     condition:
       - condition: and
         conditions:
           - condition: state
             entity_id: binary_sensor.external_doors
             state: "off"
-          - condition: numeric_state
-            entity_id: sensor.home_nearest_distance
-            above: 0.2
     action:
       - service: script.away_mode_with_snapshot
         data: {}
@@ -178,15 +174,14 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id:
-          - proximity.simplemice
-        attribute: nearest
-        below: 0.2
+          - sensor.home_nearest_distance
+        below: 500
     condition:
       - condition: and
         conditions:
-          - condition: numeric_state
-            entity_id: sensor.home_nearest_distance
-            below: 0.2
+          - condition: state
+            entity_id: light.lumi_gateway_v3_light
+            state: "off"
     action:
       - service: script.return_home
         metadata: {}

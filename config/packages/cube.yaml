@@ -102,20 +102,7 @@ automation:
             data: {}
             target:
               entity_id: media_player.spotify_simplemice
-        doubletap_face_1:
-          - if:
-              - condition: state
-                entity_id: media_player.spotify_simplemice
-                state: playing
-            then:
-              - service: media_player.media_pause
-                data: {}
-                target:
-                  entity_id: media_player.spotify_simplemice
-            else:
-              - service: script.1698025648038
-                data: {}
-            alias: Spotify Play/Stop
+        doubletap_face_1: []
         flipped180_face_1: []
         slide_face_1: []
         flipped90_face_1: []

@@ -208,22 +208,10 @@ automation:
     description: ""
     mode: restart
     trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.climate_automation
-        to: "on"
-        from: "off"
-        id: auto_start
-      - platform: state
-        entity_id:
-          - input_boolean.climate_automation
-        to: "off"
-        from: "on"
-        id: auto_off
-      - platform: numeric_state
+      - platform: numeric-state
         entity_id:
           - sensor.bedroom_temp_temperature
-        above: 27
+        above: 26.9
         id: temp_on
       - platform: numeric_state
         entity_id:

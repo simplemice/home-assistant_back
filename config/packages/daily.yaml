@@ -26,10 +26,6 @@ input_datetime:
     name: Evening Briefing Time
     has_date: false
     has_time: true
-  briefing_off:
-    name: Turn Off Briefing Time
-    has_date: false
-    has_time: true
 
 template:
   - sensor:
@@ -58,22 +54,6 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id:
-          - input_boolean.evening_briefing
-
-  - id: c2d05dfd-aad6-482f-9338-ba86bc067369
-    alias: Turn Off Briefing Mode
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.briefing_off', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-    condition:
-      - condition: state
-        entity_id: input_boolean.morning_briefing
-        state: "on"
-    action:
-      - service: input_boolean.turn_off
-        entity_id:
-          - input_boolean.morning_briefing
           - input_boolean.evening_briefing
 
   - id: 13ebe389-eddd-439b-9576-cd568109e42d

@@ -5,28 +5,7 @@
 #   @description    :   Lights automations.
 ###############################################################################
 
-input_datetime:
-  adaptive_on_time:
-    name: Adaptive Lights On Time
-    has_date: false
-    has_time: true
-  adaptive_off_time:
-    name: Adaptive Lights Off Time
-    has_date: false
-    has_time: true
-  adaptive_night_on_time:
-    name: Adaptive Lights Night On Time
-    has_date: false
-    has_time: true
-  adaptive_night_off_time:
-    name: Adaptive Lights Night Off Time
-    has_date: false
-    has_time: true
-
 input_boolean:
-  lights_automation:
-    name: "Lights Auto Mode"
-    icon: mdi:ceiling-light-multiple
   adaptive_lights:
     name: "Adaptive Lights Mode"
     icon: hue:scene-natural-light
@@ -34,62 +13,7 @@ input_boolean:
     name: "Adaptive Lights Night Mode"
     icon: hue:scene-natural-light
 
-timer:
-  lights_timer:
-    name: Lights Timer
-    duration: "00:15:00"
-    icon: mdi:timer
-    restore: true
-
 automation:
-  - id: 90d5f1c7-a54d-4848-8ef7-0443372ed982
-    alias: Adaptive Lights Time Mode On
-    initial_state: true
-    trigger:
-      platform: template
-      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.adaptive_lights
-
-  - id: d646e301-0388-4704-8cce-9b831f167e32
-    alias: Adaptive Lights Time Mode Off
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-    condition:
-      - condition: state
-        entity_id: input_boolean.adaptive_lights
-        state: "on"
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.adaptive_lights
-
-  - id: 68bf8f1c-19db-46ae-8d7e-84657779b35a
-    alias: Adaptive Night Lights Time Mode On
-    initial_state: true
-    trigger:
-      platform: template
-      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_night_on_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.adaptive_lights_night
-
-  - id: e0e37c49-7c91-4db5-a692-4c2716ae3b68
-    alias: Adaptive Night Lights Time Mode Off
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: "{{ states('sensor.time') == (state_attr('input_datetime.adaptive_night_off_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-    condition:
-      - condition: state
-        entity_id: input_boolean.adaptive_lights_night
-        state: "on"
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.adaptive_lights
-
   - id: 6246c757-7310-4fc8-ad0c-736a34da2069
     alias: Adaptive Night Lights Automation
     description: ""
@@ -112,11 +36,6 @@ automation:
                 before: sunset
                 after: sunrise
             sequence:
-              - service: input_boolean.turn_off
-                target:
-                  entity_id:
-                    - input_boolean.adaptive_lights
-                data: {}
               - service: switch.turn_off
                 data: {}
                 target:
@@ -128,11 +47,6 @@ automation:
                 before: sunrise
                 after: sunset
             sequence:
-              - service: input_boolean.turn_on
-                metadata: {}
-                data: {}
-                target:
-                  entity_id: input_boolean.adaptive_lights
               - choose:
                   - conditions:
                       - condition: state
@@ -260,12 +174,12 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - binary_sensor.bedroom_motion_group
+          - binary_sensor.bedroom_motion
         to: "on"
         id: bedroom_motion_on
       - platform: state
         entity_id:
-          - binary_sensor.bedroom_motion_group
+          - binary_sensor.bedroom_motion
         to: "off"
         for:
           hours: 0
@@ -314,7 +228,7 @@ automation:
                   entity_id: light.bedside_lamp
           - conditions:
               - condition: state
-                entity_id: binary_sensor.bedroom_motion_group
+                entity_id: binary_sensor.bedroom_motion
                 state: "off"
                 for:
                   hours: 0
@@ -323,7 +237,7 @@ automation:
             sequence:
               - service: light.turn_off
                 data:
-                  transition: 90
+                  transition: 30
                 target:
                   entity_id: light.bedside_lamp
 

@@ -1,0 +1,401 @@
+###############################################################################
+#   @author         :   Simplemice
+#   @date           :   27/01/2024
+#   @package        :   Laundy
+#   @description    :   Laundry Package
+###############################################################################
+
+input_boolean:
+  laundry_helper:
+    name: "Laundry Day Mode"
+    icon: mdi:washing-machine
+  laundry_pickup:
+    name: "Laundry PickUp"
+    icon: mdi:washing-machine-off
+  awtrix_laundry_timer:
+    name: "Awtrix Laundry Timer"
+    icon: mdi:timer
+
+timer:
+  laundry_timer:
+    name: Laundry Timer
+    duration: "02:00:00"
+    icon: mdi:timer
+    restore: true
+
+input_datetime:
+  laundry_custom_time:
+    name: Laundry Custom Timer
+    icon: mdi:camera-timer
+    has_date: false
+    has_time: true
+
+automation:
+  - id: 90c1e200-b6b6-4990-a686-45f95c159998
+    mode: single
+    alias: Manual Turn On Laundry Day Mode
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (state_attr('input_datetime.laundry_custom_time', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      - condition: time
+        after: "07:30:00"
+        before: "15:00:00"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.laundry_helper
+
+  - id: ea1654fd-4a45-4e24-9b14-d9371c402ced
+    mode: restart
+    alias: Notification Do Not Forget For Laundry
+    description: ""
+    trigger:
+      - platform: calendar
+        event: start
+        offset: "-0:30:0"
+        entity_id: calendar.laundry
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: calendar.laundry
+            attribute: message
+            state: Laundry Day
+          - condition: time
+            after: "08:00:00"
+            before: "13:00:00"
+            enabled: true
+    action:
+      - choose:
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.audible_notifications
+                    state: "on"
+                  - condition: state
+                    entity_id: person.simplemice
+                    state: home
+            sequence:
+              - service: input_boolean.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.laundry_helper
+          - conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.text_notifications
+                    state: "on"
+                  - condition: or
+                    conditions:
+                      - condition: state
+                        entity_id: person.simplemice
+                        state: not_home
+                      - condition: state
+                        entity_id: person.simplemice
+                        state: Monkey Office
+            sequence:
+              - service: input_boolean.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.laundry_helper
+              - repeat:
+                  sequence:
+                    - service: notify.simplemice
+                      data:
+                        message: |
+                          {{ [
+                              "Today is laundry day! Don't forget to attend to your washing chores.",
+                              "Laundry reminder: It is laundry day today. Time to tackle that pile!",
+                              "Don't procrastinate! Today is designated as laundry day.",
+                              "Laundry alert: The day has come! It is laundry day today.",
+                              "Attention: Today is the day for laundry. Set aside some time for washing.",
+                              "Laundry time: Today is when you conquer the laundry pile. Get washing!",
+                              "Reminder: Today is laundry day. Make sure to prioritize your laundry tasks."
+                          ] | random }}
+                    - delay:
+                        hours: 0
+                        minutes: 30
+                        seconds: 0
+                        milliseconds: 0
+                  count: 5
+              - wait_for_trigger:
+                  - platform: time
+                    at: "19:00:00"
+              - repeat:
+                  sequence:
+                    - service: notify.simplemice
+                      data:
+                        message: |
+                          {{ [
+                              "Today is laundry day! Don't forget to attend to your washing chores.",
+                              "Laundry reminder: It is laundry day today. Time to tackle that pile!",
+                              "Don't procrastinate! Today is designated as laundry day.",
+                              "Laundry alert: The day has come! It is laundry day today.",
+                              "Attention: Today is the day for laundry. Set aside some time for washing.",
+                              "Laundry time: Today is when you conquer the laundry pile. Get washing!",
+                              "Reminder: Today is laundry day. Make sure to prioritize your laundry tasks."
+                          ] | random }}
+                    - delay:
+                        hours: 0
+                        minutes: 10
+                        seconds: 0
+                        milliseconds: 0
+                  count: 5
+
+  - id: cd91feec-cb24-4267-966e-73a0355b7ffa
+    alias: Laundry Start Automation
+    description: ""
+    trigger:
+      - platform: zone
+        entity_id: person.simplemice
+        zone: zone.laundry
+        event: enter
+      - platform: zone
+        entity_id: person.simplemice
+        zone: zone.laundry_beluga
+        event: enter
+    condition:
+      - condition: and
+        conditions:
+          - condition: time
+            after: "10:00:00"
+            before: "13:00:00"
+          - condition: state
+            entity_id: calendar.laundry
+            attribute: message
+            state: Laundry Day
+    action:
+      - service: script.laundry_start
+        data: {}
+    mode: restart
+
+  - id: 9b35a855-8233-4295-acb9-aa3f5b446ab9
+    alias: Laundry Finish Automation
+    description: ""
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.laundry_timer
+        id: laundry_finish
+    condition:
+      - condition: state
+        entity_id: calendar.laundry
+        attribute: message
+        state: Laundry Day
+    action:
+      - service: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+            - input_boolean.awtrix_laundry_timer
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: input_boolean.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.laundry_pickup
+      - service: script.laundy_finish
+        metadata: {}
+        data: {}
+    mode: restart
+
+  - id: 0c18e45f-842b-474f-9dbe-bb068507370a
+    alias: Turn Off Laundry Day
+    description: ""
+    mode: restart
+    trigger:
+      - platform: tag
+        tag_id: 20624072-f14c-4a2d-b2ae-9214dbbb5ecb
+    condition:
+      - condition: state
+        entity_id: calendar.laundry
+        attribute: message
+        state: Laundry Day
+    action:
+      - service: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.laundry_helper
+      - service: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.laundry_pickup
+      - service: script.text_notify
+        data:
+          message: |
+            {{ [
+                'Welcome home! Do not forget to put away your freshly picked-up laundry in the wardrobe',
+                'Back home with fresh laundry! Time to put it away in the wardrobe and enjoy the freshness',
+                'Welcome back! Your freshly picked-up laundry is waiting for you to put it in the wardrobe',
+                'Home sweet home! Remember to organize your freshly picked-up laundry in the wardrobe',
+                'Welcome back, laundry hero! Put your freshly picked-up clothes in the wardrobe and enjoy',
+                'Back from the laundry journey! It is time to put away your clean clothes in the wardrobe',
+                'Welcome home, freshness awaits! Do not forget to organize your laundry in the wardrobe',
+                'Welcome back! Your laundry mission is complete, now remember to put it in the wardrobe',
+                'Home at last! Remember to put your freshly picked-up laundry in the wardrobe for freshness',
+                'Welcome back, laundry conqueror! Time to put away your clean clothes in the wardrobe'
+            ] | random }}
+
+  - id: be935949-aeb6-4484-a1ac-53f780e21e4e
+    alias: Awtrix - Laundry Timer
+    description: ""
+    use_blueprint:
+      path: homeassistant/awtrix_create_sensor_app.yaml
+      input:
+        awtrix_displays:
+          - 878172095c71c90ce783d87cec0ac1af
+        toggle_helper: input_boolean.awtrix_laundry_timer
+        my_sensor: timer.laundry_timer
+        my_template_sensor: >-
+          Laundry PickUp - {{ (as_timestamp(state_attr('timer.laundry_timer',
+          'finishes_at'))) | timestamp_custom('%X') }}
+        my_icon: "42893"
+        text_color:
+          - 157
+          - 10
+          - 255
+        lifetime: "3600"
+
+script:
+  laundry_start:
+    alias: Laundry Timer Start
+    sequence:
+      - service: timer.start
+        data:
+          duration: "{{ states('input_datetime.time') }}"
+        target:
+          entity_id: timer.laundry_timer
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.awtrix_laundry_timer
+      - service: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.laundry_helper
+      - service: script.text_notify
+        data:
+          message: |
+            {{ [
+                "Laundry time! The washing machine has started. Get ready for clean clothes!",
+                "Laundry in progress: The washing machine is now running. Time to relax while it works.",
+                "Attention: The laundry has started. Sit back and let the washing machine do its magic.",
+                "Laundry alert: The washing machine is in action. Your clothes are getting cleaned!",
+                "Washing underway! The laundry has started. Enjoy some downtime while it runs.",
+                "Laundry initiated: The washing machine is now operational. Your clothes are in good hands.",
+                "Laundry cycle has begun. The washing machine is hard at work for you."
+            ] | random }}
+    mode: restart
+    icon: mdi:washing-machine-alert
+
+  laundry_finish:
+    alias: Laundry Finish Wait PickUp
+    sequence:
+      - repeat:
+          sequence:
+            - service: script.text_notify
+              data:
+                message: |
+                  {{ [
+                      "Laundry complete! The washing machine has finished its cycle. Time to unload.",
+                      "Laundry success: The washing machine has completed its task. Retrieve your fresh clothes!",
+                      "Attention: The laundry is done. The washing machine has finished its cycle.",
+                      "Laundry alert: The washing machine has finished. Your clothes are ready for the next step.",
+                      "Washing success! The laundry is complete. Retrieve your clean clothes with a smile!",
+                      "Laundry cycle complete: The washing machine has finished its job. Your clothes await.",
+                      "Laundry accomplishment: The washing machine has completed its cycle. Your clothes are now ready."
+                  ] | random }}
+            - delay:
+                hours: 0
+                minutes: 10
+                seconds: 0
+                milliseconds: 0
+          until:
+            - condition: state
+              entity_id: input_boolean.laundry_pickup
+              state: "on"
+    mode: restart
+    icon: hue:room-laundry-off
+
+  laundry_pickup:
+    alias: Laundry PickUp
+    sequence:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.audible_notifications
+                state: "on"
+            sequence:
+              - repeat:
+                  sequence:
+                    - service: notify.alexa_bedroom_speaker
+                      data:
+                        message: |
+                          {{ [
+                              'Your laundry has been picked up and is ready to wear! Enjoy the fresh feeling',
+                              'Mission accomplished! Your laundry has been picked up. Freshness delivered',
+                              'Enjoy the freshness! Your laundry has been picked up and is waiting for you',
+                              'Freshness unlocked! Your laundry has been picked up and is ready to enjoy',
+                              'Your freshly picked-up laundry awaits! Enjoy the crisp, clean clothes',
+                              'The freshness is yours! Your laundry has been picked up and is ready to go',
+                              'Fresh laundry alert! Your clothes have been picked up and are ready to be worn',
+                              'Your laundry adventure continues with fresh clothes in hand! Enjoy',
+                              'Enjoy the clean slate! Your laundry has been picked up and is ready to wear',
+                              'Laundry success! Your clothes have been picked up and are now fresh and clean'
+                          ] | random }}
+                    - delay:
+                        hours: 0
+                        minutes: 10
+                        seconds: 0
+                        milliseconds: 0
+                  until:
+                    - condition: state
+                      entity_id: input_boolean.laundry_pickup
+                      state: "on"
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.text_notifications
+                state: "on"
+            sequence:
+              - repeat:
+                  sequence:
+                    - service: script.text_notify
+                      data:
+                        message: |
+                          {{ [
+                              'Your laundry has been picked up and is ready to wear! Enjoy the fresh feeling',
+                              'Mission accomplished! Your laundry has been picked up. Freshness delivered',
+                              'Enjoy the freshness! Your laundry has been picked up and is waiting for you',
+                              'Freshness unlocked! Your laundry has been picked up and is ready to enjoy',
+                              'Your freshly picked-up laundry awaits! Enjoy the crisp, clean clothes',
+                              'The freshness is yours! Your laundry has been picked up and is ready to go',
+                              'Fresh laundry alert! Your clothes have been picked up and are ready to be worn',
+                              'Your laundry adventure continues with fresh clothes in hand! Enjoy',
+                              'Enjoy the clean slate! Your laundry has been picked up and is ready to wear',
+                              'Laundry success! Your clothes have been picked up and are now fresh and clean'
+                          ] | random }}
+                    - delay:
+                        hours: 0
+                        minutes: 30
+                        seconds: 0
+                        milliseconds: 0
+                  until:
+                    - condition: state
+                      entity_id: input_boolean.laundry_pickup
+                      state: "on"
+    mode: restart
+    icon: mdi:tumble-dryer-alert
